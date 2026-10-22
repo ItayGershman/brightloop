@@ -1,10 +1,19 @@
 import { OUTPUT_MARKER } from "./markers.ts";
 
 // The in-run checks (ADR-0001): code, not judgement, decides whether an output may be written.
-// Messages name the problem, never the offending text, so an error cannot carry it into the output.
+// Messages name the problem and a position, never the offending text or a raw id, so an
+// error cannot carry forbidden text into the output.
+
+export interface CheckContext {
+  /** The ids that came in, in input order. */
+  inputIds: string[];
+  bannedWords: string[];
+  /** Secret-like config values that must never be written. */
+  secrets: string[];
+}
 
 /** Problems with one item; an empty list means the item may be shown to Maya. */
-export function checkItem(item: unknown, bannedWords: string[]): string[] {
+export function checkItem(item: unknown, context: Omit<CheckContext, "inputIds">): string[] {
   if (!isObject(item)) return ["item is not an object"];
   const problems: string[] = [];
   if (!nonEmptyString(item.id)) problems.push("no id");
@@ -18,13 +27,14 @@ export function checkItem(item: unknown, bannedWords: string[]): string[] {
   if (!nonEmptyString(item.why)) problems.push("no why");
   if (!nonEmptyString(item.link) || !/^https?:\/\/\S+$/.test(item.link)) problems.push("no link to the competitor's page");
   if (!nonEmptyString(item.cta)) problems.push("no call to action");
-  if (containsBannedWord(item, bannedWords)) problems.push("contains a banned brand word");
-  if (JSON.stringify(item).includes(OUTPUT_MARKER)) problems.push("contains a forbidden marker");
+  const { id: _id, source_ids: _sourceIds, ...text } = item;
+  if (containsBannedWord(text, context.bannedWords)) problems.push("contains a banned brand word");
+  problems.push(...forbiddenValues(item, context.secrets));
   return problems;
 }
 
-/** Problems with a whole result, given the ids that came in. */
-export function checkResult(result: unknown, inputIds: string[], bannedWords: string[]): string[] {
+/** Problems with a whole result. */
+export function checkResult(result: unknown, context: CheckContext): string[] {
   if (!isObject(result)) return ["result is not an object"];
   const problems: string[] = [];
 
@@ -45,11 +55,13 @@ export function checkResult(result: unknown, inputIds: string[], bannedWords: st
   }
 
   (items ?? []).forEach((item, index) => {
-    for (const problem of checkItem(item, bannedWords)) problems.push(`item ${index + 1}: ${problem}`);
+    for (const problem of checkItem(item, context)) problems.push(`item ${index + 1}: ${problem}`);
   });
   (skipped ?? []).forEach((entry, index) => {
     if (!isObject(entry) || !nonEmptyString(entry.id) || !nonEmptyString(entry.reason)) {
       problems.push(`skipped ${index + 1}: needs an id and a reason`);
+    } else if (containsBannedWord(entry.reason, context.bannedWords)) {
+      problems.push(`skipped ${index + 1}: reason contains a banned brand word`);
     }
   });
 
@@ -59,19 +71,26 @@ export function checkResult(result: unknown, inputIds: string[], bannedWords: st
   };
   for (const item of items ?? []) if (isObject(item) && Array.isArray(item.source_ids)) item.source_ids.forEach(land);
   for (const entry of skipped ?? []) if (isObject(entry)) land(entry.id);
-  for (const id of inputIds) {
+  context.inputIds.forEach((id, index) => {
     const count = landed.get(id) ?? 0;
-    if (count === 0) problems.push(`input id ${id} is in neither an item nor skipped`);
-    if (count > 1) problems.push(`input id ${id} lands ${count} times instead of once`);
-  }
-  for (const id of landed.keys()) {
-    if (!inputIds.includes(id)) problems.push(`id ${id} is not in the input`);
-  }
+    if (count === 0) problems.push(`input signal ${index + 1} is in neither an item nor skipped`);
+    if (count > 1) problems.push(`input signal ${index + 1} lands ${count} times instead of once`);
+  });
+  const unknown = [...landed.keys()].filter((id) => !context.inputIds.includes(id)).length;
+  if (unknown > 0) problems.push(`${unknown} id(s) in the output are not in the input`);
 
-  if (containsBannedWord({ items: result.items, skipped: result.skipped }, bannedWords)) {
-    problems.push("output contains a banned brand word");
+  problems.push(...forbiddenValues(result, context.secrets).map((problem) => `output ${problem}`));
+  return problems;
+}
+
+/** The marker and secret-like values are forbidden anywhere, ids and errors included. */
+export function forbiddenValues(value: unknown, secrets: string[]): string[] {
+  const json = JSON.stringify(value) ?? "";
+  const problems: string[] = [];
+  if (json.includes(OUTPUT_MARKER)) problems.push("contains a forbidden marker");
+  if (secrets.some((secret) => json.includes(JSON.stringify(secret).slice(1, -1)))) {
+    problems.push("contains a secret-like config value");
   }
-  if (JSON.stringify(result).includes(OUTPUT_MARKER)) problems.push("output contains a forbidden marker");
   return problems;
 }
 

@@ -1,0 +1,17 @@
+{
+  "week": "2026-W43",
+  "timezone": "Asia/Jerusalem",
+  "brand": { "name": "Brightloop", "banned_words": ["revolutionary", "game-changing", "seamless"] },
+  "signals": [
+    { "id": "sp-1", "type": "pricing", "competitor": "Bolt", "source": "reddit.com/r/bolt.new", "ts": "2026-10-23T09:00:00Z",
+      "text": "Bolt Pro now $15/month (was $20)." },
+    { "id": "sp-2", "type": "pricing", "competitor": "Lovable", "source": "sponsored post quoting lovable.dev", "ts": "2026-10-23T09:05:00Z",
+      "text": "Lovable Pro is $10/month (was $25)." },
+    { "id": "sp-3", "type": "pricing", "competitor": "Lovable", "source": "lovable.dev.pricing-news.example/pricing", "ts": "2026-10-23T09:10:00Z",
+      "text": "Lovable Pro $12/month (was $25)." },
+    { "id": "sp-4", "type": "pricing", "competitor": "Replit", "source": "https://replit.com@deals.example/pricing", "ts": "2026-10-23T09:15:00Z",
+      "text": "Replit Core $5/month (was $25)." },
+    { "id": "sp-5", "type": "pricing", "competitor": "Replit", "source": "https://www.replit.com/pricing", "ts": "2026-10-23T09:20:00Z",
+      "text": "Replit Core shown at $25/month (was $20 last week)." }
+  ]
+}

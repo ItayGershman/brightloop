@@ -1,40 +1,71 @@
+import { CODE_MARKERS } from "./markers.ts";
 import type { Signal, Source } from "./types.ts";
 
 /**
  * The file source: reads a cases.json text into a Source. Never throws; anything it
- * cannot use becomes an error, so a bad file still yields a result.json.
+ * cannot use becomes an error, so a bad file still yields a result.json. Errors point at
+ * a signal by its position, never by its raw id: an id is outside text too.
  */
 export function fileSource(text: string): Source {
   let parsed: unknown;
   try {
     parsed = JSON.parse(text);
   } catch {
-    return { signals: [], bannedWords: [], errors: ["input is not valid JSON"] };
+    return empty("input is not valid JSON");
   }
-  if (!isObject(parsed)) {
-    return { signals: [], bannedWords: [], errors: ["input must be a JSON object"] };
-  }
+  if (!isObject(parsed)) return empty("input must be a JSON object");
 
   const errors: string[] = [];
+  const secrets = secretValues(parsed.config);
   const signals: Signal[] = [];
+  const seen = new Set<string>();
   if (!Array.isArray(parsed.signals)) {
     errors.push("input has no signals list");
   } else {
     parsed.signals.forEach((raw, index) => {
-      if (!isObject(raw) || typeof raw.id !== "string" || raw.id === "") {
-        errors.push(`signal at position ${index} has no id and was not read`);
-        return;
+      const position = `signal ${index + 1}`;
+      if (!isObject(raw) || typeof raw.id !== "string" || raw.id.trim() === "") {
+        errors.push(`${position} has no id and was not read`);
+      } else if (!usableId(raw.id, secrets)) {
+        errors.push(`${position} has an id that cannot be written to the output and was not read`);
+      } else if (seen.has(raw.id)) {
+        errors.push(`${position} repeats the id of an earlier signal; only the first was judged`);
+      } else {
+        seen.add(raw.id);
+        signals.push({ ...raw, id: raw.id, type: typeof raw.type === "string" ? raw.type : "" });
       }
-      signals.push({ ...raw, id: raw.id, type: typeof raw.type === "string" ? raw.type : "" });
     });
   }
 
   const brand = isObject(parsed.brand) ? parsed.brand : {};
   const bannedWords = Array.isArray(brand.banned_words)
-    ? brand.banned_words.filter((word): word is string => typeof word === "string" && word !== "")
+    ? brand.banned_words.filter((word): word is string => typeof word === "string" && word.trim() !== "")
     : [];
 
-  return { signals, bannedWords, errors };
+  return { signals, bannedWords, secrets, errors };
+}
+
+/** An id lands in the output as is, so it must be short, printable, without spaces, and carry nothing forbidden. */
+function usableId(id: string, secrets: string[]): boolean {
+  return (
+    id.length <= 100 &&
+    id === id.trim() &&
+    /^[^\s\p{C}]+$/u.test(id) &&
+    !CODE_MARKERS.some((marker) => id.includes(marker)) &&
+    !secrets.some((secret) => id.includes(secret))
+  );
+}
+
+/** Config values whose key names a credential (key, token, secret, password). */
+function secretValues(config: unknown): string[] {
+  if (!isObject(config)) return [];
+  return Object.entries(config)
+    .filter(([key, value]) => /key|token|secret|passw/i.test(key) && typeof value === "string" && value.length >= 4)
+    .map(([, value]) => value as string);
+}
+
+function empty(error: string): Source {
+  return { signals: [], bannedWords: [], secrets: [], errors: [error] };
 }
 
 function isObject(value: unknown): value is Record<string, unknown> {

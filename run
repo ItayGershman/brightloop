@@ -4,6 +4,10 @@
 set -e
 DIR=$(cd "$(dirname "$0")" && pwd)
 if [ ! -x "$DIR/node_modules/.bin/tsx" ]; then
-  (cd "$DIR" && npm ci --silent --no-audit --no-fund >&2)
+  if ! (cd "$DIR" && npm ci --ignore-scripts --silent --no-audit --no-fund >&2); then
+    echo "run: could not install the dependencies from registry.npmjs.org (offline?)." >&2
+    echo "run: connect to the network and try again, or run 'npm ci' yourself first." >&2
+    exit 1
+  fi
 fi
 exec "$DIR/node_modules/.bin/tsx" "$DIR/src/cli.ts" "$@"

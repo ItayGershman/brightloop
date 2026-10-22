@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
+import type { Rule } from "../src/judge.ts";
 import { run } from "../src/run.ts";
 import { fileSource } from "../src/source.ts";
-import type { Rule } from "../src/judge.ts";
 import type { Result } from "../src/types.ts";
 
 export const STARTED_AT = new Date("2026-10-26T06:30:00.000Z");
@@ -16,5 +16,18 @@ export function runCases(input: unknown, rules?: Rule[]): Result {
 }
 
 export function pricingSignal(fields: Record<string, unknown>): Record<string, unknown> {
-  return { id: "pr-1", type: "pricing", competitor: "Lovable", source: "lovable.dev/pricing", ts: "2026-10-23T08:00:00Z", text: "Pro plan shown at $25/month (was $20 last week).", ...fields };
+  return {
+    id: "pr-1",
+    type: "pricing",
+    competitor: "Lovable",
+    source: "lovable.dev/pricing",
+    ts: "2026-10-23T08:00:00Z",
+    text: "Pro plan shown at $25/month (was $20 last week).",
+    ...fields,
+  };
+}
+
+/** Every input id, from items and skipped, sorted. */
+export function landedIds(result: Result): string[] {
+  return [...result.items.flatMap((item) => item.source_ids), ...result.skipped.map((entry) => entry.id)].sort();
 }

@@ -17,3 +17,5 @@ jobs:
       - run: npm test
       - name: The brief's command on the brief's example
         run: ./run --input cases/brief-example/input.json --output result.json
+      - name: No forbidden marker in the output it wrote
+        run: npm run repo-check -- result.json

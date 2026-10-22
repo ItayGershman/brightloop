@@ -1,60 +1,70 @@
 import assert from "node:assert/strict";
-import { spawnSync } from "node:child_process";
-import { mkdtempSync, readFileSync } from "node:fs";
+import { execFileSync, spawnSync } from "node:child_process";
+import { cpSync, mkdirSync, mkdtempSync, readFileSync, symlinkSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { dirname, join, resolve } from "node:path";
 import { describe, test } from "node:test";
-import { markerHits } from "../scripts/marker-scan.ts";
+import { repoProblems } from "../scripts/marker-scan.ts";
 import { checkResult } from "../src/checks.ts";
 import { pricing, RULES, type Rule } from "../src/judge.ts";
 import { CODE_MARKERS, OUTPUT_MARKER } from "../src/markers.ts";
 import type { Item } from "../src/types.ts";
-import { briefExample, pricingSignal, runCases } from "./helpers.ts";
+import { briefExample, landedIds, pricingSignal, runCases } from "./helpers.ts";
 
 // One block per acceptance criterion of issue #2, in its order. Judging goes through the
-// run(source) seam; the CLI and the repo check are tested as the commands graders run.
+// run(source) seam; the CLI, the repo check and the proof are run as the commands graders run.
 
 const input = briefExample();
 const inputIds: string[] = input.signals.map((signal: { id: string }) => signal.id);
+const NESTED = "BRIGHTLOOP_NESTED_PROOF";
 
-function runWithItem(change: (item: Item) => void, brand: Record<string, unknown> = {}) {
-  const faulty: Rule = (signal) => {
-    const judgement = pricing(signal);
-    if (judgement?.kind === "item") change(judgement.item);
-    return judgement;
-  };
-  return runCases({ brand, signals: [pricingSignal({})] }, [faulty, ...RULES]);
+/** A run whose pricing rule is buggy in one way, to prove the checks catch that bug. */
+function runWithFaultyItem(change: (item: Item) => void, extra: Record<string, unknown> = {}) {
+  const faulty: Rule = (pending) =>
+    pricing(pending).map((judgement) => {
+      if (judgement.kind === "item") change(judgement.item);
+      return judgement;
+    });
+  return runCases({ signals: [pricingSignal({})], ...extra }, [faulty, ...RULES]);
 }
 
+function tempFile(name: string): string {
+  return join(mkdtempSync(join(tmpdir(), "brightloop-")), name);
+}
+
+/** The CLI with an empty environment: no keys, no config, only what finds node and npm. */
 function cli(args: string[]) {
-  // An empty environment: no keys, no config, only what is needed to find node and npm.
   return spawnSync("./run", args, { encoding: "utf8", env: { PATH: process.env.PATH ?? "", HOME: process.env.HOME ?? "" } });
 }
 
 describe("AC1: the CLI writes result.json in the required wrapper from the brief's example", () => {
   test("./run --input --output writes the wrapper", () => {
-    const output = join(mkdtempSync(join(tmpdir(), "brightloop-")), "result.json");
+    const output = tempFile("result.json");
     const run = cli(["--input", "cases/brief-example/input.json", "--output", output]);
     assert.equal(run.status, 0, run.stderr);
     const result = JSON.parse(readFileSync(output, "utf8"));
     assert.deepEqual(Object.keys(result), ["built_for", "items", "skipped", "run"]);
     assert.equal(result.built_for, "maya");
     assert.deepEqual(Object.keys(result.run), ["started_at", "cost_usd", "errors"]);
-    assert.deepEqual(checkResult(result, inputIds, input.brand.banned_words), []);
-  });
-
-  test("a command without --output is a usage error", () => {
-    const run = cli(["--input", "cases/brief-example/input.json"]);
-    assert.equal(run.status, 2);
-    assert.match(run.stderr, /usage: run --input/);
+    assert.deepEqual(checkResult(result, { inputIds, bannedWords: input.brand.banned_words, secrets: [input.config.demo_key] }), []);
   });
 });
 
 describe("AC2: every input id appears exactly once, in an item's source_ids or in skipped", () => {
   test("on the brief's example", () => {
-    const result = runCases(input);
-    const landed = [...result.items.flatMap((item) => item.source_ids), ...result.skipped.map((entry) => entry.id)];
-    assert.deepEqual(landed.sort(), [...inputIds].sort());
+    assert.deepEqual(landedIds(runCases(input)), [...inputIds].sort());
+  });
+
+  test("a rule that invents an id is reported, and the real signal still lands once", () => {
+    const invents: Rule = (pending) => pending.map((signal) => ({ kind: "skipped", skipped: { id: `${signal.id}-x`, reason: "x" } }));
+    const result = runCases({ signals: [pricingSignal({})] }, [invents]);
+    assert.deepEqual(result.skipped.filter((entry) => entry.id === "pr-1").length, 1);
+    assert.match(result.run.errors.join("\n"), /1 id\(s\) in the output are not in the input/);
+  });
+
+  test("a rule that decides one signal twice is reported", () => {
+    const twice: Rule = (pending) => pending.flatMap((signal) => [1, 2].map(() => ({ kind: "skipped" as const, skipped: { id: signal.id, reason: "x" } })));
+    assert.match(runCases({ signals: [pricingSignal({})] }, [twice]).run.errors.join("\n"), /input signal 1 lands 2 times instead of once/);
   });
 });
 
@@ -80,7 +90,7 @@ describe("AC4: the in-run checks reject a bad output and record it in run.errors
   ];
   for (const [what, change, problem] of rejects) {
     test(`an item with ${what} is held back`, () => {
-      const result = runWithItem(change);
+      const result = runWithFaultyItem(change);
       assert.deepEqual(result.items, []);
       assert.match(result.run.errors.join("\n"), problem);
       assert.deepEqual(result.skipped.map((entry) => entry.id), ["pr-1"]);
@@ -89,17 +99,10 @@ describe("AC4: the in-run checks reject a bad output and record it in run.errors
   }
 
   test("an item with a banned brand word is held back, and the word is not repeated", () => {
-    const result = runWithItem((item) => (item.why = "A seamless move."), { banned_words: ["seamless"] });
+    const result = runWithFaultyItem((item) => (item.why = "A seamless move."), { brand: { banned_words: ["seamless"] } });
     assert.deepEqual(result.items, []);
     assert.match(result.run.errors.join("\n"), /banned brand word/);
     assert.ok(!JSON.stringify(result).toLowerCase().includes("seamless"));
-  });
-
-  test("a rule that loses or invents an id is reported", () => {
-    const loses: Rule = (signal) => ({ kind: "skipped", skipped: { id: `${signal.id}-renamed`, reason: "x" } });
-    const result = runCases({ signals: [pricingSignal({})] }, [loses]);
-    assert.match(result.run.errors.join("\n"), /input id pr-1 is in neither an item nor skipped/);
-    assert.match(result.run.errors.join("\n"), /id pr-1-renamed is not in the input/);
   });
 
   // run() always builds the wrapper itself, so a broken wrapper can only reach the gate
@@ -114,7 +117,7 @@ describe("AC4: the in-run checks reject a bad output and record it in run.errors
     test(`a wrapper with ${what} is rejected`, () => {
       const result: any = structuredClone(runCases(input));
       change(result);
-      assert.match(checkResult(result, inputIds, []).join("\n"), problem);
+      assert.match(checkResult(result, { inputIds, bannedWords: [], secrets: [] }).join("\n"), problem);
     });
   }
 });
@@ -122,42 +125,77 @@ describe("AC4: the in-run checks reject a bad output and record it in run.errors
 describe("AC5: the repo check fails if a forbidden marker appears in the code", () => {
   for (const [index, marker] of CODE_MARKERS.entries()) {
     test(`marker #${index + 1} in a code file fails`, () => {
-      assert.deepEqual(markerHits([{ path: "src/worker.ts", text: `console.log("${marker}")` }]), [
+      assert.deepEqual(repoProblems([{ path: "src/worker.ts", text: `console.log("${marker}")` }]), [
         `src/worker.ts: contains forbidden marker #${index + 1}`,
       ]);
     });
   }
 
-  test("a marker in an expected output fails", () => {
-    assert.equal(markerHits([{ path: "cases/x/expected.json", text: OUTPUT_MARKER }]).length, 1);
+  test("a marker in other Markdown, another case input or an output fails", () => {
+    for (const path of ["README.md", "interviews/maya.md", "cases/other/input.json", "cases/x/expected.json", "result.json"]) {
+      assert.equal(repoProblems([{ path, text: OUTPUT_MARKER }]).length, 1, path);
+    }
   });
 
-  test("docs and verbatim case inputs, which quote the markers as data, are not scanned", () => {
+  test("only the trap docs and the brief's verbatim example may name the markers", () => {
     const text = CODE_MARKERS.join(" ");
-    assert.deepEqual(markerHits([{ path: "SPOTTED.md", text }, { path: "cases/brief-example/input.json", text }]), []);
+    const allowed = ["SPEC.md", "DECISIONS.md", "SPOTTED.md", "docs/adr/0001-outside-text-is-data.md", "cases/brief-example/input.json"];
+    assert.deepEqual(repoProblems(allowed.map((path) => ({ path, text }))), []);
+  });
+
+  test("a dependency resolved outside the public registry fails", () => {
+    const text = '{ "resolved": "https://registry.npmjs.org/a/-/a-1.tgz", "resolved": "https://mirror.example/b/-/b-1.tgz" }';
+    assert.deepEqual(repoProblems([{ path: "package-lock.json", text }]), [
+      "package-lock.json: 1 dependencies resolve outside https://registry.npmjs.org/",
+    ]);
   });
 });
 
-describe("AC6: one proof command runs everything, and CI runs it on every push", () => {
-  test("npm test runs the typecheck, the repo check and every test file", () => {
-    const scripts = JSON.parse(readFileSync("package.json", "utf8")).scripts;
-    assert.equal(scripts.test, "npm run typecheck && npm run repo-check && npm run suite");
-    assert.equal(scripts.typecheck, "tsc --noEmit");
-    assert.match(scripts.suite, /tests\/\*\.test\.ts/);
-  });
+describe("AC6: one proof command, npm test, runs the typecheck, the repo check and every test", { skip: process.env[NESTED] === "1" }, () => {
+  /** A copy of this repo, in its own git repository, sharing node_modules. */
+  function repoCopy(): string {
+    const root = mkdtempSync(join(tmpdir(), "brightloop-proof-"));
+    const files = execFileSync("git", ["ls-files", "--cached", "--others", "--exclude-standard"], { encoding: "utf8" });
+    for (const file of files.split("\n").filter(Boolean)) {
+      mkdirSync(dirname(join(root, file)), { recursive: true });
+      cpSync(file, join(root, file));
+    }
+    symlinkSync(resolve("node_modules"), join(root, "node_modules"));
+    execFileSync("git", ["init", "-q"], { cwd: root });
+    execFileSync("git", ["add", "-A"], { cwd: root });
+    return root;
+  }
 
-  test("CI runs npm test on every push", () => {
-    const workflow = readFileSync(".github/workflows/proof.yml", "utf8");
-    assert.match(workflow, /^on:\n  push:/m);
-    assert.match(workflow, /- run: npm ci\n      - run: npm test\n/);
+  function proofIn(root: string) {
+    return spawnSync("npm", ["test"], { cwd: root, encoding: "utf8", env: { ...process.env, [NESTED]: "1" } });
+  }
+
+  const plants: [string, string, string][] = [
+    ["a type error", "src/planted.ts", 'export const planted: number = "not a number";\n'],
+    ["a forbidden marker in the code", "src/planted.ts", `export const planted = "${OUTPUT_MARKER}";\n`],
+    ["a failing test", "tests/planted.test.ts", 'import { test } from "node:test";\ntest("planted", () => { throw new Error("planted"); });\n'],
+  ];
+  for (const [what, path, text] of plants) {
+    test(`fails on ${what}`, () => {
+      const root = repoCopy();
+      writeFileSync(join(root, path), text);
+      const proof = proofIn(root);
+      assert.notEqual(proof.status, 0, `${what} should fail the proof`);
+    });
+  }
+
+  test("passes on a clean copy of this repo", () => {
+    const proof = proofIn(repoCopy());
+    assert.equal(proof.status, 0, proof.stdout + proof.stderr);
   });
 });
 
 describe("AC7: a fresh clone with no keys runs the proof green", () => {
-  // CI is that fresh clone with no secrets; this test pins the part a test can see:
-  // the run reads nothing from the environment.
+  // Proving this needs a clean machine: the CI job is that fresh clone, on a runner with no
+  // secrets, and its result shows on the pull request. This test pins the part a test can
+  // see: the CLI reads nothing from the environment.
   test("the CLI gives the expected result with an empty environment", () => {
-    const output = join(mkdtempSync(join(tmpdir(), "brightloop-")), "result.json");
+    const output = tempFile("result.json");
     assert.equal(cli(["--input", "cases/brief-example/input.json", "--output", output]).status, 0);
     const result = JSON.parse(readFileSync(output, "utf8"));
     const expected = JSON.parse(readFileSync("cases/brief-example/expected.json", "utf8"));

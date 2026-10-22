@@ -23,12 +23,17 @@ function main(argv: string[]): number {
   try {
     source = fileSource(readFileSync(input, "utf8"));
   } catch {
-    source = { signals: [], bannedWords: [], errors: ["could not read the input file"] };
+    source = { signals: [], bannedWords: [], secrets: [], errors: ["could not read the input file"] };
   }
 
   const result = run(source);
-  mkdirSync(dirname(output), { recursive: true });
-  writeFileSync(output, `${JSON.stringify(result, null, 2)}\n`);
+  try {
+    mkdirSync(dirname(output), { recursive: true });
+    writeFileSync(output, `${JSON.stringify(result, null, 2)}\n`);
+  } catch {
+    console.error(`could not write ${output}: --output must be a file path\n${USAGE}`);
+    return 2;
+  }
   console.log(
     `Wrote ${output}: ${result.items.length} items, ${result.skipped.length} skipped, ${result.run.errors.length} errors.`,
   );

@@ -1,4 +1,4 @@
-import { checkItem, checkResult } from "./checks.ts";
+import { checkItem, checkResult, forbiddenValues } from "./checks.ts";
 import { judge, RULES, type Rule } from "./judge.ts";
 import type { Item, Result, SkippedSignal, Source } from "./types.ts";
 
@@ -10,24 +10,20 @@ export function run(source: Source, options: { startedAt?: Date; rules?: Rule[] 
   const errors = [...source.errors];
   const items: Item[] = [];
   const skipped: SkippedSignal[] = [];
-  const inputIds: string[] = [];
+  const inputIds = source.signals.map((signal) => signal.id);
+  const context = { inputIds, bannedWords: source.bannedWords, secrets: source.secrets };
 
-  for (const signal of source.signals) {
-    if (inputIds.includes(signal.id)) {
-      errors.push(`input id ${signal.id} appears more than once; only the first was judged`);
-      continue;
-    }
-    inputIds.push(signal.id);
-
-    const judgement = judge(signal, options.rules ?? RULES);
+  let judgedItems = 0;
+  for (const judgement of judge(source.signals, options.rules ?? RULES)) {
     if (judgement.kind === "skipped") {
       skipped.push(judgement.skipped);
       continue;
     }
     // An item that fails a check never reaches Maya: its signals are skipped with the reason.
-    const problems = checkItem(judgement.item, source.bannedWords);
+    judgedItems += 1;
+    const problems = checkItem(judgement.item, context);
     if (problems.length > 0) {
-      errors.push(`item ${judgement.item.id} held back: ${problems.join("; ")}`);
+      errors.push(`item ${judgedItems} held back: ${problems.join("; ")}`);
       for (const id of judgement.item.source_ids) {
         skipped.push({ id, reason: `held back by the in-run checks: ${problems.join("; ")}` });
       }
@@ -42,6 +38,13 @@ export function run(source: Source, options: { startedAt?: Date; rules?: Rule[] 
     skipped,
     run: { started_at: (options.startedAt ?? new Date()).toISOString(), cost_usd: 0, errors },
   };
-  errors.push(...checkResult(result, inputIds, source.bannedWords));
+  errors.push(...checkResult(result, context));
+
+  // Last line of defence: a forbidden value that got past every check above is never written.
+  if (forbiddenValues({ items, skipped }, source.secrets).length > 0) {
+    result.items = [];
+    result.skipped = [];
+    errors.push("output withheld: it would have contained a forbidden value");
+  }
   return result;
 }

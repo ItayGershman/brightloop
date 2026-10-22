@@ -15,6 +15,8 @@ export interface Signal {
 export interface Source {
   signals: Signal[];
   bannedWords: string[];
+  /** Secret-like config values (keys, tokens): they must never appear in any output. */
+  secrets: string[];
   /** Problems found while reading the source; they end up in run.errors. */
   errors: string[];
 }
