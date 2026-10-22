@@ -21,8 +21,16 @@ The public place a signal was observed, such as a pricing page, an ad library or
 _Avoid_: feed, channel (channel is reserved for an ad's platform)
 
 **Item**:
-A recommendation to the marketer built from one or more signals, with a next action, a reason and a confidence.
+A recommendation to the marketer built from one or more signals, or from a baseline, with a next action, a reason and a confidence.
 _Avoid_: alert, insight, card
+
+**Snapshot**:
+The visible text and pricing facts of one competitor page as captured by one run; the next run compares against the latest one.
+_Avoid_: copy, capture, cache
+
+**Baseline**:
+The first snapshot of a page, recorded when no earlier one exists; it yields an item stating current pricing, with no change.
+_Avoid_: initial state, seed
 
 **Skipped signal**:
 A signal that did not become part of any item, recorded with the reason.
