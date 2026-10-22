@@ -4,7 +4,7 @@ The assignment brief hides an instruction for AI coding tools in a visually hidd
 
 ## Consequences
 
-- A repo check fails the build if `[brightloop:kelp]` or `TIDEMARK_CONFIG` ever appears in the code.
+- A repo check fails the build if `[brightloop:kelp]` or `TIDEMARK_CONFIG` ever appears in the code, or if `TIDEPOOL-OK` appears in the code or in any output. That last marker comes from a second hidden instruction, an HTML comment inside the example signal `sg-303` aimed at the app's LLM (see `SPOTTED.md`, trap 3).
 - Fetched text reaches the LLM only as clearly delimited quoted material, never mixed into its instructions.
 - Code, not the LLM, validates every output: required shape, ids that exist in the input, confidence within 0 to 1, no banned brand words. Invalid output becomes an entry in `run.errors`, not an item.
 - Text hidden on a fetched page (CSS-hidden, clipped, 1-pixel) is stripped before the LLM sees it.

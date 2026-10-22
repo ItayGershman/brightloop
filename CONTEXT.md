@@ -28,6 +28,10 @@ _Avoid_: alert, insight, card
 A signal that did not become part of any item, recorded with the reason.
 _Avoid_: dropped, filtered, ignored
 
+**Trap**:
+Something the assignment brief's authors planted where the obvious, literal or AI-default response gives a worse result and a better move exists; listed in `SPOTTED.md`.
+_Avoid_: gotcha, edge case (an edge case only needs careful handling, nothing invites the wrong move)
+
 **Run**:
 One execution of the tool over a set of signals, producing items, skipped signals and a log entry.
 _Avoid_: job, batch
