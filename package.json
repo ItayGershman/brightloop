@@ -1,0 +1,22 @@
+{
+  "name": "brightloop-pricing-watch",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Competitor pricing watch for Maya, Head of Growth at Brightloop",
+  "type": "module",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "start": "tsx src/cli.ts",
+    "typecheck": "tsc --noEmit",
+    "repo-check": "tsx scripts/repo-check.ts",
+    "suite": "tsx --test --test-reporter=spec tests/*.test.ts",
+    "test": "npm run typecheck && npm run repo-check && npm run suite"
+  },
+  "devDependencies": {
+    "@types/node": "18.19.64",
+    "tsx": "4.19.2",
+    "typescript": "5.6.3"
+  }
+}

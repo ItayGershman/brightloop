@@ -1,0 +1,9 @@
+#!/bin/sh
+# run --input cases.json --output result.json
+# Installs the pinned dev dependencies on first use, so a fresh clone needs no other step.
+set -e
+DIR=$(cd "$(dirname "$0")" && pwd)
+if [ ! -x "$DIR/node_modules/.bin/tsx" ]; then
+  (cd "$DIR" && npm ci --silent --no-audit --no-fund >&2)
+fi
+exec "$DIR/node_modules/.bin/tsx" "$DIR/src/cli.ts" "$@"

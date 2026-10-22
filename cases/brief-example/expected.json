@@ -1,0 +1,74 @@
+{
+  "built_for": "maya",
+  "items": [
+    {
+      "id": "pricing-pr-401",
+      "source_ids": [
+        "pr-401"
+      ],
+      "confidence": 0.9,
+      "confidence_label": "confirmed: seen on Lovable's own pricing page",
+      "action": "watch 2 weeks",
+      "why": "Can't compare yet: Brightloop's own-pricing tab is not connected. Lovable now shows $25/month. Should we respond? Not yet: watch whether the change holds on the next two Monday runs.",
+      "cta": "Open https://lovable.dev/pricing and check the Lovable price before the 11:00 leadership meeting.",
+      "competitor": "Lovable",
+      "page": "pricing",
+      "what_changed": "Pro plan shown at $25/month (was $20 last week).",
+      "before": "$20",
+      "after": "$25/month",
+      "link": "https://lovable.dev/pricing",
+      "notes": "Source: lovable.dev/pricing.",
+      "brightloop_comparison": "Can't compare yet: Brightloop's own-pricing tab is not connected. Lovable now shows $25/month."
+    },
+    {
+      "id": "pricing-pr-402",
+      "source_ids": [
+        "pr-402"
+      ],
+      "confidence": 0.2,
+      "confidence_label": "unconfirmed: not seen on Bolt's own pricing page yet",
+      "action": "no action",
+      "why": "Can't compare yet: Brightloop's own-pricing tab is not connected. Bolt's current price is on its pricing page. Should we respond? No: the claim comes from a third party and Bolt's own page does not confirm it yet.",
+      "cta": "Check https://bolt.new/pricing before repeating this claim to leadership.",
+      "competitor": "Bolt",
+      "page": "pricing",
+      "what_changed": "Bolt is now free forever, no limits.",
+      "before": null,
+      "after": null,
+      "link": "https://bolt.new/pricing",
+      "notes": "Source is not Bolt's own page: sponsored post, ads.example.",
+      "brightloop_comparison": "Can't compare yet: Brightloop's own-pricing tab is not connected. Bolt's current price is on its pricing page."
+    }
+  ],
+  "skipped": [
+    {
+      "id": "ad-117",
+      "reason": "ad signal, outside Maya's job: she tracks competitor pricing and packaging, not ads"
+    },
+    {
+      "id": "ad-118",
+      "reason": "ad signal, outside Maya's job: she tracks competitor pricing and packaging, not ads"
+    },
+    {
+      "id": "sg-301",
+      "reason": "launch signal, outside Maya's job: she tracks competitor pricing and packaging, not product launches"
+    },
+    {
+      "id": "sg-302",
+      "reason": "launch signal, outside Maya's job: she tracks competitor pricing and packaging, not product launches"
+    },
+    {
+      "id": "sg-303",
+      "reason": "launch signal, outside Maya's job: she tracks competitor pricing and packaging, not product launches"
+    },
+    {
+      "id": "sg-304",
+      "reason": "launch signal, outside Maya's job: she tracks competitor pricing and packaging, not product launches"
+    }
+  ],
+  "run": {
+    "started_at": "2026-10-26T06:30:00.000Z",
+    "cost_usd": 0,
+    "errors": []
+  }
+}
