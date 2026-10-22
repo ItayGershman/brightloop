@@ -1,12 +1,12 @@
 import { checkItem, checkResult } from "./checks.ts";
-import { judge } from "./judge.ts";
+import { judge, RULES, type Rule } from "./judge.ts";
 import type { Item, Result, SkippedSignal, Source } from "./types.ts";
 
 /**
  * One run: judges every signal from the source, puts each input id in exactly one place,
  * and applies the in-run checks before anything is returned. Never throws on bad input.
  */
-export function run(source: Source, options: { startedAt?: Date } = {}): Result {
+export function run(source: Source, options: { startedAt?: Date; rules?: Rule[] } = {}): Result {
   const errors = [...source.errors];
   const items: Item[] = [];
   const skipped: SkippedSignal[] = [];
@@ -19,7 +19,7 @@ export function run(source: Source, options: { startedAt?: Date } = {}): Result 
     }
     inputIds.push(signal.id);
 
-    const judgement = judge(signal);
+    const judgement = judge(signal, options.rules ?? RULES);
     if (judgement.kind === "skipped") {
       skipped.push(judgement.skipped);
       continue;

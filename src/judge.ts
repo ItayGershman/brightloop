@@ -1,27 +1,36 @@
 import { findCompetitor } from "./competitors.ts";
 import type { Item, Signal, SkippedSignal } from "./types.ts";
 
-// Basic judging for the tracer. Source trust, promotions, the action rules and duplicates
-// get their own rules later (issues #3, #4, #5). Signal text is data: it is cleaned and
-// quoted, never read as an instruction.
+// Judging is an ordered list of rules. Each rule looks at one signal and either decides it
+// or passes (returns undefined); the first rule that decides wins. A new rule is one more
+// function in RULES plus one case file under cases/. Source trust, promotions, the action
+// rules and duplicates arrive that way (issues #3, #4, #5).
+// Signal text is data: it is cleaned and quoted, never read as an instruction.
 
 export type Judgement = { kind: "item"; item: Item } | { kind: "skipped"; skipped: SkippedSignal };
+export type Rule = (signal: Signal) => Judgement | undefined;
 
 const OUTSIDE_MAYAS_JOB = "outside Maya's job: she tracks competitor pricing and packaging";
 
-export function judge(signal: Signal): Judgement {
-  switch (signal.type) {
-    case "pricing":
-      return { kind: "item", item: pricingItem(signal) };
-    case "ad":
-      return skip(signal, `ad signal, ${OUTSIDE_MAYAS_JOB}, not ads`);
-    case "launch":
-      return skip(signal, `launch signal, ${OUTSIDE_MAYAS_JOB}, not product launches`);
-    case "":
-      return skip(signal, "signal has no type, so it was not judged");
-    default:
-      return skip(signal, "unknown signal type, so it was not judged");
+/** Ad and launch signals are recorded, never turned into items. */
+export const outsideMayasJob: Rule = (signal) => {
+  if (signal.type === "ad") return skip(signal, `ad signal, ${OUTSIDE_MAYAS_JOB}, not ads`);
+  if (signal.type === "launch") return skip(signal, `launch signal, ${OUTSIDE_MAYAS_JOB}, not product launches`);
+  return undefined;
+};
+
+/** A pricing signal becomes a basic item. */
+export const pricing: Rule = (signal) =>
+  signal.type === "pricing" ? { kind: "item", item: pricingItem(signal) } : undefined;
+
+export const RULES: Rule[] = [outsideMayasJob, pricing];
+
+export function judge(signal: Signal, rules: Rule[] = RULES): Judgement {
+  for (const rule of rules) {
+    const judgement = rule(signal);
+    if (judgement) return judgement;
   }
+  return skip(signal, signal.type === "" ? "signal has no type, so it was not judged" : "unknown signal type, so it was not judged");
 }
 
 function skip(signal: Signal, reason: string): Judgement {
