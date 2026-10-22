@@ -167,7 +167,10 @@ describe("AC6: one proof command, npm test, runs the typecheck, the repo check a
   }
 
   function proofIn(root: string) {
-    return spawnSync("npm", ["test"], { cwd: root, encoding: "utf8", env: { ...process.env, [NESTED]: "1" } });
+    // NODE_TEST_CONTEXT is set by the test runner running this file; inherited, it makes the
+    // nested runner report to us as a child and exit 0 whatever happens (Node 20 and later).
+    const { NODE_TEST_CONTEXT: _context, ...env } = process.env;
+    return spawnSync("npm", ["test"], { cwd: root, encoding: "utf8", env: { ...env, [NESTED]: "1" } });
   }
 
   const plants: [string, string, string][] = [
