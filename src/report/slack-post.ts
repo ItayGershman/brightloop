@@ -1,4 +1,4 @@
-import { detailsUrl } from "../config/delivery.ts";
+import { AUDIENCE } from "../config/audience.ts";
 import type { Result, SlackDelivery } from "../domain/types.ts";
 import { slackLine } from "./slack-line.ts";
 
@@ -14,6 +14,7 @@ export interface SlackPoster {
 export class SlackPostError extends Error {}
 
 const TIMEOUT_MS = 10_000;
+const NO_ANSWER = "no answer from Slack";
 
 /** Posts to a Slack incoming webhook. `fetchImpl` is the test seam. */
 export function webhookPoster(webhook: string, fetchImpl: typeof fetch = fetch): SlackPoster {
@@ -28,35 +29,47 @@ export function webhookPoster(webhook: string, fetchImpl: typeof fetch = fetch):
           signal: AbortSignal.timeout(TIMEOUT_MS),
         });
       } catch {
-        throw new SlackPostError("no answer from Slack");
+        throw new SlackPostError(NO_ANSWER);
       }
       if (!answer.ok) throw new SlackPostError(`Slack answered ${answer.status}`);
     },
   };
 }
 
+/** The link the Slack line points at: DETAILS_URL when it is an https link, else the audience's sheet. */
+export function detailsUrl(env: Record<string, string | undefined>): string {
+  const wanted = env.DETAILS_URL?.trim();
+  try {
+    return wanted && new URL(wanted).protocol === "https:" ? wanted : AUDIENCE.sheetUrl;
+  } catch {
+    return AUDIENCE.sheetUrl;
+  }
+}
+
 /**
- * Renders the line, posts it when SLACK_WEBHOOK_URL is set, and returns a copy of the result
- * with the line and what happened to it in `slack`. Without the key no poster is made, so no
- * network call can happen. A failed post is a run error, never a crash.
+ * Renders the line and returns a copy of the result with the line and what happened to it in
+ * `slack`. Only a live run (`post`) with SLACK_WEBHOOK_URL set posts; otherwise no poster is
+ * made, so no network call can happen, and a cases file or a replay never reaches the channel.
+ * A failed post is a run error, never a crash.
  */
 export async function deliverSlackLine(
   result: Result,
-  options: { env: Record<string, string | undefined>; makePoster?: (webhook: string) => SlackPoster },
-): Promise<Result> {
+  options: { env: Record<string, string | undefined>; post: boolean; makePoster?: (webhook: string) => SlackPoster },
+): Promise<Result & { slack: SlackDelivery }> {
   const line = slackLine(result, detailsUrl(options.env));
   const webhook = options.env.SLACK_WEBHOOK_URL?.trim();
+  if (!options.post) return withSlack(result, { line, status: "not posted: only a live run posts" });
   if (!webhook) return withSlack(result, { line, status: "not posted: no SLACK_WEBHOOK_URL" });
   try {
     await (options.makePoster ?? webhookPoster)(webhook).post(line);
     return withSlack(result, { line, status: "posted" });
   } catch (error) {
-    const reason = error instanceof SlackPostError ? error.message : "no answer from Slack";
+    const reason = error instanceof SlackPostError ? error.message : NO_ANSWER;
     return withSlack(result, { line, status: "not posted: the post failed" }, `Slack post failed: ${reason}`);
   }
 }
 
-function withSlack(result: Result, slack: SlackDelivery, error?: string): Result {
+function withSlack(result: Result, slack: SlackDelivery, error?: string): Result & { slack: SlackDelivery } {
   return { ...result, run: { ...result.run, errors: error ? [...result.run.errors, error] : result.run.errors }, slack };
 }
 

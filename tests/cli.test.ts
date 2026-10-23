@@ -31,12 +31,12 @@ test("an input file that does not exist still writes a result, with the problem 
   assert.match(run.stdout, /0 items, 0 skipped, 1 errors/);
 });
 
-test("with no Slack key, the Slack line is still written with the result and nothing is posted", () => {
+test("a cases-file run writes the Slack line with the result and posts nothing", () => {
   const output = join(mkdtempSync(join(tmpdir(), "brightloop-")), "result.json");
   const run = cli(["--input", "cases/brief-example/input.json", "--output", output]);
   assert.equal(run.status, 0, run.stderr);
   const result = JSON.parse(readFileSync(output, "utf8"));
-  assert.equal(result.slack.status, "not posted: no SLACK_WEBHOOK_URL");
+  assert.equal(result.slack.status, "not posted: only a live run posts");
   assert.match(result.slack.line, /^pricing watch for 11:00: one pricing change flagged \(Lovable\)/);
-  assert.match(run.stdout, /Slack line not posted: no SLACK_WEBHOOK_URL/);
+  assert.match(run.stdout, /Slack line not posted: only a live run posts/);
 });

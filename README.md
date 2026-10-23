@@ -36,13 +36,13 @@ Every run, from any command, renders one line for leadership in Maya's own style
 
 | Run | Line |
 |---|---|
-| Nothing moved | `pricing watch for 11:00: nothing moved since last week. details: <link>` |
+| Nothing moved | `pricing watch for 11:00: nothing moved since the last check. details: <link>` |
 | One change to respond to | `pricing watch for 11:00: one pricing change flagged (Lovable), it needs a response now. details: <link>` |
 | Several, none to respond to | `pricing watch for 11:00: 3 pricing changes flagged (Replit, Bolt and Lovable), 2 still unconfirmed, no response needed yet. details: <link>` |
 | First run | `pricing watch for 11:00: first look recorded for Lovable, Replit and Bolt, nothing to compare yet. details: <link>` |
-| A page not read | `pricing watch for 11:00: no change found in what was read, but one problem stopped part of the run, so this is not the all-clear. details: <link>` |
+| A page not read, or an item held back by the in-run checks | `pricing watch for 11:00: nothing to report, but the run hit one problem, so this is not the all-clear. details: <link>` |
 
-The line is built from counts, actions and registered competitor names only: no quoted text, no confidence score, no price. The link is `DETAILS_URL` when it is set to an https link, otherwise Maya's sheet. With `SLACK_WEBHOOK_URL` set the line is posted to the channel the webhook belongs to; without it no poster is made and no network call happens. A failed post is added to `run.errors` with the reason ("Slack answered 404", "no answer from Slack"), never the webhook, and never stops the run.
+The line is built from counts, actions and registered competitor names only: no quoted text, no confidence score, no price. The link is `DETAILS_URL` when it is set to an https link, otherwise Maya's sheet (`AUDIENCE.sheetUrl`). Only a live run (`--live`) with `SLACK_WEBHOOK_URL` set posts the line, to the channel the webhook belongs to, after `result.json` is first written; a cases file or a replay never posts, and without the key no poster is made and no network call happens. A failed post is added to `run.errors` with the reason ("Slack answered 404", "no answer from Slack"), never the webhook, and never stops the run.
 
 ## Proof
 
@@ -62,11 +62,11 @@ Typechecks, runs the repo check for the brief's hidden markers, then the case su
 | `src/capture/` | The live capture: Chrome opens each watched page and keeps its visible text; snapshots are stored and read back from `snapshots/`. `capture/index.ts` (`captureLiveInput`, `replayInput`) is the only import point |
 | `src/judging/` | The rule engine (`runRules`), the rules (`RULES`), the source trust levels (`source-trust.ts`), reading a source as a URL (`source-url.ts`), the pricing item builder and the baseline rule; for a pricing item, its promotion markers (`promotion.ts`), the plan it is on (`plan.ts`), the action (`advice.ts`) and the Brightloop comparison (`comparison.ts`) |
 | `src/checks/` | The in-run checks; `checks/index.ts` is the only import point |
-| `src/config/` | The audience, the competitor registry, the known press outlets and where the Slack line links (`delivery.ts`) |
+| `src/config/` | The audience (including the sheet the Slack line links to), the competitor registry and the known press outlets |
 | `src/text/` | Reading outside text: named patterns, quoting, price change, the plans on a pricing page, the brief's markers |
 | `src/domain/` | The shared types: `Signal`, `RunInput`, `Snapshot`, `Tier`, `Item`, `SkippedSignal`, `Result` |
 | `src/schedule/` | The scheduled run: the 08:xx Jerusalem time gate and the run log |
-| `src/report/` | The Slack line: `slackLine` renders it from a result, `deliverSlackLine` posts it when `SLACK_WEBHOOK_URL` is set; `report/index.ts` is the only import point |
+| `src/report/` | The Slack line: `slackLine` renders it from a result, `deliverSlackLine` posts it for a live run with `SLACK_WEBHOOK_URL` set, `detailsUrl` picks the link; `report/index.ts` is the only import point |
 | `runs/` | Written by the scheduled and manual runs: the latest `result.json` and `run-log.jsonl`, one line per run |
 | `snapshots/` | The committed snapshots, one file per page per live run. Real data, replayed by the tests with no browser |
 
@@ -96,4 +96,4 @@ And one field next to the wrapper:
 
 | Field | Meaning |
 |---|---|
-| `slack` | `{ line, status }`: the run's one Slack line (above) and what happened to it: `posted`, `not posted: no SLACK_WEBHOOK_URL` or `not posted: the post failed`. The run log (`runs/run-log.jsonl`) copies both as `slack_line` and `slack_status`, so the run history and the live page show the line as posted |
+| `slack` | `{ line, status }`: the run's one Slack line (above) and what happened to it: `posted`, `not posted: only a live run posts`, `not posted: no SLACK_WEBHOOK_URL` or `not posted: the post failed`. The run log (`runs/run-log.jsonl`) copies both as `slack_line` and `slack_status`, so the run history and the live page show the line as posted |

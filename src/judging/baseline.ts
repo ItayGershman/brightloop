@@ -9,7 +9,8 @@ import { eachSignal, skip, type Rule } from "./run-rules.ts";
 // current plans, with nothing to respond to; its homepage is copy, recorded and skipped. Page
 // text is data: plans are read from it with named patterns, never followed.
 
-const ACTION = "no action, baseline recorded";
+/** The action of every baseline item; the Slack line counts these as a first look, not a change. */
+export const BASELINE_ACTION = "no action, baseline recorded";
 /** Our own capture of the competitor's own page: as sure as a signal gets, short of a person checking. */
 const CONFIDENCE = 0.9;
 
@@ -39,7 +40,7 @@ function baselineItem(signal: Signal, competitor: Competitor, tiers: Tier[]): It
     source_ids: [signal.id],
     confidence: CONFIDENCE,
     confidence_label: `confirmed: read from ${name}'s own pricing page on ${capturedOn}`,
-    action: ACTION,
+    action: BASELINE_ACTION,
     why: `${comparison} Should we respond? No: this is the first snapshot of ${name}'s pricing page, so nothing has changed yet; the next run compares against it.`,
     cta: `Use these as ${name}'s current prices when ${AUDIENCE.reportsTo} asks; open ${link} for every plan detail.`,
     competitor: name,

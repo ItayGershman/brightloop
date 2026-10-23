@@ -209,7 +209,7 @@ describe("AC7: a fresh clone with no keys runs the proof green", () => {
     const expected = JSON.parse(readFileSync("cases/brief-example/expected.json", "utf8"));
     const { slack, ...wrapper } = result;
     assert.deepEqual({ ...wrapper, run: { ...wrapper.run, started_at: "" } }, { ...expected, run: { ...expected.run, started_at: "" } });
-    // With no key, the Slack line is still written and nothing is posted.
-    assert.equal(slack.status, "not posted: no SLACK_WEBHOOK_URL");
+    // The Slack line is still written, and a cases-file run never posts.
+    assert.equal(slack.status, "not posted: only a live run posts");
   });
 });

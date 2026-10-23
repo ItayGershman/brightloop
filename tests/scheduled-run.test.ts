@@ -121,7 +121,7 @@ describe("the run log", () => {
 
   test("keeps the run's Slack line and whether it was posted", () => {
     const space = workspace();
-    const slack = { line: "pricing watch for 11:00: nothing moved since last week. details: https://x.test/", status: "posted" };
+    const slack = { line: "pricing watch for 11:00: nothing moved since the last check. details: https://x.test/", status: "posted" };
     writeFileSync(space.result, JSON.stringify({ built_for: "maya", items: [], skipped: [], run: { started_at: "x", cost_usd: 0, errors: [] }, slack }));
     const entry = space.entry();
     assert.equal(entry.slack_line, slack.line);

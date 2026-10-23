@@ -77,7 +77,7 @@ jobs:
         env:
           HEADLESS: ${{ inputs.headless && '--headless' || '' }}
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-          # Where the Slack line links; empty means Maya's sheet. Set to the live page once it exists.
+          # Where the Slack line links; empty means the audience's sheet. Set to the live page once it exists.
           DETAILS_URL: ${{ vars.DETAILS_URL }}
         # The last run's committed result goes first, so a crash cannot pass it off as this run's.
         run: |

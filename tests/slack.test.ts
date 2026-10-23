@@ -1,9 +1,12 @@
 import assert from "node:assert/strict";
 import { describe, test } from "node:test";
-import { SHEET_URL, detailsUrl } from "../src/config/delivery.ts";
+import { AUDIENCE } from "../src/config/audience.ts";
 import type { Item, Result } from "../src/domain/types.ts";
-import { deliverSlackLine, slackLine, webhookPoster, type SlackPoster } from "../src/report/index.ts";
-import { briefExample, runCases, STARTED_AT } from "./helpers.ts";
+import { eachSignal } from "../src/judging/run-rules.ts";
+import { deliverSlackLine, detailsUrl, slackLine, webhookPoster, type SlackPoster } from "../src/report/index.ts";
+import { briefExample, pricingSignal, runCases, STARTED_AT } from "./helpers.ts";
+
+const SHEET_URL = AUDIENCE.sheetUrl;
 
 const URL = "https://example.com/details";
 
@@ -36,7 +39,7 @@ const BASELINE = "no action, baseline recorded";
 
 describe("the Slack line", () => {
   test("nothing moved: says so, with the link", () => {
-    assert.equal(slackLine(result(), URL), `pricing watch for 11:00: nothing moved since last week. details: ${URL}`);
+    assert.equal(slackLine(result(), URL), `pricing watch for 11:00: nothing moved since the last check. details: ${URL}`);
   });
 
   test("one change to respond to now", () => {
@@ -90,9 +93,20 @@ describe("the Slack line", () => {
     const line = slackLine(result([], ["Replit pricing page: the site answered 403, so it was not captured"]), URL);
     assert.equal(
       line,
-      `pricing watch for 11:00: no change found in what was read, but one problem stopped part of the run, so this is not the all-clear. details: ${URL}`,
+      `pricing watch for 11:00: nothing to report, but the run hit one problem, so this is not the all-clear. details: ${URL}`,
     );
     assert.doesNotMatch(line, /nothing moved/);
+  });
+
+  test("an item held back by the in-run checks: never claims nothing moved, never claims no change", () => {
+    // A rule that turns the signal into an item with no link, which the in-run checks hold back.
+    const noLink = eachSignal((signal) => ({ kind: "item", item: item({ source_ids: [signal.id], link: "" }) }));
+    const judged = runCases({ signals: [pricingSignal({})] }, [noLink]);
+    assert.equal(judged.items.length, 0);
+    assert.ok(judged.run.errors.length > 0);
+    const line = slackLine(judged, URL);
+    assert.match(line, /^pricing watch for 11:00: nothing to report, but the run hit (one problem|\d+ problems), so this is not the all-clear\./);
+    assert.doesNotMatch(line, /nothing moved|no change/);
   });
 
   test("changes plus problems: both are said", () => {
@@ -138,7 +152,7 @@ describe("the details link", () => {
 });
 
 describe("delivering the line", () => {
-  const LINE = `pricing watch for 11:00: nothing moved since last week. details: ${SHEET_URL}`;
+  const LINE = `pricing watch for 11:00: nothing moved since the last check. details: ${SHEET_URL}`;
 
   function spyPoster(behaviour: () => Promise<void> = async () => {}) {
     const calls: { made: string[]; posted: string[] } = { made: [], posted: [] };
@@ -152,16 +166,23 @@ describe("delivering the line", () => {
   test("without SLACK_WEBHOOK_URL the poster is never made, and the line is still stored", async () => {
     for (const env of [{}, { SLACK_WEBHOOK_URL: "" }, { SLACK_WEBHOOK_URL: "   " }]) {
       const spy = spyPoster();
-      const delivered = await deliverSlackLine(result(), { env, makePoster: spy.makePoster });
+      const delivered = await deliverSlackLine(result(), { env, post: true, makePoster: spy.makePoster });
       assert.deepEqual(spy.calls.made, []);
       assert.deepEqual(delivered.slack, { line: LINE, status: "not posted: no SLACK_WEBHOOK_URL" });
       assert.deepEqual(delivered.run.errors, []);
     }
   });
 
+  test("a cases file or a replay never posts, even with SLACK_WEBHOOK_URL set", async () => {
+    const spy = spyPoster();
+    const delivered = await deliverSlackLine(result(), { env: { SLACK_WEBHOOK_URL: "https://hooks.example/abc" }, post: false, makePoster: spy.makePoster });
+    assert.deepEqual(spy.calls.made, []);
+    assert.deepEqual(delivered.slack, { line: LINE, status: "not posted: only a live run posts" });
+  });
+
   test("with SLACK_WEBHOOK_URL the line is posted once, as stored", async () => {
     const spy = spyPoster();
-    const delivered = await deliverSlackLine(result(), { env: { SLACK_WEBHOOK_URL: "https://hooks.example/abc" }, makePoster: spy.makePoster });
+    const delivered = await deliverSlackLine(result(), { env: { SLACK_WEBHOOK_URL: "https://hooks.example/abc" }, post: true, makePoster: spy.makePoster });
     assert.deepEqual(spy.calls.made, ["https://hooks.example/abc"]);
     assert.deepEqual(spy.calls.posted, [LINE]);
     assert.deepEqual(delivered.slack, { line: LINE, status: "posted" });
@@ -172,7 +193,7 @@ describe("delivering the line", () => {
     const spy = spyPoster(async () => {
       throw new Error(`request to ${webhook} failed`);
     });
-    const delivered = await deliverSlackLine(result(), { env: { SLACK_WEBHOOK_URL: webhook }, makePoster: spy.makePoster });
+    const delivered = await deliverSlackLine(result(), { env: { SLACK_WEBHOOK_URL: webhook }, post: true, makePoster: spy.makePoster });
     assert.deepEqual(delivered.slack, { line: LINE, status: "not posted: the post failed" });
     assert.deepEqual(delivered.run.errors, ["Slack post failed: no answer from Slack"]);
     assert.doesNotMatch(JSON.stringify(delivered), /secretpart/);
@@ -180,7 +201,7 @@ describe("delivering the line", () => {
 
   test("the input result is not changed", async () => {
     const original = result();
-    await deliverSlackLine(original, { env: {} });
+    await deliverSlackLine(original, { env: {}, post: true });
     assert.equal("slack" in original, false);
   });
 });
@@ -215,6 +236,7 @@ describe("the webhook poster", () => {
     const stub = stubFetch(async () => new Response("no_service", { status: 404 }));
     const delivered = await deliverSlackLine(result(), {
       env: { SLACK_WEBHOOK_URL: WEBHOOK },
+      post: true,
       makePoster: (webhook) => webhookPoster(webhook, stub.fetchImpl),
     });
     assert.deepEqual(delivered.run.errors, ["Slack post failed: Slack answered 404"]);
@@ -227,6 +249,7 @@ describe("the webhook poster", () => {
     });
     const delivered = await deliverSlackLine(result(), {
       env: { SLACK_WEBHOOK_URL: WEBHOOK },
+      post: true,
       makePoster: (webhook) => webhookPoster(webhook, stub.fetchImpl),
     });
     assert.deepEqual(delivered.run.errors, ["Slack post failed: no answer from Slack"]);

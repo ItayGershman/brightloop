@@ -120,7 +120,7 @@ export interface SkippedSignal {
 /** The run's one Slack line and what happened to it; written with every result from the command line. */
 export interface SlackDelivery {
   line: string;
-  status: "posted" | "not posted: no SLACK_WEBHOOK_URL" | "not posted: the post failed";
+  status: "posted" | "not posted: only a live run posts" | "not posted: no SLACK_WEBHOOK_URL" | "not posted: the post failed";
 }
 
 export interface Result {
