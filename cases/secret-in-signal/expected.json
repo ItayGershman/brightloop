@@ -1,0 +1,42 @@
+{
+  "built_for": "maya",
+  "items": [
+    {
+      "id": "pricing-sk-3",
+      "source_ids": [
+        "sk-3"
+      ],
+      "confidence": 0.9,
+      "confidence_label": "confirmed: seen on Replit's own pricing page",
+      "action": "watch 2 weeks",
+      "why": "Can't compare yet: Brightloop's own-pricing tab is not connected. Replit now shows $20/month. Should we respond? Not yet: watch whether the change holds on the next two Monday runs.",
+      "cta": "Open https://replit.com/pricing and check the Replit price before the 11:00 leadership meeting.",
+      "competitor": "Replit",
+      "page": "pricing",
+      "what_changed": "Core shown at $20/month (was $25).",
+      "before": "$25",
+      "after": "$20/month",
+      "link": "https://replit.com/pricing",
+      "notes": "Source: replit.com/pricing.",
+      "brightloop_comparison": "Can't compare yet: Brightloop's own-pricing tab is not connected. Replit now shows $20/month.",
+      "week": "2026-W43"
+    }
+  ],
+  "skipped": [
+    {
+      "id": "sk-1",
+      "reason": "held back by the in-run checks: contains a secret-like config value"
+    },
+    {
+      "id": "sk-2",
+      "reason": "pricing claim from a sponsored, anonymous or second-hand source, not reported: unconfirmed (confidence 0.2) and not seen on Bolt's own pricing page. Check https://bolt.new/pricing before repeating it to leadership."
+    }
+  ],
+  "run": {
+    "started_at": "2026-10-26T06:30:00.000Z",
+    "cost_usd": 0,
+    "errors": [
+      "item 1 held back: contains a secret-like config value"
+    ]
+  }
+}

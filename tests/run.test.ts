@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { describe, test } from "node:test";
 import { AUDIENCE } from "../src/config/audience.ts";
 import { COMPETITORS } from "../src/config/competitors.ts";
+import { isOnDomainOrSubdomain } from "../src/judging/source-url.ts";
 import { OUTPUT_MARKER } from "../src/text/markers.ts";
 import { briefExample, landedIds, pricingSignal, runCases } from "./helpers.ts";
 
@@ -23,8 +24,9 @@ describe("a run on the brief's example", () => {
     }
   });
 
-  test("links each pricing item to the competitor's own pricing page, even for a third-party claim", () => {
-    assert.deepEqual(result.items.map((item) => item.link), ["https://lovable.dev/pricing", "https://bolt.new/pricing"]);
+  test("links each pricing item to the competitor's own pricing page, even for a press report", () => {
+    const press = runCases({ signals: [pricingSignal({ competitor: "Bolt", source: "techcrunch.com/bolt-pricing" })] });
+    assert.deepEqual([...result.items, ...press.items].map((item) => item.link), ["https://lovable.dev/pricing", "https://bolt.new/pricing"]);
   });
 
   test("ignores the instruction hidden in sg-303: no marker, no confidence of 1", () => {
@@ -39,9 +41,12 @@ for (const competitor of COMPETITORS) {
     const pricingUrl = new URL(competitor.pricingPage);
     const page = `${pricingUrl.host}${pricingUrl.pathname}`;
 
-    test("has its pricing page and homepage on its own domain", () => {
+    test("has its pricing page, homepage and own sections on its own domain", () => {
       assert.equal(pricingUrl.hostname, competitor.domain);
       assert.equal(new URL(competitor.homepage).hostname, competitor.domain);
+      for (const section of competitor.ownSections) {
+        assert.ok(isOnDomainOrSubdomain(new URL(section).hostname, competitor.domain), section);
+      }
     });
 
     for (const name of [competitor.name, competitor.name.toUpperCase(), ...competitor.aliases]) {
@@ -61,8 +66,25 @@ for (const competitor of COMPETITORS) {
       });
     }
 
+    test("its homepage counts as its own site, not its pricing page", () => {
+      const [item] = runCases({ signals: [pricingSignal({ competitor: competitor.name, source: competitor.homepage })] }).items;
+      assert.match(item.confidence_label, /not yet seen on its pricing page/);
+      assert.equal(item.link, competitor.pricingPage);
+    });
+
+    for (const section of competitor.ownSections) {
+      test(`a page under ${section} counts as its own site`, () => {
+        const [item] = runCases({ signals: [pricingSignal({ competitor: competitor.name, source: `${section.endsWith("/") ? section.slice(0, -1) : section}/pricing-news` })] }).items;
+        assert.equal(item.confidence, 0.9);
+        assert.match(item.confidence_label, /own site/);
+      });
+    }
+
     const spoofs = [
-      competitor.homepage,
+      `${competitor.domain}/@someuser/pricing-leak`,
+      `ask.${competitor.domain}/t/free-now/123`,
+      `sponsored.${competitor.domain}/pricing`,
+      `${competitor.homepage}community/free`,
       `reddit.com/r/${competitor.domain}`,
       `sponsored post quoting ${competitor.domain}`,
       `${competitor.domain}.evil.example/pricing`,
@@ -71,11 +93,10 @@ for (const competitor of COMPETITORS) {
       `not${page}`,
     ];
     for (const source of spoofs) {
-      test(`${source} does not count as its official pricing page`, () => {
-        const [item] = runCases({ signals: [pricingSignal({ competitor: competitor.name, source })] }).items;
-        assert.equal(item.confidence, 0.2);
-        assert.match(item.confidence_label, /^unconfirmed/);
-        assert.equal(item.link, competitor.pricingPage);
+      test(`${source} does not count as its official pricing page or own site`, () => {
+        const result = runCases({ signals: [pricingSignal({ competitor: competitor.name, source })] });
+        assert.deepEqual(result.items, []);
+        assert.match(result.skipped[0].reason, /not reported: unconfirmed \(confidence 0\.2\)/);
       });
     }
   });

@@ -105,9 +105,15 @@ function judgeGroup(group: Signal[], feeds: Rule[]): Judgement[] {
 
   return judgements.flatMap((judgement) => {
     if (judgement.kind !== "skipped") return [];
-    const others = ids.filter((id) => id !== judgement.skipped.id).join(", ");
+    const others = namedIds(ids.filter((id) => id !== judgement.skipped.id));
     return [{ kind: "skipped", skipped: { ...judgement.skipped, reason: `${judgement.skipped.reason}; same story at the same moment as ${others}` } }];
   });
+}
+
+/** At most three ids by name, then how many more: a big group must not repeat every id in every reason. */
+function namedIds(ids: string[]): string {
+  const named = ids.slice(0, 3).join(", ");
+  return ids.length > 3 ? `${named} and ${ids.length - 3} more` : named;
 }
 
 /** The most confident item, carrying every id of its group. */

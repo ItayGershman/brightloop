@@ -12,6 +12,9 @@ import { briefExample, landedIds, pricingSignal, runCases } from "./helpers.ts";
 
 const JERUSALEM = { week: "2026-W43", timezone: "Asia/Jerusalem" };
 
+/** A known press source: its pricing claims are items (source trust, #3), so merges show. */
+const PRESS = "https://techcrunch.com/lovable-pricing";
+
 /** Whether a result passes the wrapper and id checks, for the given input text. */
 function validWrapper(result: Result, inputIds: string[]): string[] {
   return checkResult(result, { inputIds, bannedWords: [], secrets: [] });
@@ -40,7 +43,7 @@ describe("AC1: the sg-301 / sg-302 pair is one event, and each id lands exactly 
 
   test("two pricing signals on one change at the same UTC moment become one item with both ids", () => {
     const signals = [
-      pricingSignal({ id: "pr-1", source: "press.example", ts: "2026-10-23 08:00 UTC" }),
+      pricingSignal({ id: "pr-1", source: PRESS, ts: "2026-10-23 08:00 UTC" }),
       pricingSignal({ id: "pr-2", source: "lovable.dev/pricing", ts: "2026-10-23T11:00:00+03:00" }),
     ];
     const result = runCases({ ...JERUSALEM, signals });
@@ -52,7 +55,7 @@ describe("AC1: the sg-301 / sg-302 pair is one event, and each id lands exactly 
 
   test("a ts with no zone is read in the input's time zone before comparing", () => {
     const signals = [
-      pricingSignal({ id: "pr-1", source: "press.example", ts: "2026-10-24 23:30" }),
+      pricingSignal({ id: "pr-1", source: PRESS, ts: "2026-10-24 23:30" }),
       pricingSignal({ id: "pr-2", source: "lovable.dev/pricing", ts: "2026-10-24T20:30:00Z" }),
     ];
     assert.deepEqual(runCases({ ...JERUSALEM, signals }).items.map((item) => item.source_ids), [["pr-1", "pr-2"]]);
@@ -60,7 +63,7 @@ describe("AC1: the sg-301 / sg-302 pair is one event, and each id lands exactly 
 
   test("the hour repeated when clocks go back is read as its first occurrence", () => {
     const signals = [
-      pricingSignal({ id: "pr-1", source: "press.example", ts: "2026-10-25 01:30" }),
+      pricingSignal({ id: "pr-1", source: PRESS, ts: "2026-10-25 01:30" }),
       pricingSignal({ id: "pr-2", source: "lovable.dev/pricing", ts: "2026-10-24T22:30:00Z" }),
     ];
     assert.deepEqual(runCases({ ...JERUSALEM, signals }).items.map((item) => item.source_ids), [["pr-1", "pr-2"]]);
@@ -68,7 +71,7 @@ describe("AC1: the sg-301 / sg-302 pair is one event, and each id lands exactly 
 
   test("the hour after clocks go back (02:30 local on 25 October) happens once, at UTC+2", () => {
     const signals = [
-      pricingSignal({ id: "pr-1", source: "press.example", ts: "2026-10-25 02:30" }),
+      pricingSignal({ id: "pr-1", source: PRESS, ts: "2026-10-25 02:30" }),
       pricingSignal({ id: "pr-2", source: "lovable.dev/pricing", ts: "2026-10-25T00:30:00Z" }),
     ];
     assert.deepEqual(runCases({ ...JERUSALEM, signals }).items.map((item) => item.source_ids), [["pr-1", "pr-2"]]);
@@ -76,7 +79,7 @@ describe("AC1: the sg-301 / sg-302 pair is one event, and each id lands exactly 
 
   test("the hour skipped when clocks go forward (02:30 local on 27 March) is read at the offset before, UTC+2", () => {
     const signals = [
-      pricingSignal({ id: "pr-1", source: "press.example", ts: "2026-03-27 02:30" }),
+      pricingSignal({ id: "pr-1", source: PRESS, ts: "2026-03-27 02:30" }),
       pricingSignal({ id: "pr-2", source: "lovable.dev/pricing", ts: "2026-03-27T00:30:00Z" }),
     ];
     assert.deepEqual(runCases({ ...JERUSALEM, signals }).items.map((item) => item.source_ids), [["pr-1", "pr-2"]]);
@@ -84,7 +87,7 @@ describe("AC1: the sg-301 / sg-302 pair is one event, and each id lands exactly 
 
   test("a pricing signal that states no new price is never merged, so its change is not lost", () => {
     const signals = [
-      pricingSignal({ id: "pr-1", source: "press.example", text: "Pro plan shown at $25/month (was $20 last week)." }),
+      pricingSignal({ id: "pr-1", source: PRESS, text: "Pro plan shown at $25/month (was $20 last week)." }),
       pricingSignal({ id: "pr-2", text: "The free plan now includes 5 daily credits instead of 10." }),
     ];
     const result = runCases({ ...JERUSALEM, signals });
@@ -94,7 +97,7 @@ describe("AC1: the sg-301 / sg-302 pair is one event, and each id lands exactly 
 
   test("two plans changing to the same price are two changes", () => {
     const signals = [
-      pricingSignal({ id: "pr-1", source: "press.example", text: "Pro $25/month (was $20)." }),
+      pricingSignal({ id: "pr-1", source: PRESS, text: "Pro $25/month (was $20)." }),
       pricingSignal({ id: "pr-2", text: "Teams $25/month (was $30)." }),
     ];
     assert.deepEqual(runCases({ ...JERUSALEM, signals }).items.map((item) => item.source_ids), [["pr-1"], ["pr-2"]]);
@@ -103,12 +106,12 @@ describe("AC1: the sg-301 / sg-302 pair is one event, and each id lands exactly 
   test("an official signal with no price never joins an unbacked claim, whatever the order", () => {
     const signals = [
       pricingSignal({ id: "pr-1", source: "blog.example", text: "Pro plan is $30/month (was $20)." }),
-      pricingSignal({ id: "pr-2", source: "press.example", text: "Pro plan is $25/month (was $20)." }),
+      pricingSignal({ id: "pr-2", source: PRESS, text: "Pro plan is $25/month (was $20)." }),
       pricingSignal({ id: "pr-3", text: "Pro plan updated." }),
     ];
     const result = runCases({ ...JERUSALEM, signals });
-    assert.deepEqual(result.items.map((item) => item.source_ids), [["pr-1"], ["pr-2"], ["pr-3"]]);
-    assert.deepEqual(result.items.map((item) => item.confidence), [0.2, 0.2, 0.9]);
+    assert.deepEqual(result.items.map((item) => [item.source_ids, item.confidence]), [[["pr-2"], 0.7], [["pr-3"], 0.9]]);
+    assert.deepEqual(result.skipped.map((entry) => entry.id), ["pr-1"], "the unbacked claim is skipped on its own");
   });
 
   test("two launches with no competitor are never merged", () => {
@@ -119,7 +122,7 @@ describe("AC1: the sg-301 / sg-302 pair is one event, and each id lands exactly 
 
   test("5,000 signals at one moment are grouped in under 3 seconds", () => {
     const signals = Array.from({ length: 5000 }, (_, index) =>
-      pricingSignal({ id: `pr-${index}`, source: `press-${index % 50}.example`, ts: "2026-10-23T08:00:00Z" }),
+      pricingSignal({ id: `pr-${index}`, source: `${PRESS}-${index % 50}`, ts: "2026-10-23T08:00:00Z" }),
     );
     const started = performance.now();
     const result = runCases({ ...JERUSALEM, signals });
@@ -137,7 +140,7 @@ describe("AC1: the sg-301 / sg-302 pair is one event, and each id lands exactly 
 
   test("a claim stating only the new price merges with the official change to that price", () => {
     const signals = [
-      pricingSignal({ id: "pr-1", source: "press.example", text: "Lovable Pro is now $25/month." }),
+      pricingSignal({ id: "pr-1", source: PRESS, text: "Lovable Pro is now $25/month." }),
       pricingSignal({ id: "pr-2" }),
     ];
     const result = runCases({ ...JERUSALEM, signals });
@@ -150,15 +153,23 @@ describe("AC1: the sg-301 / sg-302 pair is one event, and each id lands exactly 
     assert.ok(result.skipped.every((entry) => !entry.reason.includes("same story")));
   });
 
+  test("a big group of skipped duplicates names three of the others, then how many more", () => {
+    const launches = Array.from({ length: 6 }, (_, index) => ({
+      id: `la-${index}`, type: "launch", competitor: "Bolt", source: `site-${index}.example`, ts: "2026-10-23T08:00:00Z",
+    }));
+    const [first] = runCases({ ...JERUSALEM, signals: launches }).skipped;
+    assert.match(first.reason, /same story at the same moment as la-1, la-2, la-3 and 2 more$/);
+  });
+
   const notDuplicates: [string, Record<string, unknown>][] = [
     ["a minute apart", { ts: "2026-10-23T08:01:00Z" }],
     ["about another competitor", { competitor: "Bolt", source: "bolt.new/pricing" }],
-    ["from the same source (two tiers changed at once)", { source: "press.example", text: "Teams $55/month (was $50)." }],
+    ["from the same source (two tiers changed at once)", { source: PRESS, text: "Teams $55/month (was $50)." }],
     ["stating a different new price", { text: "Pro plan shown at $30/month (was $20 last week)." }],
   ];
   for (const [what, change] of notDuplicates) {
     test(`a second signal ${what} stays its own item`, () => {
-      const signals = [pricingSignal({ id: "pr-1", source: "press.example" }), pricingSignal({ id: "pr-2", ...change })];
+      const signals = [pricingSignal({ id: "pr-1", source: PRESS }), pricingSignal({ id: "pr-2", ...change })];
       assert.deepEqual(runCases({ ...JERUSALEM, signals }).items.map((item) => item.source_ids), [["pr-1"], ["pr-2"]]);
     });
   }
@@ -253,7 +264,7 @@ describe("AC4: malformed input yields a valid wrapper with the problem in run.er
   }
 
   test("an unreadable ts is never merged as a duplicate", () => {
-    const signals = [pricingSignal({ id: "pr-1", source: "press.example", ts: "soon" }), pricingSignal({ id: "pr-2", ts: "soon" })];
+    const signals = [pricingSignal({ id: "pr-1", source: PRESS, ts: "soon" }), pricingSignal({ id: "pr-2", ts: "soon" })];
     assert.deepEqual(runCases({ ...JERUSALEM, signals }).items.map((item) => item.source_ids), [["pr-1"], ["pr-2"]]);
   });
 });
