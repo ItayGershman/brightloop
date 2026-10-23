@@ -50,7 +50,30 @@ describe("AC1: the sg-301 / sg-302 pair is one event, and each id lands exactly 
     assert.equal(result.items.length, 1);
     assert.deepEqual(result.items[0].source_ids, ["pr-1", "pr-2"]);
     assert.equal(result.items[0].confidence, 0.9, "the merged item keeps the most trusted source");
-    assert.match(result.items[0].notes, /Also reported by 1 other signal at the same moment\.$/);
+    assert.match(result.items[0].notes, /Also reported by pr-1 at the same moment, for the same plan and price; the confidence is that of this source\.$/);
+  });
+
+  test("a sponsored claim matching the official page joins its item; one that does not is skipped on its own", () => {
+    const sponsored = "sponsored post, ads.example";
+    const signals = [
+      pricingSignal({ id: "pr-1", source: sponsored, text: "Lovable Pro is now $25/month (was $20)." }),
+      pricingSignal({ id: "pr-2" }),
+      pricingSignal({ id: "pr-3", source: sponsored, text: "Lovable Pro is now $10/month (was $20)." }),
+    ];
+    const result = runCases({ ...JERUSALEM, signals });
+    assert.deepEqual(result.items.map((item) => [item.source_ids, item.confidence]), [[["pr-1", "pr-2"], 0.9]]);
+    assert.match(result.items[0].confidence_label, /^confirmed: seen on Lovable's own pricing page/);
+    assert.deepEqual(result.skipped.map((entry) => entry.id), ["pr-3"]);
+  });
+
+  test("two weak copies of one claim are skipped together, never lifted to an item", () => {
+    const signals = [
+      pricingSignal({ id: "pr-1", source: "newsletter.example, forwarded" }),
+      pricingSignal({ id: "pr-2", source: "anonymous post, reddit.com/r/lovable" }),
+    ];
+    const result = runCases({ ...JERUSALEM, signals });
+    assert.deepEqual(result.items, []);
+    assert.match(result.skipped[0].reason, /not reported: unconfirmed \(confidence 0\.2\).*; same story at the same moment as pr-2$/);
   });
 
   test("a ts with no zone is read in the input's time zone before comparing", () => {
@@ -274,6 +297,7 @@ describe("AC5: each rule has its own case in the case suite", () => {
   // input and check that the output shows the rule the case is for.
   const runCase = (name: string): Result => runCases(readFileSync(`cases/${name}/input.json`, "utf8"));
   const cases: [string, (result: Result) => boolean][] = [
+    ["duplicates-trust", (r) => r.items.some((item) => item.source_ids.length > 1 && item.confidence === 0.9) && r.items.every((item) => item.confidence >= 0.7)],
     ["duplicates", (r) => r.items.some((item) => item.source_ids.length > 1) && r.skipped.some((s) => s.reason.includes("same story"))],
     ["week-boundary", (r) => r.items.some((item) => item.week === "2026-W43") && r.items.some((item) => item.week === "2026-W44")],
     ["empty-input", (r) => r.items.length === 0 && r.run.errors.length === 0],

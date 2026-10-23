@@ -107,7 +107,8 @@ function judgeGroup(group: Signal[], feeds: Rule[]): Judgement[] {
   return judgements.flatMap((judgement) => {
     if (judgement.kind !== "skipped") return [];
     const others = namedIds(ids.filter((id) => id !== judgement.skipped.id));
-    return [{ kind: "skipped", skipped: { ...judgement.skipped, reason: `${judgement.skipped.reason}; same story at the same moment as ${others}` } }];
+    const reason = judgement.skipped.reason.endsWith(".") ? judgement.skipped.reason.slice(0, -1) : judgement.skipped.reason;
+    return [{ kind: "skipped", skipped: { ...judgement.skipped, reason: `${reason}; same story at the same moment as ${others}` } }];
   });
 }
 
@@ -119,8 +120,10 @@ function namedIds(ids: string[]): string {
 
 /** The most confident item, carrying every id of its group. */
 function mergedItem(items: Item[], ids: string[]): Item {
+  // Confidence is never lowered by a weaker copy, and a weaker copy adds nothing but its id:
+  // it joins only an item for the same plan and price at the same moment.
   const best = items.reduce((kept, item) => (item.confidence > kept.confidence ? item : kept));
-  const others = ids.length - 1;
-  const alsoReported = `Also reported by ${others} other signal${others === 1 ? "" : "s"} at the same moment.`;
+  const others = ids.filter((id) => !best.source_ids.includes(id));
+  const alsoReported = `Also reported by ${namedIds(others)} at the same moment, for the same plan and price; the confidence is that of this source.`;
   return { ...best, source_ids: ids, notes: `${best.notes} ${alsoReported}` };
 }
