@@ -6,6 +6,8 @@ name: scheduled-run
 # The run captures public pages and commits what it found. With the Sheet secret and
 # variable set, the live step also reads the own-pricing tab and appends the rows to Maya's
 # Sheet; without them it writes the CSV only. They are given to that one step, nothing else.
+# With the Slack secret set, the live step also posts the run's one line to #leadership;
+# without it the line is only stored with the result.
 
 on:
   schedule:
@@ -79,6 +81,9 @@ jobs:
           HEADLESS: ${{ inputs.headless && '--headless' || '' }}
           GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
           SHEET_ID: ${{ vars.SHEET_ID }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          # Where the Slack line links; empty means the audience's sheet. Set to the live page once it exists.
+          DETAILS_URL: ${{ vars.DETAILS_URL }}
         # The last run's committed result goes first, so a crash cannot pass it off as this run's.
         run: |
           rm -f runs/result.json runs/result.csv

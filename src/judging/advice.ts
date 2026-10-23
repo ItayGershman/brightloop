@@ -8,6 +8,9 @@ import { planName } from "./plan.ts";
 // Only the competitor's own pricing page row of TRUST_LEVELS (source-trust.ts) asks for this
 // advice; every other reportable level gives its own "watch" until the page shows the change.
 
+/** The action for a change that needs a response before the meeting. */
+export const RESPOND_NOW = "respond now";
+
 export interface Advice {
   action: string;
   shouldWeRespond: string;
@@ -47,12 +50,12 @@ export function advise({ competitor, link, promotion, plan: changed, reading }: 
   switch (changed.place) {
     case "lowestPaid":
       return {
-        action: "respond now",
+        action: RESPOND_NOW,
         shouldWeRespond: `Yes, respond now: ${changed.name} is ${competitor}'s lowest paid tier, the one most of our trials compare against.`,
       };
     case "free":
       return {
-        action: "respond now",
+        action: RESPOND_NOW,
         shouldWeRespond: `Yes, respond now: it changes what ${plan} includes, and trials upgrade from the free plan.`,
       };
     case "higher":

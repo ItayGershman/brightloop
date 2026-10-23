@@ -2,7 +2,7 @@ import { appendFileSync, existsSync, mkdirSync, readFileSync } from "node:fs";
 import { dirname } from "node:path";
 import { storedSnapshots } from "../capture/index.ts";
 import { watchedPages } from "../config/competitors.ts";
-import type { WatchedPage } from "../domain/types.ts";
+import type { SlackDelivery, WatchedPage } from "../domain/types.ts";
 
 // The run log: one JSON line per workflow run, committed in the repo (runs/run-log.jsonl),
 // so the history of every scheduled and manual run sits next to the snapshots it produced.
@@ -18,6 +18,10 @@ export interface RunLogEntry {
   cost_usd: number | null;
   /** The run's errors from result.json, plus any problem reading it. */
   errors: string[];
+  /** The run's one Slack line from result.json; null when the run wrote none. */
+  slack_line: string | null;
+  /** Whether that line was posted ("posted", or why not); null when the run wrote none. */
+  slack_status: SlackDelivery["status"] | null;
 }
 
 /** The log line for one run, from its start time, its result.json and the snapshots folder. */
@@ -33,8 +37,7 @@ export function runLogEntry(options: {
     started_at: options.startedAt.toISOString(),
     pages_fetched: pagesFetched(options.snapshotsDir, pages, options.startedAt),
     pages_watched: pages.length,
-    cost_usd: result.cost_usd,
-    errors: result.errors,
+    ...result,
   };
 }
 
@@ -54,16 +57,21 @@ function pagesFetched(snapshotsDir: string, pages: WatchedPage[], startedAt: Dat
   }).length;
 }
 
-function readRun(resultPath: string): Pick<RunLogEntry, "cost_usd" | "errors"> {
-  if (!existsSync(resultPath)) return { cost_usd: null, errors: ["the run wrote no result.json"] };
+type FromResult = Pick<RunLogEntry, "cost_usd" | "errors" | "slack_line" | "slack_status">;
+
+function readRun(resultPath: string): FromResult {
+  const noSlack = { slack_line: null, slack_status: null };
+  if (!existsSync(resultPath)) return { cost_usd: null, errors: ["the run wrote no result.json"], ...noSlack };
   try {
-    const run: unknown = (JSON.parse(readFileSync(resultPath, "utf8")) as { run?: unknown }).run;
-    const { cost_usd, errors } = (run ?? {}) as { cost_usd?: unknown; errors?: unknown };
+    const written = JSON.parse(readFileSync(resultPath, "utf8")) as { run?: unknown; slack?: unknown };
+    const { cost_usd, errors } = (written.run ?? {}) as { cost_usd?: unknown; errors?: unknown };
+    const { line, status } = (written.slack ?? {}) as { line?: unknown; status?: unknown };
     if (typeof cost_usd === "number" && Array.isArray(errors) && errors.every((error) => typeof error === "string")) {
-      return { cost_usd, errors };
+      const slack = typeof line === "string" && typeof status === "string" ? { slack_line: line, slack_status: status as SlackDelivery["status"] } : noSlack;
+      return { cost_usd, errors, ...slack };
     }
   } catch {
     // Falls through to the error below.
   }
-  return { cost_usd: null, errors: ["result.json could not be read"] };
+  return { cost_usd: null, errors: ["result.json could not be read"], ...noSlack };
 }

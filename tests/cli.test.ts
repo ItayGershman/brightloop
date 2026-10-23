@@ -1,12 +1,13 @@
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import { mkdtempSync } from "node:fs";
+import { mkdtempSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { test } from "node:test";
 
+// Every command here runs with no Slack key, whatever the shell running the tests has set.
 function cli(args: string[]) {
-  return spawnSync("./run", args, { encoding: "utf8" });
+  return spawnSync("./run", args, { encoding: "utf8", env: { ...process.env, SLACK_WEBHOOK_URL: "" } });
 }
 
 test("a command without --output prints the usage line", () => {
@@ -28,4 +29,14 @@ test("an input file that does not exist still writes a result, with the problem 
   const run = cli(["--input", "no-such-file.json", "--output", output]);
   assert.equal(run.status, 0, run.stderr);
   assert.match(run.stdout, /0 items, 0 skipped, 1 errors/);
+});
+
+test("a cases-file run writes the Slack line with the result and posts nothing", () => {
+  const output = join(mkdtempSync(join(tmpdir(), "brightloop-")), "result.json");
+  const run = cli(["--input", "cases/brief-example/input.json", "--output", output]);
+  assert.equal(run.status, 0, run.stderr);
+  const result = JSON.parse(readFileSync(output, "utf8"));
+  assert.equal(result.slack.status, "not posted: only a live run posts");
+  assert.match(result.slack.line, /^pricing watch for 11:00: one pricing change flagged \(Lovable\)/);
+  assert.match(run.stdout, /Slack line not posted: only a live run posts/);
 });

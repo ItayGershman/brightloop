@@ -135,9 +135,16 @@ export interface SkippedSignal {
   reason: string;
 }
 
+/** The run's one Slack line and what happened to it; written with every result from the command line. */
+export interface SlackDelivery {
+  line: string;
+  status: "posted" | "not posted: only a live run posts" | "not posted: no SLACK_WEBHOOK_URL" | "not posted: the post failed";
+}
+
 export interface Result {
   built_for: typeof AUDIENCE.builtFor;
   items: Item[];
   skipped: SkippedSignal[];
   run: { started_at: string; cost_usd: number; errors: string[] };
+  slack?: SlackDelivery;
 }

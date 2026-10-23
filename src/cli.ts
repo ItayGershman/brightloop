@@ -2,6 +2,7 @@ import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, format, parse } from "node:path";
 import type { RunInput } from "./domain/types.ts";
 import { inputWithError, parseCasesFile } from "./input/parse-cases-file.ts";
+import { deliverSlackLine } from "./report/index.ts";
 import { toCsv } from "./sheet/csv.ts";
 import { runAndDeliver, sheetFromEnv } from "./sheet/deliver.ts";
 import { COLUMNS } from "./sheet/tabs.ts";
@@ -15,6 +16,8 @@ import { COLUMNS } from "./sheet/tabs.ts";
 // appends the rows to the Sheet; a cases file or a replay never touches the Sheet. A wrong
 // command line exits 2, a Sheet that failed exits 1. Signal text, page text, config values
 // and keys are never logged.
+// Every result carries its Slack line; only a live run with SLACK_WEBHOOK_URL set posts it,
+// after result.json is first written, so a posted line is never left unstored.
 
 const USAGE =
   "usage: run --input <cases.json> --output <result.json>\n" +
@@ -44,9 +47,12 @@ async function main(argv: string[]): Promise<number> {
     : readCasesFile(inputPath ?? "");
 
   const sheet = live ? sheetFromEnv(process.env) : undefined;
-  const { result, rows, appended, alreadyInSheet, sheetFailed } = await runAndDeliver(input, { sheet });
+  const { result: judged, rows, appended, alreadyInSheet, sheetFailed } = await runAndDeliver(input, { sheet });
   const csvPath = format({ ...parse(outputPath), base: undefined, ext: ".csv" });
-  if (!write(outputPath, `${JSON.stringify(result, null, 2)}\n`) || !write(csvPath, toCsv(COLUMNS, rows))) return 2;
+  const json = (value: unknown) => `${JSON.stringify(value, null, 2)}\n`;
+  if (!write(outputPath, json(judged)) || !write(csvPath, toCsv(COLUMNS, rows))) return 2;
+  const result = await deliverSlackLine(judged, { env: process.env, post: live });
+  if (!write(outputPath, json(result))) return 2;
   console.log(
     `Wrote ${outputPath}: ${result.items.length} items, ${result.skipped.length} skipped, ${result.run.errors.length} errors.`,
   );
@@ -58,6 +64,7 @@ async function main(argv: string[]): Promise<number> {
         : "Sheet: no keys, so the rows are in the CSV only.",
     );
   }
+  console.log(`Slack line ${result.slack.status}.`);
   return sheetFailed ? 1 : 0;
 }
 
@@ -72,6 +79,7 @@ function write(path: string, text: string): boolean {
     return false;
   }
 }
+
 
 function readCasesFile(path: string): RunInput {
   try {

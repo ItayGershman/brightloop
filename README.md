@@ -28,7 +28,7 @@ No browser, no network, no keys. For every watched page, the latest stored snaps
 
 ## The Monday run
 
-`.github/workflows/scheduled-run.yml` runs `./run --live` on GitHub Actions every Monday at 08:30 Jerusalem time, and on demand from the Actions tab ("Run workflow") for demos and re-runs. GitHub schedules are in UTC, so the workflow fires at 05:30 and 06:30 UTC and a first job (`src/schedule/time-gate.ts`) lets through only the one that is 08:xx in `Asia/Jerusalem`; a manual run is never held back. Each run installs Chrome, captures the pages with a window on a virtual display, commits the new snapshots, `runs/result.json`, `runs/result.csv` and one line in `runs/run-log.jsonl` (start time, pages fetched, `cost_usd`, errors) as `github-actions[bot]`. With the Sheet secret and variable set it also appends the rows to the Sheet (see below). Runs never overlap: a run started while one is going waits for it. A page a site blocks is reported in `run.errors` and the run log, never stored; capture it on a machine of your own with `./run --live` and commit the snapshot.
+`.github/workflows/scheduled-run.yml` runs `./run --live` on GitHub Actions every Monday at 08:30 Jerusalem time, and on demand from the Actions tab ("Run workflow") for demos and re-runs. GitHub schedules are in UTC, so the workflow fires at 05:30 and 06:30 UTC and a first job (`src/schedule/time-gate.ts`) lets through only the one that is 08:xx in `Asia/Jerusalem`; a manual run is never held back. Each run installs Chrome, captures the pages with a window on a virtual display, commits the new snapshots, `runs/result.json`, `runs/result.csv` and one line in `runs/run-log.jsonl` (start time, pages fetched, `cost_usd`, errors) as `github-actions[bot]`. With the Sheet secret and variable set it also appends the rows to the Sheet, and with the `SLACK_WEBHOOK_URL` secret set it posts the run's one line to `#leadership` (both below). Runs never overlap: a run started while one is going waits for it. A page a site blocks is reported in `run.errors` and the run log, never stored; capture it on a machine of your own with `./run --live` and commit the snapshot.
 
 ## Maya's sheet and the CSV
 
@@ -57,6 +57,20 @@ In the scheduled workflow they are the repository secret `GOOGLE_SERVICE_ACCOUNT
 
 Brightloop's own prices are read at the start of that run from the Sheet's `own pricing` tab (columns `tier` and `monthly price (USD)`; `billing` and `notes` are for Maya). With them, `brightloop_comparison` and `why` say whether the competitor is cheaper than the Brightloop tier at the same place in the lineup, naming the tier but never writing a Brightloop amount, since `result.json` and the CSV are committed and the live page is public. With the tab empty, unreadable or not connected, they say the comparison can't be made and show the competitor's price.
 
+## The Slack line
+
+Every run, from any command, renders one line for leadership in Maya's own style ("deck for 11:00, one pricing change flagged") and stores it in `result.json` under `slack`:
+
+| Run | Line |
+|---|---|
+| Nothing moved | `pricing watch for 11:00: nothing moved since the last check. details: <link>` |
+| One change to respond to | `pricing watch for 11:00: one pricing change flagged (Lovable), it needs a response now. details: <link>` |
+| Several, none to respond to | `pricing watch for 11:00: 3 pricing changes flagged (Replit, Bolt and Lovable), 2 still unconfirmed, no response needed yet. details: <link>` |
+| First run | `pricing watch for 11:00: first look recorded for Lovable, Replit and Bolt, nothing to compare yet. details: <link>` |
+| A page not read, or an item held back by the in-run checks | `pricing watch for 11:00: nothing to report, but the run hit one problem, so this is not the all-clear. details: <link>` |
+
+The line is built from counts, actions and registered competitor names only: no quoted text, no confidence score, no price. The link is `DETAILS_URL` when it is set to an https link, otherwise Maya's sheet (`AUDIENCE.sheetUrl`). Only a live run (`--live`) with `SLACK_WEBHOOK_URL` set posts the line, to the channel the webhook belongs to, after `result.json` is first written; a cases file or a replay never posts, and without the key no poster is made and no network call happens. A failed post is added to `run.errors` with the reason ("Slack answered 404", "no answer from Slack"), never the webhook, and never stops the run.
+
 ## Proof
 
 ```sh
@@ -75,11 +89,12 @@ Typechecks, runs the repo check for the brief's hidden markers, then the case su
 | `src/capture/` | The live capture: Chrome opens each watched page and keeps its visible text; snapshots are stored and read back from `snapshots/`. `capture/index.ts` (`captureLiveInput`, `replayInput`) is the only import point |
 | `src/judging/` | The rule engine (`runRules`), the rules (`RULES`), the source trust levels (`source-trust.ts`), reading a source as a URL (`source-url.ts`), the pricing item builder and the baseline rule; for a pricing item, its promotion markers (`promotion.ts`), the plan it is on (`plan.ts`), the action (`advice.ts`) and the Brightloop comparison (`comparison.ts`) |
 | `src/checks/` | The in-run checks; `checks/index.ts` is the only import point |
-| `src/config/` | The audience, the competitor registry and the known press outlets |
+| `src/config/` | The audience (including the sheet the Slack line links to), the competitor registry and the known press outlets |
 | `src/text/` | Reading outside text: named patterns, quoting, price change, the plans on a pricing page, the brief's markers |
 | `src/domain/` | The shared types: `Signal`, `RunInput`, `Snapshot`, `Tier`, `Item`, `SkippedSignal`, `Result` |
 | `src/sheet/` | Maya's sheet: the rows (`renderRows`), the CSV, the own-pricing tab reader, the Google Sheets adapter behind `SheetStore`, and `runAndDeliver`, which reads own pricing, runs and appends the rows |
 | `src/schedule/` | The scheduled run: the 08:xx Jerusalem time gate and the run log |
+| `src/report/` | The Slack line: `slackLine` renders it from a result, `deliverSlackLine` posts it for a live run with `SLACK_WEBHOOK_URL` set, `detailsUrl` picks the link; `report/index.ts` is the only import point |
 | `runs/` | Written by the scheduled and manual runs: the latest `result.json`, its rows as `result.csv`, and `run-log.jsonl`, one line per run |
 | `snapshots/` | The committed snapshots, one file per page per live run. Real data, replayed by the tests with no browser |
 
@@ -104,3 +119,9 @@ The required wrapper (`built_for`, `items`, `skipped`, `run`) plus these fields 
 | `brightloop_comparison` | Whether the competitor is still cheaper than Brightloop on that tier, from the own-pricing tab (the Brightloop tier is named, its price never written), or why that can't be said |
 | `week` | The ISO week (`2026-W43`) the change was seen in, counted in the input's `timezone`; `null` when the signal has no readable time |
 | `tiers` | Baseline items only: every plan on the pricing page, `{ name, price, period, struck_price, billing, limits }`, in the page's words; `billing` is null when the page does not say |
+
+And one field next to the wrapper:
+
+| Field | Meaning |
+|---|---|
+| `slack` | `{ line, status }`: the run's one Slack line (above) and what happened to it: `posted`, `not posted: only a live run posts`, `not posted: no SLACK_WEBHOOK_URL` or `not posted: the post failed`. The run log (`runs/run-log.jsonl`) copies both as `slack_line` and `slack_status`, so the run history and the live page show the line as posted |

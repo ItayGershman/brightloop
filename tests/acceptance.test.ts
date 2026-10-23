@@ -45,7 +45,8 @@ describe("AC1: the CLI writes result.json in the required wrapper from the brief
     const run = cli(["--input", "cases/brief-example/input.json", "--output", output]);
     assert.equal(run.status, 0, run.stderr);
     const result = JSON.parse(readFileSync(output, "utf8"));
-    assert.deepEqual(Object.keys(result), ["built_for", "items", "skipped", "run"]);
+    // The brief's four keys, plus the documented Slack line (README, "Output fields").
+    assert.deepEqual(Object.keys(result), ["built_for", "items", "skipped", "run", "slack"]);
     assert.equal(result.built_for, AUDIENCE.builtFor);
     assert.deepEqual(Object.keys(result.run), ["started_at", "cost_usd", "errors"]);
     assert.deepEqual(checkResult(result, { inputIds, bannedWords: input.brand.banned_words, secrets: [input.config.demo_key] }), []);
@@ -206,6 +207,9 @@ describe("AC7: a fresh clone with no keys runs the proof green", () => {
     assert.equal(cli(["--input", "cases/brief-example/input.json", "--output", output]).status, 0);
     const result = JSON.parse(readFileSync(output, "utf8"));
     const expected = JSON.parse(readFileSync("cases/brief-example/expected.json", "utf8"));
-    assert.deepEqual({ ...result, run: { ...result.run, started_at: "" } }, { ...expected, run: { ...expected.run, started_at: "" } });
+    const { slack, ...wrapper } = result;
+    assert.deepEqual({ ...wrapper, run: { ...wrapper.run, started_at: "" } }, { ...expected, run: { ...expected.run, started_at: "" } });
+    // The Slack line is still written, and a cases-file run never posts.
+    assert.equal(slack.status, "not posted: only a live run posts");
   });
 });

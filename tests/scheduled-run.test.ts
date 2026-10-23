@@ -114,7 +114,18 @@ describe("the run log", () => {
       pages_watched: 3,
       cost_usd: 0,
       errors,
+      slack_line: null,
+      slack_status: null,
     });
+  });
+
+  test("keeps the run's Slack line and whether it was posted", () => {
+    const space = workspace();
+    const slack = { line: "pricing watch for 11:00: nothing moved since the last check. details: https://x.test/", status: "posted" };
+    writeFileSync(space.result, JSON.stringify({ built_for: "maya", items: [], skipped: [], run: { started_at: "x", cost_usd: 0, errors: [] }, slack }));
+    const entry = space.entry();
+    assert.equal(entry.slack_line, slack.line);
+    assert.equal(entry.slack_status, "posted");
   });
 
   test("a run that wrote no result still gets a line, saying so", () => {
