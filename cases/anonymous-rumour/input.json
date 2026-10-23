@@ -1,0 +1,15 @@
+{
+  "week": "2026-W43",
+  "timezone": "Asia/Jerusalem",
+  "brand": { "name": "Brightloop", "banned_words": ["revolutionary", "game-changing", "seamless"] },
+  "signals": [
+    { "id": "sg-304", "type": "launch", "competitor": "v0", "source": "reddit.com/r/vibecoding, u/anon", "ts": "2026-10-25T11:00:00+02:00",
+      "text": "heard v0 is shutting down??" },
+    { "id": "ar-1", "type": "pricing", "competitor": "Lovable", "source": "reddit.com/r/vibecoding, u/anon", "ts": "2026-10-25T11:05:00+02:00",
+      "text": "heard Lovable Pro is going to $5/month (was $25)??" },
+    { "id": "ar-2", "type": "pricing", "competitor": "Replit", "source": "anonymous tip", "ts": "2026-10-25T11:10:00+02:00",
+      "text": "Rumour: Replit kills its free plan next week." },
+    { "id": "ar-3", "type": "pricing", "competitor": "Bolt", "source": "x.com/someone", "ts": "2026-10-25T11:15:00+02:00",
+      "text": "Bolt Pro is $9/month now (was $20)." }
+  ]
+}

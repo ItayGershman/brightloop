@@ -30,6 +30,20 @@ export const CREDENTIAL_KEY = /key|token|secret|passw/i;
 /** Only printable characters and no whitespace, from start to end. */
 export const PRINTABLE_WITHOUT_SPACES = /^[^\s\p{C}]+$/u;
 
+/**
+ * Words that mark a claim as paid for, anonymous or passed on second-hand, looked for in a
+ * source's text, or in a source URL's host and path. Every word it matches, singular and plural:
+ * paid: sponsor, sponsored, sponsorship, advertorial, promoted, partner, partnership,
+ *   brand studio (brand-studio, brandstudio), brandvoice, paid post (paid-post);
+ * second-hand: newsletter, AI summary, AI-generated, summarised (summarized), forwarded, fwd, via;
+ * anonymous or unchecked: anonymous, anon ("u/anon"), rumour (rumor), unverified.
+ */
+export const SECOND_HAND_SOURCE =
+  /\b(?:sponsor(?:s|ed|ships?)?|advertorials?|promoted|partners?(?:hips?)?|brand[- ]?studios?|brandvoice|paid[- ]posts?|newsletters?|ai[- ](?:summary|summaries|generated)|summari[sz]ed|forwarded|fwd|via|anonymous|anon|rumou?rs?|unverified)\b/i;
+
+/** A guest post, singular or plural: "launchpad.example, guest post", "/guest-posts/". */
+export const GUEST_POST_SOURCE = /\bguest[- ]posts?\b/i;
+
 /** A pricing-page line that starts with a price: "$25", "$0", "$20 $18 / month, billed annually". */
 export const PRICE_LINE = /^\$\d/;
 

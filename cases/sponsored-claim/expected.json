@@ -1,0 +1,67 @@
+{
+  "built_for": "maya",
+  "items": [],
+  "skipped": [
+    {
+      "id": "pr-402",
+      "reason": "pricing claim from a sponsored, anonymous or second-hand source, not reported: unconfirmed (confidence 0.2) and not seen on Bolt's own pricing page. Check https://bolt.new/pricing before repeating it to leadership."
+    },
+    {
+      "id": "sc-1",
+      "reason": "pricing claim from a sponsored, anonymous or second-hand source, not reported: unconfirmed (confidence 0.2) and not seen on Lovable's own pricing page. Check https://lovable.dev/pricing before repeating it to leadership."
+    },
+    {
+      "id": "sc-2",
+      "reason": "pricing claim from a sponsored, anonymous or second-hand source, not reported: unconfirmed (confidence 0.2) and not seen on Replit's own pricing page. Check https://replit.com/pricing before repeating it to leadership."
+    },
+    {
+      "id": "sc-3",
+      "reason": "pricing claim from a sponsored, anonymous or second-hand source, not reported: unconfirmed (confidence 0.2) and not seen on Bolt's own pricing page. Check https://bolt.new/pricing before repeating it to leadership."
+    },
+    {
+      "id": "sc-4",
+      "reason": "pricing claim from a sponsored, anonymous or second-hand source, not reported: unconfirmed (confidence 0.2) and not seen on Lovable's own pricing page. Check https://lovable.dev/pricing before repeating it to leadership."
+    },
+    {
+      "id": "sc-5",
+      "reason": "pricing claim from a sponsored, anonymous or second-hand source, not reported: unconfirmed (confidence 0.2) and not seen on Bolt's own pricing page. Check https://bolt.new/pricing before repeating it to leadership."
+    },
+    {
+      "id": "sc-6",
+      "reason": "pricing claim from a sponsored, anonymous or second-hand source, not reported: unconfirmed (confidence 0.2) and not seen on Bolt's own pricing page. Check https://bolt.new/pricing before repeating it to leadership."
+    },
+    {
+      "id": "sc-7",
+      "reason": "pricing claim from a sponsored, anonymous or second-hand source, not reported: unconfirmed (confidence 0.2) and not seen on Bolt's own pricing page. Check https://bolt.new/pricing before repeating it to leadership."
+    },
+    {
+      "id": "sc-8",
+      "reason": "pricing claim from a sponsored, anonymous or second-hand source, not reported: unconfirmed (confidence 0.2) and not seen on Bolt's own pricing page. Check https://bolt.new/pricing before repeating it to leadership."
+    },
+    {
+      "id": "sc-9",
+      "reason": "pricing claim from a sponsored, anonymous or second-hand source, not reported: unconfirmed (confidence 0.2) and not seen on Bolt's own pricing page. Check https://bolt.new/pricing before repeating it to leadership."
+    },
+    {
+      "id": "sc-10",
+      "reason": "pricing claim from a sponsored, anonymous or second-hand source, not reported: unconfirmed (confidence 0.2) and not seen on Lovable's own pricing page. Check https://lovable.dev/pricing before repeating it to leadership."
+    },
+    {
+      "id": "sc-11",
+      "reason": "pricing claim from a sponsored, anonymous or second-hand source, not reported: unconfirmed (confidence 0.2) and not seen on Replit's own pricing page. Check https://replit.com/pricing before repeating it to leadership."
+    },
+    {
+      "id": "sc-12",
+      "reason": "pricing claim from a sponsored, anonymous or second-hand source, not reported: unconfirmed (confidence 0.2) and not seen on Bolt's own pricing page. Check https://bolt.new/pricing before repeating it to leadership."
+    },
+    {
+      "id": "sc-13",
+      "reason": "pricing claim from a sponsored, anonymous or second-hand source, not reported: unconfirmed (confidence 0.2) and not seen on Lovable's own pricing page. Check https://lovable.dev/pricing before repeating it to leadership."
+    }
+  ],
+  "run": {
+    "started_at": "2026-10-26T06:30:00.000Z",
+    "cost_usd": 0,
+    "errors": []
+  }
+}

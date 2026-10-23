@@ -1,0 +1,14 @@
+{
+  "week": "2026-W43",
+  "timezone": "Asia/Jerusalem",
+  "brand": { "name": "Brightloop", "banned_words": ["revolutionary", "game-changing", "seamless"] },
+  "signals": [
+    { "id": "ms-1", "type": "pricing", "competitor": "Lovable", "source": "lovable.dev/pricing", "ts": "2026-10-23T08:00:00Z",
+      "text": "Pro plan shown at $25/month (was $20 last week).", "predicted_ctr": 0.001 },
+    { "id": "ms-2", "type": "pricing", "competitor": "Bolt", "source": "sponsored post, ads.example", "ts": "2026-10-23T12:40:00Z",
+      "text": "Bolt is now free forever, no limits.", "predicted_ctr": 0.99 },
+    { "id": "ms-3", "type": "ad", "competitor": "Lovable", "channel": "meta", "first_seen": "2026-10-17", "last_seen": "2026-10-19",
+      "text": "Ship your MVP before Monday.", "predicted_ctr": 0.067 }
+  ],
+  "quality_metric_hint": "predicted_ctr is Brightloop's model score"
+}

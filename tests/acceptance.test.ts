@@ -78,7 +78,9 @@ describe("AC3: ad and launch signals are skipped as outside the watch's scope", 
       assert.ok(skipped, `${signal.id} is skipped`);
       assert.ok(skipped.reason.startsWith(`${signal.type} signal, outside the watch's scope: ${AUDIENCE.scope}`), skipped.reason);
     }
-    assert.deepEqual(result.items.map((item) => item.source_ids), [["pr-401"], ["pr-402"]]);
+    // Pricing signals are never skipped as out of scope; pr-402 is skipped by source trust (#3) instead.
+    assert.deepEqual(result.items.map((item) => item.source_ids), [["pr-401"]]);
+    assert.ok(!result.skipped.find((entry) => entry.id === "pr-402")?.reason.includes("outside the watch's scope"));
   });
 });
 

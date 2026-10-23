@@ -34,14 +34,16 @@ Typechecks, runs the repo check for the brief's hidden markers, then the case su
 | `src/run.ts` | One run: input in, rules, in-run checks, result out. Orchestration only |
 | `src/input/` | The two ways into a run. `parseCasesFile`: a cases file text into the run input (signals, banned words, secret-like config values, problems). `liveInput`: captured snapshots into the run input, one baseline signal per page seen for the first time |
 | `src/capture/` | The live capture: Chrome opens each watched page and keeps its visible text; snapshots are stored and read back from `snapshots/`. `capture/index.ts` (`captureLiveInput`) is the only import point |
-| `src/judging/` | The rule engine (`runRules`), the rules (`RULES`), the official-page check, the pricing item builder and its trust levels, the baseline rule |
+| `src/judging/` | The rule engine (`runRules`), the rules (`RULES`), the source trust levels (`source-trust.ts`), reading a source as a URL (`source-url.ts`), the pricing item builder and the baseline rule |
 | `src/checks/` | The in-run checks; `checks/index.ts` is the only import point |
-| `src/config/` | The audience and the competitor registry |
+| `src/config/` | The audience, the competitor registry and the known press outlets |
 | `src/text/` | Reading outside text: named patterns, quoting, price change, the plans on a pricing page, the brief's markers |
 | `src/domain/` | The shared types: `Signal`, `RunInput`, `Snapshot`, `Tier`, `Item`, `SkippedSignal`, `Result` |
 | `snapshots/` | The committed snapshots, one file per page per live run. Real data, replayed by the tests with no browser |
 
 To add a judging rule: write the function in `src/judging/rules.ts`, put it in `RULES`, and add a case under `cases/<name>/` (`input.json` and `expected.json`).
+
+To add a source trust level: add a row to `TRUST_LEVELS` in `src/judging/source-trust.ts`, above the catch-all, and a case. To add a press outlet: one entry in `KNOWN_PRESS` in `src/config/press.ts`.
 
 To add a competitor: add one entry to `COMPETITORS` in `src/config/competitors.ts`. The tests already loop over every entry; the next live run captures its pages.
 
