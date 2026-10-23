@@ -4,16 +4,14 @@ import { mkdtempSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, beforeEach, describe, test } from "node:test";
-import { storedSnapshots } from "../src/capture/index.ts";
-import { watchedPages } from "../src/config/competitors.ts";
 import type { Result, RunInput } from "../src/domain/types.ts";
-import { liveInput } from "../src/input/live-input.ts";
 import { parseCasesFile } from "../src/input/parse-cases-file.ts";
 import { run } from "../src/run.ts";
 import { toCsv } from "../src/sheet/csv.ts";
 import { runAndDeliver, sheetFromEnv, type SheetStore } from "../src/sheet/deliver.ts";
-import { COLUMNS, renderRows } from "../src/sheet/rows.ts";
-import { briefExample, pricingSignal, STARTED_AT } from "./helpers.ts";
+import { renderRows } from "../src/sheet/rows.ts";
+import { COLUMNS } from "../src/sheet/tabs.ts";
+import { briefExample, firstRunInput, pricingSignal, STARTED_AT } from "./helpers.ts";
 
 // Maya's sheet: one row per item in her columns plus action, why and confidence. The renderer
 // is pure; the Google adapter sits behind SheetStore, so no test here touches the network.
@@ -37,8 +35,7 @@ function casesInput(...signals: Record<string, unknown>[]): RunInput {
 }
 
 function baselineResult(): Result {
-  const snapshots = watchedPages().flatMap((page) => storedSnapshots("snapshots", page).slice(0, 1));
-  return run(liveInput(snapshots.map((current) => ({ current })), []), { startedAt: STARTED_AT });
+  return run(firstRunInput(), { startedAt: STARTED_AT });
 }
 
 /** A Sheet held in memory, recording every call. */
@@ -188,6 +185,16 @@ describe("a run delivered to the Sheet", () => {
     assert.match(result.items[0].brightloop_comparison, /^Can't compare: Brightloop's own-pricing tab is empty/);
   });
 
+  test("an own-pricing tab with an unusable row or no price column fails the run, like a Sheet that cannot be read", async () => {
+    for (const ownPricing of [[["tier", "monthly price (USD)"], ["Test Starter", "soon"]], [["plan", "price"], ["Test", "5"]]]) {
+      const { store, changes } = fakeSheet({ ownPricing });
+      const { sheetFailed, result } = await runAndDeliver(casesInput(signal), { sheet: store, startedAt: STARTED_AT });
+      assert.equal(sheetFailed, true);
+      assert.ok(result.run.errors.some((error) => error.startsWith("own-pricing tab")));
+      assert.equal(changes.length, 2, "the rows are still appended");
+    }
+  });
+
   test("rows are appended under Maya's header; an empty changes tab gets the header first", async () => {
     const { store, changes } = fakeSheet();
     const { rows } = await runAndDeliver(casesInput(signal), { sheet: store, startedAt: STARTED_AT });
@@ -210,6 +217,25 @@ describe("a run delivered to the Sheet", () => {
     assert.equal(changes.length, 3);
   });
 
+  test("a tab whose columns Maya reordered or added to: rows land under the right header, and a re-run still skips them", async () => {
+    const header = ["competitor", "date", "my own column", ...MAYAS_COLUMNS.filter((name) => name !== "competitor" && name !== "date")];
+    const { store, changes } = fakeSheet({ changes: [header] });
+    const { rows } = await runAndDeliver(casesInput(signal), { sheet: store, startedAt: STARTED_AT });
+    assert.deepEqual(changes[1].slice(0, 4), [rows[0][1], rows[0][0], "", rows[0][2]]);
+    const again = await runAndDeliver(casesInput(signal), { sheet: store, startedAt: STARTED_AT });
+    assert.equal(again.alreadyInSheet, 1);
+    assert.equal(changes.length, 2);
+  });
+
+  test("two identical rows in one run are written once", async () => {
+    const { store, changes } = fakeSheet({ changes: [MAYAS_COLUMNS] });
+    const twin = { ...signal, id: "np-2", source: "https://bolt.new/pricing", ts: "2026-10-23T09:00:00Z" };
+    const delivered = await runAndDeliver(casesInput(signal, twin), { sheet: store, startedAt: STARTED_AT });
+    assert.equal(delivered.rows.length, 2);
+    assert.equal(changes.length, 2);
+    assert.equal(delivered.alreadyInSheet, 1);
+  });
+
   test("a Sheet that fails is a run error, with no detail from the failure, and the rows still come back", async () => {
     const { store } = fakeSheet();
     store.appendChanges = async () => {
@@ -229,6 +255,13 @@ describe("a run delivered to the Sheet", () => {
 });
 
 describe("the CLI", () => {
+  test("an --output ending in .csv prints the usage line: the CSV would overwrite it", () => {
+    const output = join(mkdtempSync(join(tmpdir(), "brightloop-")), "result.csv");
+    const cli = spawnSync("./run", ["--input", "cases/brief-example/input.json", "--output", output], { encoding: "utf8" });
+    assert.equal(cli.status, 2);
+    assert.match(cli.stderr, /^usage: run --input/);
+  });
+
   test("writes the CSV next to result.json, with the same rows, and never needs a key", () => {
     const dir = mkdtempSync(join(tmpdir(), "brightloop-"));
     const output = join(dir, "result.json");

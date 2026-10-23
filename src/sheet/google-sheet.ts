@@ -1,5 +1,5 @@
 import { createSign } from "node:crypto";
-import type { SheetKeys, SheetStore } from "./deliver.ts";
+import type { SheetKeys, SheetStore } from "./store.ts";
 import { CHANGES_TAB, COLUMNS, OWN_PRICING_TAB } from "./tabs.ts";
 
 // The Google Sheets adapter: a service-account token (a signed JWT exchanged for an access
@@ -21,7 +21,7 @@ interface ServiceAccount {
   token_uri?: string;
 }
 
-export function googleSheet({ credentials, sheetId }: SheetKeys, fetchImpl: typeof fetch = fetch): SheetStore {
+export function googleSheet({ credentials, sheetId }: SheetKeys): SheetStore {
   let token: { value: string; until: number } | undefined;
 
   async function accessToken(): Promise<string> {
@@ -31,7 +31,7 @@ export function googleSheet({ credentials, sheetId }: SheetKeys, fetchImpl: type
     const audience = account.token_uri ?? DEFAULT_TOKEN_URI;
     const unsigned = `${base64url({ alg: "RS256", typ: "JWT" })}.${base64url({ iss: account.client_email, scope: SCOPE, aud: audience, iat: now, exp: now + 3600 })}`;
     const signature = createSign("RSA-SHA256").update(unsigned).sign(account.private_key, "base64url");
-    const answer = await fetchImpl(audience, {
+    const answer = await fetch(audience, {
       method: "POST",
       headers: { "content-type": "application/x-www-form-urlencoded" },
       body: new URLSearchParams({ grant_type: "urn:ietf:params:oauth:grant-type:jwt-bearer", assertion: `${unsigned}.${signature}` }),
@@ -44,7 +44,7 @@ export function googleSheet({ credentials, sheetId }: SheetKeys, fetchImpl: type
   }
 
   async function call(path: string, what: string, init: RequestInit = {}): Promise<unknown> {
-    const answer = await fetchImpl(`${API}/${encodeURIComponent(sheetId)}${path}`, {
+    const answer = await fetch(`${API}/${encodeURIComponent(sheetId)}${path}`, {
       ...init,
       headers: { authorization: `Bearer ${await accessToken()}`, "content-type": "application/json" },
       signal: AbortSignal.timeout(TIMEOUT_MS),

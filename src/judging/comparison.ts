@@ -1,5 +1,5 @@
 import type { OwnPricing, OwnTier, Tier } from "../domain/types.ts";
-import { MONTHLY, PRICE, YEARLY } from "../text/patterns.ts";
+import { PRICE, YEARLY } from "../text/patterns.ts";
 import { isPaidPrice, shownPrice } from "../text/pricing-tiers.ts";
 import { quotable } from "../text/quotable.ts";
 import type { PricingChange } from "./change.ts";
@@ -14,7 +14,8 @@ import { planName, type ChangedPlan } from "./plan.ts";
 // Which Brightloop tier a plan is compared with goes by place in the lineup: a free plan
 // with Brightloop's free tier (price 0), the lowest paid plan with Brightloop's cheapest
 // paid tier, a higher plan with the next paid tier up (or the only one). A plan the change
-// does not name, a promotional price, or prices for another period are not compared.
+// does not name, a promotional price, prices for another period, and a price billed yearly
+// are not compared: the own-pricing tab is monthly.
 
 export interface Comparison {
   /** The item's brightloop_comparison field. */
@@ -24,6 +25,8 @@ export interface Comparison {
 }
 
 const NOT_CONNECTED: OwnPricing = { state: "not connected" };
+
+const NO_PAID_TIER = "the own-pricing tab lists no paid Brightloop tier";
 
 /** Why there is no Brightloop price to compare with, when the tab was not read. */
 const NO_TAB: Record<Exclude<OwnPricing["state"], "read">, string> = {
@@ -43,13 +46,16 @@ export function compareWithBrightloop(change: PricingChange, own: OwnPricing = N
   const plan = change.plan;
   if (plan.place === "unknown") return cantCompare(`the change does not name one ${change.competitor} plan`);
   const name = planName(change.competitor, plan);
-  if (plan.place === "free") return freePlan(name, change.link, own.tiers, shown);
+  if (plan.place === "free") {
+    const free = freePlan(name, change.link, own.tiers, shown);
+    return { comparison: free.comparison, stillCheaper: `Still cheaper than us on ${onTier}? ${free.answer}` };
+  }
 
   const tier = brightloopTier(own.tiers, plan);
-  if (!tier) return cantCompare("the own-pricing tab lists no paid Brightloop tier");
+  if (!tier) return cantCompare(NO_PAID_TIER);
   const price = comparablePrice(change, name);
   if ("reason" in price) return cantCompare(price.reason);
-  const { comparison, yesOrNo } = verdict(price.shows, price.amount, tier);
+  const { comparison, answer: yesOrNo } = verdict(price.shows, price.amount, tier);
   return { comparison, stillCheaper: `Still cheaper than us on ${onTier}? ${yesOrNo}` };
 }
 
@@ -58,9 +64,10 @@ export function baselineComparison(competitor: string, lowestPaid: Tier, own: Ow
   const shows = `${competitor}'s lowest paid plan, ${lowestPaid.name}, shows ${shownPrice(lowestPaid)}`;
   if (own.state !== "read") return `Can't compare yet: ${NO_TAB[own.state]}. ${shows}.`;
   const tier = brightloopTier(own.tiers, { place: "lowestPaid", name: lowestPaid.name });
-  if (!tier) return `Can't compare with Brightloop: the own-pricing tab lists no paid Brightloop tier. ${shows}.`;
-  if (!isPaidPrice(lowestPaid.price) || perYear(lowestPaid.period ?? "")) {
-    return `Can't compare with Brightloop: ${competitor}'s lowest paid plan shows no monthly price. ${shows}.`;
+  if (!tier) return `Can't compare with Brightloop: ${NO_PAID_TIER}. ${shows}.`;
+  if (!isPaidPrice(lowestPaid.price)) return `Can't compare with Brightloop: ${competitor}'s lowest paid plan shows no price. ${shows}.`;
+  if (yearly(`${lowestPaid.period ?? ""} ${lowestPaid.billing ?? ""}`)) {
+    return `Can't compare with Brightloop: ${competitor}'s lowest paid plan is billed yearly, and the own-pricing tab is monthly. ${shows}.`;
   }
   return verdict(shows, amount(lowestPaid.price), tier).comparison;
 }
@@ -72,27 +79,35 @@ interface NamedTier {
   label: string;
 }
 
-function verdict(shows: string, competitorAmount: number, tier: NamedTier): { comparison: string; yesOrNo: string } {
-  const [lead, relation, yesOrNo] =
-    competitorAmount < tier.monthlyUsd
-      ? ["Cheaper than", "below", "Yes"]
-      : competitorAmount === tier.monthlyUsd
-        ? ["Same price as", "the same as", "No"]
-        : ["Not cheaper than", "above", "No"];
+/** How the competitor's price stands against the Brightloop tier's, by the sign of their difference. */
+const VERDICTS: Record<"-1" | "0" | "1", { lead: string; relation: string; answer: string }> = {
+  "-1": { lead: "Cheaper than", relation: "below", answer: "Yes" },
+  "0": { lead: "Same price as", relation: "the same as", answer: "No" },
+  "1": { lead: "Not cheaper than", relation: "above", answer: "No" },
+};
+
+/** The comparison field, and the answer to "still cheaper than us?". */
+interface Verdict {
+  comparison: string;
+  answer: string;
+}
+
+function verdict(shows: string, competitorAmount: number, tier: NamedTier): Verdict {
+  const { lead, relation, answer } = VERDICTS[String(Math.sign(competitorAmount - tier.monthlyUsd)) as "-1" | "0" | "1"];
   return {
     comparison: `${lead} ${tier.label}: ${shows}, ${relation} the monthly price in Brightloop's own-pricing tab.`,
-    yesOrNo: `${yesOrNo}: ${shows}, ${relation} ${tier.label}'s monthly price in the own-pricing tab.`,
+    answer: `${answer}: ${shows}, ${relation} ${tier.label}'s monthly price in the own-pricing tab.`,
   };
 }
 
-function freePlan(name: string, link: string, tiers: OwnTier[], shown: string): Comparison {
+function freePlan(name: string, link: string, tiers: OwnTier[], shown: string): Verdict {
   const free = tiers.find((tier) => tier.monthlyUsd === 0);
   if (!free) {
     const text = `${name} costs nothing, and the own-pricing tab lists no free Brightloop tier. ${shown}`;
-    return { comparison: `Cheaper than Brightloop: ${text}`, stillCheaper: `Still cheaper than us on ${name}? Yes: ${text}` };
+    return { comparison: `Cheaper than Brightloop: ${text}`, answer: `Yes: ${text}` };
   }
   const text = `${name} and ${labelled(free, "free tier").label} cost nothing; compare what each includes on ${link} and in the own-pricing tab.`;
-  return { comparison: `Both free: ${text}`, stillCheaper: `Still cheaper than us on ${name}? Both free: ${text}` };
+  return { comparison: `Both free: ${text}`, answer: `Both free: ${text}` };
 }
 
 /** The Brightloop tier a paid plan is compared with, by its place in the lineup. */
@@ -119,13 +134,13 @@ function comparablePrice(
   if (promotion.kind === "possible") return { reason: "the price shown may be a promotional price" };
   const current = reading.after ?? listed ?? onlyPrice(text);
   if (!current) return { reason: "the signal states no current price" };
-  if (perYear(current)) return { reason: "the price is per year, and the own-pricing tab is monthly" };
+  if (yearly(current) || yearly(text)) return { reason: "the price is per year or billed yearly, and the own-pricing tab is monthly" };
   return { shows: `${plan} ${reading.after ? "now shows" : "shows"} ${current}`, amount: amount(current) };
 }
 
-/** A price stated per year; one with no period reads as monthly. */
-function perYear(price: string): boolean {
-  return YEARLY.test(price) && !MONTHLY.test(price);
+/** Per year, or billed yearly ("$18/month, billed annually"): never set next to a monthly price. */
+function yearly(text: string): boolean {
+  return YEARLY.test(text);
 }
 
 function amount(price: string): number {

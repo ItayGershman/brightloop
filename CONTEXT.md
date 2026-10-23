@@ -32,6 +32,10 @@ _Avoid_: alert, insight, card
 A temporary price or offer on a competitor's pricing page (a promo link, an expiry date, an introductory price, "limited time" or discount wording); never a list-price change. A **possible promotion** has only hints (fine print, a bare percentage, "free forever"), so the item names the check still needed.
 _Avoid_: deal, price cut
 
+**Own pricing**:
+Brightloop's own tiers and monthly prices, kept by the marketer in the own-pricing tab of their sheet and read only at run time; an item names the Brightloop tier it is compared with, never its price.
+_Avoid_: our prices, sample prices
+
 **Lowest paid tier**:
 A competitor's cheapest paid plan, where most Brightloop trials compare; a list-price change to it, or to what the free plan includes, leans to "respond now".
 _Avoid_: entry tier, starter tier

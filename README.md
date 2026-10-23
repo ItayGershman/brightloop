@@ -44,7 +44,7 @@ Every run writes `result.csv` beside `result.json` (for `--output runs/result.js
 | `action`, `why` | The item's `action` and `why` (still cheaper than us on that tier, and should we respond) |
 | `confidence` | The confidence in words, then the score: "confirmed: seen on Bolt's own pricing page (0.9)" |
 
-Skipped signals are not rows: they are in `result.json` with their reasons. Cells are quoted as CSV needs (commas, quotes, line breaks), and a cell starting `=`, `+`, `-` or `@` gets a leading apostrophe so a spreadsheet shows it as text.
+Skipped signals are not rows: they are in `result.json` with their reasons. Cells are quoted as CSV needs (commas, quotes, line breaks), and a cell starting `=`, `+`, `-`, `@`, a tab or a carriage return gets a leading apostrophe so a spreadsheet shows it as text instead of running it as a formula (outside text is data, ADR-0001); the Sheet itself gets the cell as typed, stored as text. `--output` must not end in `.csv`.
 
 The live run also appends the rows to the Google Sheet that stands in for Maya's (tab `changes`), when both of these are set in its environment:
 
@@ -53,7 +53,7 @@ The live run also appends the rows to the Google Sheet that stands in for Maya's
 | `GOOGLE_SERVICE_ACCOUNT_JSON` | The JSON key of a Google service account with edit access to the Sheet |
 | `SHEET_ID` | The Sheet's id, from its URL |
 
-In the scheduled workflow they are the repository secret `GOOGLE_SERVICE_ACCOUNT_JSON` and the variable `SHEET_ID`, given to the live step only. Without them nothing connects to Google and the rows are in the CSV only; a cases file or a replay never writes to the Sheet, keys or not. A re-run in the same week appends only the rows the tab does not have yet (same week, competitor, page, what changed, before and after). A Sheet that cannot be read or written is reported in `run.errors` and the run exits 1, after `result.json` and the CSV are written.
+In the scheduled workflow they are the repository secret `GOOGLE_SERVICE_ACCOUNT_JSON` and the variable `SHEET_ID`, given to the live step only. Without them nothing connects to Google and the rows are in the CSV only; a cases file or a replay never writes to the Sheet, keys or not. A re-run in the same week appends only the rows the tab does not have yet (same week, competitor, page, what changed, before and after). A Sheet that cannot be read or written, or an own-pricing tab with no `tier` or `monthly price (USD)` column or a price that is not a number, is reported in `run.errors` and the run exits 1, after the rows are appended and `result.json` and the CSV are written.
 
 Brightloop's own prices are read at the start of that run from the Sheet's `own pricing` tab (columns `tier` and `monthly price (USD)`; `billing` and `notes` are for Maya). With them, `brightloop_comparison` and `why` say whether the competitor is cheaper than the Brightloop tier at the same place in the lineup, naming the tier but never writing a Brightloop amount, since `result.json` and the CSV are committed and the live page is public. With the tab empty, unreadable or not connected, they say the comparison can't be made and show the competitor's price.
 

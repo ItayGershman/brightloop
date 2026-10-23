@@ -4,7 +4,7 @@ import type { RunInput } from "./domain/types.ts";
 import { inputWithError, parseCasesFile } from "./input/parse-cases-file.ts";
 import { toCsv } from "./sheet/csv.ts";
 import { runAndDeliver, sheetFromEnv } from "./sheet/deliver.ts";
-import { COLUMNS } from "./sheet/rows.ts";
+import { COLUMNS } from "./sheet/tabs.ts";
 
 // run --input cases.json --output result.json
 // run --live --output result.json [--snapshots snapshots] [--headless]
@@ -29,7 +29,8 @@ async function main(argv: string[]): Promise<number> {
   const inputPath = flag(args, "--input");
   const outputPath = flag(args, "--output");
   const snapshotsDir = flag(args, "--snapshots") ?? DEFAULT_SNAPSHOTS_DIR;
-  if (!outputPath || [live, replay, Boolean(inputPath)].filter(Boolean).length !== 1) {
+  // The CSV goes beside the result with a .csv extension, so the result itself cannot be one.
+  if (!outputPath || parse(outputPath).ext.toLowerCase() === ".csv" || [live, replay, Boolean(inputPath)].filter(Boolean).length !== 1) {
     console.error(USAGE);
     return 2;
   }
@@ -45,14 +46,7 @@ async function main(argv: string[]): Promise<number> {
   const sheet = live ? sheetFromEnv(process.env) : undefined;
   const { result, rows, appended, alreadyInSheet, sheetFailed } = await runAndDeliver(input, { sheet });
   const csvPath = format({ ...parse(outputPath), base: undefined, ext: ".csv" });
-  try {
-    mkdirSync(dirname(outputPath), { recursive: true });
-    writeFileSync(outputPath, `${JSON.stringify(result, null, 2)}\n`);
-    writeFileSync(csvPath, toCsv(COLUMNS, rows));
-  } catch {
-    console.error(`could not write ${outputPath}: --output must be a file path\n${USAGE}`);
-    return 2;
-  }
+  if (!write(outputPath, `${JSON.stringify(result, null, 2)}\n`) || !write(csvPath, toCsv(COLUMNS, rows))) return 2;
   console.log(
     `Wrote ${outputPath}: ${result.items.length} items, ${result.skipped.length} skipped, ${result.run.errors.length} errors.`,
   );
@@ -65,6 +59,18 @@ async function main(argv: string[]): Promise<number> {
     );
   }
   return sheetFailed ? 1 : 0;
+}
+
+/** Writes a file, or prints why it could not and the usage line. */
+function write(path: string, text: string): boolean {
+  try {
+    mkdirSync(dirname(path), { recursive: true });
+    writeFileSync(path, text);
+    return true;
+  } catch {
+    console.error(`could not write ${path}: --output must be a file path\n${USAGE}`);
+    return false;
+  }
 }
 
 function readCasesFile(path: string): RunInput {

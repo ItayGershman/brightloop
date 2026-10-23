@@ -1,6 +1,6 @@
 import type { Item, Signal, SkippedSignal } from "../domain/types.ts";
 
-// The rule engine. Judging is an ordered list of rules (RULES in rules.ts). Each rule sees
+// The rule engine. Judging is an ordered list of rules (judgingRules in rules.ts). Each rule sees
 // every signal still undecided, all at once, and returns judgements for the ones it decides;
 // the rest go on to the next rule. A signal no rule decides is skipped as an unknown type.
 //

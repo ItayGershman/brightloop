@@ -1,8 +1,6 @@
 import { PAGE_NAMES, type Item, type PageKind, type Result } from "../domain/types.ts";
 import { COLUMNS } from "./tabs.ts";
 
-export { COLUMNS };
-
 // A result as rows of Maya's sheet: one row per item, each cell in its column (tabs.ts).
 // Skipped signals and run errors are not rows: the sheet is her record of changes, and the
 // skipped list with its reasons is in result.json and on the live page. Pure: the CSV and

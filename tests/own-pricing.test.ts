@@ -1,14 +1,11 @@
 import assert from "node:assert/strict";
 import { describe, test } from "node:test";
-import { storedSnapshots } from "../src/capture/index.ts";
-import { watchedPages } from "../src/config/competitors.ts";
 import type { OwnPricing, Result } from "../src/domain/types.ts";
-import { liveInput } from "../src/input/live-input.ts";
 import { parseCasesFile } from "../src/input/parse-cases-file.ts";
 import { run } from "../src/run.ts";
 import { readOwnPricing } from "../src/sheet/own-pricing.ts";
 import { repoProblems } from "../scripts/marker-scan.ts";
-import { pricingSignal, STARTED_AT } from "./helpers.ts";
+import { firstRunInput, pricingSignal, STARTED_AT } from "./helpers.ts";
 
 // Brightloop's own prices are read from the own-pricing tab at run time. These rows are
 // synthetic, built here for the test: odd amounts no competitor page shows, so a test can
@@ -159,6 +156,12 @@ describe("the comparison with Brightloop, from the own-pricing tab", () => {
     }
   });
 
+  test("a price billed annually is not compared with a monthly one", () => {
+    const signal = pricingSignal({ text: "Pro plan now $20/month billed annually (was $25)." });
+    const [item] = runWith(own(pricierTab()), signal).items;
+    assert.match(item.brightloop_comparison, /^Can't compare with Brightloop: the price is per year or billed yearly, and the own-pricing tab is monthly\./);
+  });
+
   test("a change on no one plan is not compared", () => {
     const signal = pricingSignal({ text: "Pricing page now shows $50/month." });
     const [item] = runWith(own(pricierTab()), signal).items;
@@ -173,8 +176,7 @@ describe("the comparison with Brightloop, from the own-pricing tab", () => {
 });
 
 describe("a baseline run with the own-pricing tab", () => {
-  const snapshots = watchedPages().flatMap((page) => storedSnapshots("snapshots", page).slice(0, 1));
-  const input = liveInput(snapshots.map((current) => ({ current })), []);
+  const input = firstRunInput();
 
   test("compares each competitor's lowest paid plan with Brightloop's cheapest paid tier", () => {
     const result = run({ ...input, ownPricing: own(pricierTab()) }, { startedAt: STARTED_AT });
@@ -185,6 +187,15 @@ describe("a baseline run with the own-pricing tab", () => {
     );
     assert.deepEqual(result.run.errors, []);
     assertNoBrightloopAmount(result);
+  });
+
+  test("a lowest paid plan billed annually is not set against a monthly price", () => {
+    const result = run({ ...input, ownPricing: own(pricierTab()) }, { startedAt: STARTED_AT });
+    const bolt = result.items.find((item) => item.competitor === "Bolt");
+    assert.equal(
+      bolt?.brightloop_comparison,
+      "Can't compare with Brightloop: Bolt's lowest paid plan is billed yearly, and the own-pricing tab is monthly. Bolt's lowest paid plan, Pro, shows $18/month, billed annually.",
+    );
   });
 
   test("an empty tab: the baseline says it can't compare yet", () => {
@@ -198,7 +209,7 @@ describe("the repo check: no Brightloop price is committed", () => {
   const brand = "Bright" + "loop";
 
   test("fails on a Brightloop price written next to the name", () => {
-    for (const text of [`${brand} Starter $29/month`, `${brand}'s Pro: $49`, `${brand} = $9`, `${brand} Starter 29 USD`]) {
+    for (const text of [`${brand} Starter $29/month`, `${brand}'s Pro: $49`, `${brand} = $9`, `${brand} Starter 29 USD`, `${brand} Starter 29/month`, `${brand} Pro 49 per month`]) {
       assert.deepEqual(repoProblems([{ path: "src/x.ts", text }]), ["src/x.ts: looks like a Brightloop price; Brightloop's prices are read from the own-pricing tab at run time, never committed"], text);
     }
   });
@@ -206,5 +217,11 @@ describe("the repo check: no Brightloop price is committed", () => {
   test("passes the run's own wording, which names Brightloop and a competitor's price in one sentence", () => {
     const text = `Can't compare: ${brand}'s own-pricing tab is not connected, so no ${brand} price is used. Replit Core shows $25/month. Cheaper than ${brand} Test Starter: Bolt Pro now shows $30/month.`;
     assert.deepEqual(repoProblems([{ path: "cases/x/expected.json", text }]), []);
+  });
+
+  test("checks the docs too, but not captured pages or run outputs, which quote competitors' public pages", () => {
+    const text = `${brand} Starter $29/month`;
+    assert.equal(repoProblems([{ path: "DECISIONS.md", text }]).length, 1);
+    assert.deepEqual(repoProblems([{ path: "snapshots/lovable/pricing/x.json", text }, { path: "runs/result.json", text }]), []);
   });
 });
