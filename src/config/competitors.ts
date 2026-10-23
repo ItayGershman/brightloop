@@ -1,3 +1,5 @@
+import type { WatchedPage } from "../domain/types.ts";
+
 // The competitors the watch covers, with their own pages: "no link, no number". Adding a
 // competitor is one entry in COMPETITORS; the lookup and the trust levels
 // (judging/source-trust.ts) read only from it, and the tests loop over every entry.
@@ -45,6 +47,11 @@ export const COMPETITORS: Competitor[] = [
   },
 ];
 
+/** The competitor's name as used in ids and snapshot folders: "lovable". */
+export function competitorSlug(name: string): string {
+  return name.toLowerCase();
+}
+
 /** The registered competitor a signal names, by name or alias. */
 export function findCompetitor(name: string | undefined): Competitor | undefined {
   if (!name) return undefined;
@@ -52,4 +59,12 @@ export function findCompetitor(name: string | undefined): Competitor | undefined
   return COMPETITORS.find((competitor) =>
     [competitor.name, ...competitor.aliases].some((known) => known.toLowerCase() === wanted),
   );
+}
+
+/** The pages a live run captures: each competitor's pricing page and homepage. */
+export function watchedPages(): WatchedPage[] {
+  return COMPETITORS.flatMap((competitor) => [
+    { competitor: competitor.name, page: "pricing" as const, url: competitor.pricingPage },
+    { competitor: competitor.name, page: "homepage" as const, url: competitor.homepage },
+  ]);
 }

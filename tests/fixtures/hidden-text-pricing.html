@@ -1,0 +1,49 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Pricing</title>
+<style>
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; }
+</style>
+</head>
+<body>
+  <h1>Pricing</h1>
+  <section>
+    <h2>Free</h2>
+    <p>$0</p>
+    <p>5 projects</p>
+  </section>
+  <section id="pro"></section>
+
+  <!-- Each of these is on the page but a person cannot see it. None may reach a snapshot. -->
+  <p style="display: none">hidden-by-display Enterprise $1</p>
+  <p style="visibility: hidden">hidden-by-visibility $2</p>
+  <p style="opacity: 0">hidden-by-opacity $3</p>
+  <p style="font-size: 0">hidden-by-font-size $4</p>
+  <p class="sr-only">hidden-by-screen-reader-box $5</p>
+  <p style="position: absolute; left: -9999px">hidden-off-the-page $6</p>
+  <p style="color: transparent">hidden-by-transparent-colour $7</p>
+  <div style="display: none"><p>hidden-inside-a-hidden-parent $8</p></div>
+  <p>Shown with a <span style="display: none">hidden-inline-word $9</span>visible tail</p>
+  <p style="position: absolute; left: 99999px">hidden-off-the-page-right $10</p>
+  <p style="clip-path: inset(50%)">hidden-by-clip-path $11</p>
+  <p style="position: absolute; clip: rect(0, 0, 0, 0)">hidden-by-clip-on-a-full-size-box $12</p>
+  <p style="color: oklch(0.5 0.1 100 / 0)">hidden-by-oklch-alpha $13</p>
+  <p style="color: rgba(0, 0, 0, 0.01)">hidden-by-near-zero-alpha $14</p>
+  <p style="position: fixed; bottom: -500px">hidden-fixed-below-the-viewport $15</p>
+  <p style="filter: opacity(0)">hidden-by-filter-opacity $16</p>
+
+  <!-- Below the fold is not hidden: scrolling shows it. -->
+  <p style="position: absolute; top: 3000px">Shown below the fold</p>
+
+  <script>
+    // The Pro plan is fetched after load, as prices are on pages built by JavaScript.
+    setTimeout(async () => {
+      const pro = await (await fetch("/prices.json")).json();
+      document.getElementById("pro").innerHTML =
+        `<h2>${pro.name}</h2><p>${pro.price}</p><p>${pro.period}</p><p>${pro.limit}</p>`;
+    }, 300);
+  </script>
+</body>
+</html>

@@ -1,5 +1,5 @@
 import { findCompetitor } from "../config/competitors.ts";
-import type { Item, Signal } from "../domain/types.ts";
+import { BASELINE, type Item, type Signal } from "../domain/types.ts";
 import { PLAN_NAME, PRICE } from "../text/patterns.ts";
 import { priceChange } from "../text/price-change.ts";
 import { quotable } from "../text/quotable.ts";
@@ -62,7 +62,8 @@ function duplicateGroups(signals: Signal[]): Signal[][] {
 /** Undefined for a signal that is never merged: no readable time, no competitor, or a pricing claim without one plan and one new price. */
 function fingerprint(signal: Signal): Fingerprint | undefined {
   const competitor = findCompetitor(signal.competitor)?.name ?? lowerQuoted(signal.competitor);
-  if (!signal.utc || competitor === "") return undefined;
+  // A baseline is one per page by construction, never a second report of anything.
+  if (!signal.utc || competitor === "" || signal.type === BASELINE) return undefined;
   const parts = [String(signal.utc.getTime()), signal.type, competitor];
   if (signal.type !== "pricing") return { key: JSON.stringify(parts), source: lowerQuoted(signal.source) };
   const change = planAndPrice(signal);

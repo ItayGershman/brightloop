@@ -1,5 +1,6 @@
 import { AUDIENCE } from "../config/audience.ts";
 import { findCompetitor } from "../config/competitors.ts";
+import { baseline } from "./baseline.ts";
 import { mergeDuplicates } from "./duplicates.ts";
 import { pricingItem } from "./pricing-item.ts";
 import { eachSignal, skip, type Rule } from "./run-rules.ts";
@@ -39,7 +40,7 @@ export const pricing: Rule = eachSignal((signal) => {
 });
 
 /** The rules that judge one signal, or one group of duplicates, at a time. */
-const JUDGING: Rule[] = [outsideScope, pricing];
+const JUDGING: Rule[] = [outsideScope, baseline, pricing];
 
 /** Duplicates go first: each group is judged once by the rules it feeds (duplicates.ts). */
 export const RULES: Rule[] = [mergeDuplicates(JUDGING), ...JUDGING];
