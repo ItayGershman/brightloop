@@ -1,3 +1,4 @@
+import { AUDIENCE } from "../config/audience.ts";
 import { COMPETITORS } from "../config/competitors.ts";
 import { PAGE_NAMES, type Item, type PageKind, type Result } from "../domain/types.ts";
 import type { RunLogEntry } from "../schedule/run-log.ts";
@@ -37,7 +38,7 @@ export function renderPage({ result, history, timeZone }: PageView): string {
 <main>
 <header>
 <h1>${TITLE}</h1>
-<p class="lede">${esc(names(COMPETITORS.map((competitor) => competitor.name)))}: their pricing pages and homepages, checked every Monday at 08:30 Jerusalem time for Maya, Head of Growth at Brightloop. Built from public pages only.</p>
+<p class="lede">${esc(names(COMPETITORS.map((competitor) => competitor.name)))}: their pricing pages and homepages, checked every Monday morning before ${esc(AUDIENCE.deadline)}, for ${esc(capitalized(AUDIENCE.builtFor))}. Built from public pages only.</p>
 <p class="when">Last check: <strong>${esc(when(result.run.started_at))}</strong></p>
 </header>
 ${slackSection(result)}
@@ -70,11 +71,11 @@ function itemsSection(items: Item[]): string {
   }
   return `<section>
 <h2>This week's changes (${items.length})</h2>
-${items.map(itemCard).join("\n")}
+${items.map(itemBlock).join("\n")}
 </section>`;
 }
 
-function itemCard(item: Item): string {
+function itemBlock(item: Item): string {
   const page = PAGE_NAMES[item.page as PageKind] ?? item.page;
   const rows: [string, string | null][] = [
     ["Before", item.before],
@@ -103,9 +104,7 @@ function errorsSection(errors: string[]): string {
   return `<section class="problems">
 <h2>Problems in this run (${errors.length})</h2>
 <p>Some pages or checks did not go through, so this is not the all-clear.</p>
-<ul>
-${errors.map((error) => `<li>${esc(error)}</li>`).join("\n")}
-</ul>
+${errorList(errors)}
 </section>`;
 }
 
@@ -153,7 +152,11 @@ ${runs
 
 function problems(errors: string[]): string {
   if (errors.length === 0) return "none";
-  return `${plural(errors.length, "problem")}<ul>${errors.map((error) => `<li>${esc(error)}</li>`).join("")}</ul>`;
+  return `${plural(errors.length, "problem")}${errorList(errors)}`;
+}
+
+function errorList(errors: string[]): string {
+  return `<ul>${errors.map((error) => `<li>${esc(error)}</li>`).join("")}</ul>`;
 }
 
 function slackCell(entry: RunLogEntry): string {
@@ -191,6 +194,10 @@ function moment(iso: string, timeZone: string): string {
   const part = (type: Intl.DateTimeFormatPartTypes) => parts.find((p) => p.type === type)?.value ?? "";
   const place = timeZone.split("/").pop()?.replaceAll("_", " ") ?? timeZone;
   return `${part("weekday")} ${part("day")} ${part("month")} ${part("year")}, ${part("hour")}:${part("minute")} ${place} time`;
+}
+
+function capitalized(word: string): string {
+  return word.charAt(0).toUpperCase() + word.slice(1);
 }
 
 /** "Lovable, Replit and Bolt". */

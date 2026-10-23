@@ -1,7 +1,7 @@
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { AUDIENCE } from "../src/config/audience.ts";
 import type { Result } from "../src/domain/types.ts";
-import { deliverPage, publisherFromEnv } from "../src/page/index.ts";
+import { deliverPage, publisherFromEnv, type DeliveredPage } from "../src/page/index.ts";
 import { readRunLog, runLogEntry } from "../src/schedule/run-log.ts";
 import { repoProblems } from "./marker-scan.ts";
 
@@ -26,15 +26,25 @@ if (!result) {
   process.exit(0);
 }
 
+// The page's own row for this run is built before the upload, so it never shows this run's
+// publish failure; the run log line written next does.
 const history = [...readRunLog(logPath), runLogEntry({ startedAt: start, resultPath, snapshotsDir })];
-const delivered = await deliverPage(result, {
-  pagePath,
-  timeZone: AUDIENCE.timezone,
-  history,
-  publisher: publisherFromEnv(process.env),
-  // The same scan the repo check runs on committed files, under a name it does not exempt.
-  check: (html) => repoProblems([{ path: "live-page/index.html", text: html }]),
-});
+let delivered: DeliveredPage;
+try {
+  delivered = await deliverPage(result, {
+    pagePath,
+    // A live run's weeks and times are the audience's (the live input's time zone).
+    timeZone: AUDIENCE.timezone,
+    history,
+    publisher: publisherFromEnv(process.env),
+    // The same scan the repo check runs on committed files, under a name it does not exempt.
+    check: (html) => repoProblems([{ path: "live-page/index.html", text: html }]),
+  });
+} catch {
+  // Anything else (the page file could not be written): still a run error, never a crash.
+  const errors = [...result.run.errors, "live page not updated: the page could not be written"];
+  delivered = { result: { ...result, run: { ...result.run, errors } }, status: "not published: the upload failed" };
+}
 if (delivered.result !== result) writeFileSync(resultPath, `${JSON.stringify(delivered.result, null, 2)}\n`);
 console.log(`Live page ${delivered.status}${delivered.url ? `: ${delivered.url}` : ""}. Wrote ${pagePath}.`);
 

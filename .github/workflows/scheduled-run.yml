@@ -91,6 +91,9 @@ jobs:
         run: |
           rm -f runs/result.json runs/result.csv runs/result.html
           xvfb-run --auto-servernum ./run --live --output runs/result.json $HEADLESS
+      # The page goes public, so the outputs are checked first; a failure stops the job here.
+      - name: No forbidden marker in the snapshots or the result before the page goes up
+        run: npm run repo-check
       # Before the run log, so a failed publish is in result.json's errors and in this run's log line.
       - id: page
         name: Publish the live page

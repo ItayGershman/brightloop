@@ -13,7 +13,7 @@ import { renderPage } from "./render-page.ts";
 
 export type PageStatus =
   | "published"
-  | "not published: no BASE44_API_KEY"
+  | "not published: no BASE44_API_KEY or BASE44_APP_ID"
   | "not published: the page failed the content check"
   | "not published: the upload failed";
 
@@ -32,16 +32,16 @@ export async function deliverPage(
     timeZone: string;
     history?: RunLogEntry[];
     publisher?: PagePublisher;
-    /** Problems with the page's HTML that must stop it from being published; none by default. */
-    check?: (html: string) => string[];
+    /** Problems with the page's HTML that must stop it from being published. Required: nothing is published unchecked. */
+    check: (html: string) => string[];
   },
 ): Promise<DeliveredPage> {
   const html = renderPage({ result, history: options.history, timeZone: options.timeZone });
   mkdirSync(dirname(options.pagePath), { recursive: true });
   writeFileSync(options.pagePath, html);
-  if (!options.publisher) return { result, status: "not published: no BASE44_API_KEY" };
+  if (!options.publisher) return { result, status: "not published: no BASE44_API_KEY or BASE44_APP_ID" };
 
-  const problems = options.check?.(html) ?? [];
+  const problems = options.check(html);
   if (problems.length > 0) {
     return withError(result, "not published: the page failed the content check", `it failed the content check (${problems.join("; ")})`);
   }

@@ -73,7 +73,7 @@ The line is built from counts, actions and registered competitor names only: no 
 
 ## The live page
 
-**https://brightloop-pricing-watch-11e53ec8.base44.app** (public, no login).
+https://brightloop-pricing-watch-11e53ec8.base44.app (public, no login). Not verified yet: no run has published it so far.
 
 One static page, in Maya's words: the latest run's items (what changed, before and after, the action, why, how sure in words with the score after it, the next step and the link to the competitor's page), the problems the run hit, the skipped signals with their reasons, the run history from `runs/run-log.jsonl` (newest first: pages checked, problems, the Slack line and whether it was posted) and the Slack line as posted.
 
@@ -91,7 +91,7 @@ Typechecks, runs the repo check for the brief's hidden markers, then the case su
 
 | Folder or file | What it owns |
 |---|---|
-| `src/cli.ts` | Parses the command line, reads the cases file, starts a live capture or a replay, connects the Sheet for a live run with keys, writes `result.json` and the CSV. Nothing else |
+| `src/cli.ts` | Parses the command line, reads the cases file, starts a live capture or a replay, connects the Sheet for a live run with keys, writes `result.json`, the CSV and the page (`result.html`). Nothing else |
 | `src/run.ts` | One run: input in, rules, in-run checks, result out. Orchestration only |
 | `src/input/` | The two ways into a run. `parseCasesFile`: a cases file text into the run input (signals, banned words, secret-like config values, problems). `liveInput`: captured snapshots into the run input, one baseline signal per page seen for the first time, and the snapshot diff's signals (`snapshot-diff.ts`) for a page seen before |
 | `src/capture/` | The live capture: Chrome opens each watched page and keeps its visible text; snapshots are stored and read back from `snapshots/`. `capture/index.ts` (`captureLiveInput`, `replayInput`) is the only import point |

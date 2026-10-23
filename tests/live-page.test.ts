@@ -195,8 +195,8 @@ describe("publishing the page", () => {
       throw new Error("no network call may happen");
     });
     const out = join(tempDir(), "runs", "result.html");
-    const delivered = await deliverPage(result(), { pagePath: out, timeZone: ZONE });
-    assert.equal(delivered.status, "not published: no BASE44_API_KEY");
+    const delivered = await deliverPage(result(), { pagePath: out, timeZone: ZONE, check: () => [] });
+    assert.equal(delivered.status, "not published: no BASE44_API_KEY or BASE44_APP_ID");
     assert.deepEqual(delivered.result.run.errors, []);
     assert.match(readFileSync(out, "utf8"), /Competitor pricing watch/);
   });
@@ -208,7 +208,7 @@ describe("publishing the page", () => {
       },
     };
     const out = join(tempDir(), "result.html");
-    const delivered = await deliverPage(result(), { pagePath: out, timeZone: ZONE, publisher: failing });
+    const delivered = await deliverPage(result(), { pagePath: out, timeZone: ZONE, publisher: failing, check: () => [] });
     assert.equal(delivered.status, "not published: the upload failed");
     assert.deepEqual(delivered.result.run.errors, ["live page not updated: Base44 answered 401"]);
     assert.ok(existsSync(out));
@@ -220,7 +220,7 @@ describe("publishing the page", () => {
         throw new Error("secret-token-123 leaked in a message");
       },
     };
-    const delivered = await deliverPage(result(), { pagePath: join(tempDir(), "p.html"), timeZone: ZONE, publisher: failing });
+    const delivered = await deliverPage(result(), { pagePath: join(tempDir(), "p.html"), timeZone: ZONE, publisher: failing, check: () => [] });
     assert.deepEqual(delivered.result.run.errors, ["live page not updated: no answer from Base44"]);
   });
 
@@ -245,7 +245,7 @@ describe("publishing the page", () => {
 
   test("a successful publish returns the published URL and adds no error", async () => {
     const publisher: PagePublisher = { publish: async () => ({ url: "https://brightloop.base44.app" }) };
-    const delivered = await deliverPage(result(), { pagePath: join(tempDir(), "p.html"), timeZone: ZONE, publisher });
+    const delivered = await deliverPage(result(), { pagePath: join(tempDir(), "p.html"), timeZone: ZONE, publisher, check: () => [] });
     assert.equal(delivered.status, "published");
     assert.equal(delivered.url, "https://brightloop.base44.app");
     assert.deepEqual(delivered.result.run.errors, []);
