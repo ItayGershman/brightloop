@@ -50,19 +50,31 @@ export function isoWeek(moment: Date, zone: string): string {
 
 /** How far the zone's clock is ahead of UTC at a moment, in milliseconds. */
 function offsetAt(time: number, zone: string): number {
-  const parts = new Intl.DateTimeFormat("en-US", {
-    timeZone: zone,
-    hourCycle: "h23",
-    year: "numeric",
-    month: "numeric",
-    day: "numeric",
-    hour: "numeric",
-    minute: "numeric",
-    second: "numeric",
-  }).formatToParts(new Date(time));
+  const parts = wallClock(zone).formatToParts(new Date(time));
   const part = (type: Intl.DateTimeFormatPartTypes) => Number(parts.find((p) => p.type === type)?.value);
   const wall = Date.UTC(part("year"), part("month") - 1, part("day"), part("hour"), part("minute"), part("second"));
   return wall - Math.floor(time / 1000) * 1000;
+}
+
+/** One formatter per zone: building an Intl.DateTimeFormat is the slow part. */
+const WALL_CLOCKS = new Map<string, Intl.DateTimeFormat>();
+
+function wallClock(zone: string): Intl.DateTimeFormat {
+  let format = WALL_CLOCKS.get(zone);
+  if (!format) {
+    format = new Intl.DateTimeFormat("en-US", {
+      timeZone: zone,
+      hourCycle: "h23",
+      year: "numeric",
+      month: "numeric",
+      day: "numeric",
+      hour: "numeric",
+      minute: "numeric",
+      second: "numeric",
+    });
+    WALL_CLOCKS.set(zone, format);
+  }
+  return format;
 }
 
 /** The UTC moment of a wall-clock time in a zone, given as if that wall clock were UTC. */

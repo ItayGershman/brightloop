@@ -66,6 +66,67 @@ describe("AC1: the sg-301 / sg-302 pair is one event, and each id lands exactly 
     assert.deepEqual(runCases({ ...JERUSALEM, signals }).items.map((item) => item.source_ids), [["pr-1", "pr-2"]]);
   });
 
+  test("the hour after clocks go back (02:30 local on 25 October) happens once, at UTC+2", () => {
+    const signals = [
+      pricingSignal({ id: "pr-1", source: "press.example", ts: "2026-10-25 02:30" }),
+      pricingSignal({ id: "pr-2", source: "lovable.dev/pricing", ts: "2026-10-25T00:30:00Z" }),
+    ];
+    assert.deepEqual(runCases({ ...JERUSALEM, signals }).items.map((item) => item.source_ids), [["pr-1", "pr-2"]]);
+  });
+
+  test("the hour skipped when clocks go forward (02:30 local on 27 March) is read at the offset before, UTC+2", () => {
+    const signals = [
+      pricingSignal({ id: "pr-1", source: "press.example", ts: "2026-03-27 02:30" }),
+      pricingSignal({ id: "pr-2", source: "lovable.dev/pricing", ts: "2026-03-27T00:30:00Z" }),
+    ];
+    assert.deepEqual(runCases({ ...JERUSALEM, signals }).items.map((item) => item.source_ids), [["pr-1", "pr-2"]]);
+  });
+
+  test("a pricing signal that states no new price is never merged, so its change is not lost", () => {
+    const signals = [
+      pricingSignal({ id: "pr-1", source: "press.example", text: "Pro plan shown at $25/month (was $20 last week)." }),
+      pricingSignal({ id: "pr-2", text: "The free plan now includes 5 daily credits instead of 10." }),
+    ];
+    const result = runCases({ ...JERUSALEM, signals });
+    assert.deepEqual(result.items.map((item) => item.source_ids), [["pr-1"], ["pr-2"]]);
+    assert.match(result.items[1].what_changed, /free plan/);
+  });
+
+  test("two plans changing to the same price are two changes", () => {
+    const signals = [
+      pricingSignal({ id: "pr-1", source: "press.example", text: "Pro $25/month (was $20)." }),
+      pricingSignal({ id: "pr-2", text: "Teams $25/month (was $30)." }),
+    ];
+    assert.deepEqual(runCases({ ...JERUSALEM, signals }).items.map((item) => item.source_ids), [["pr-1"], ["pr-2"]]);
+  });
+
+  test("an official signal with no price never joins an unbacked claim, whatever the order", () => {
+    const signals = [
+      pricingSignal({ id: "pr-1", source: "blog.example", text: "Pro plan is $30/month (was $20)." }),
+      pricingSignal({ id: "pr-2", source: "press.example", text: "Pro plan is $25/month (was $20)." }),
+      pricingSignal({ id: "pr-3", text: "Pro plan updated." }),
+    ];
+    const result = runCases({ ...JERUSALEM, signals });
+    assert.deepEqual(result.items.map((item) => item.source_ids), [["pr-1"], ["pr-2"], ["pr-3"]]);
+    assert.deepEqual(result.items.map((item) => item.confidence), [0.2, 0.2, 0.9]);
+  });
+
+  test("two launches with no competitor are never merged", () => {
+    const launch = (id: string, source: string, text: string) => ({ id, type: "launch", source, ts: "2026-10-23T08:00:00Z", text });
+    const result = runCases({ ...JERUSALEM, signals: [launch("la-1", "x.example", "Tool A ships"), launch("la-2", "y.example", "Tool B ships")] });
+    assert.ok(result.skipped.every((entry) => !entry.reason.includes("same event")));
+  });
+
+  test("5,000 signals at one moment are grouped in under 3 seconds", () => {
+    const signals = Array.from({ length: 5000 }, (_, index) =>
+      pricingSignal({ id: `pr-${index}`, source: `press-${index % 50}.example`, ts: "2026-10-23T08:00:00Z" }),
+    );
+    const started = performance.now();
+    const result = runCases({ ...JERUSALEM, signals });
+    assert.ok(performance.now() - started < 3000, "the duplicate rule is not quadratic");
+    assert.equal(result.items.length, 100, "50 sources, 100 signals each: 100 groups of 50");
+  });
+
   const notDuplicates: [string, Record<string, unknown>][] = [
     ["a minute apart", { ts: "2026-10-23T08:01:00Z" }],
     ["about another competitor", { competitor: "Bolt", source: "bolt.new/pricing" }],
@@ -140,6 +201,7 @@ describe("AC4: malformed input yields a valid wrapper with the problem in run.er
     ["signals that are not a list", { signals: "pr-1" }, "input has no signals list"],
     ["a signal that is not an object", { signals: ["Lovable Pro is $25"] }, "signal 1 has no id and was not read"],
     ["a time zone Intl does not know", { timezone: "Mars/Olympus_Mons", signals: [] }, "input timezone is not a known time zone; weeks are counted in UTC"],
+    ["a time zone that is not a string", { timezone: 3, signals: [] }, "input timezone is not a known time zone; weeks are counted in UTC"],
     ["banned words that are not a list", { brand: { banned_words: "seamless" }, signals: [] }, "input brand.banned_words is not a list; no brand words were checked"],
   ];
   for (const [what, input, error] of malformed) {
@@ -149,6 +211,12 @@ describe("AC4: malformed input yields a valid wrapper with the problem in run.er
       assert.deepEqual(result.run.errors, [error]);
     });
   }
+
+  test("a null time zone is read like a missing one: UTC, with no error", () => {
+    const result = runCases({ timezone: null, signals: [pricingSignal({ ts: "2026-10-25T22:30:00Z" })] });
+    assert.deepEqual(result.run.errors, []);
+    assert.equal(result.items[0].week, "2026-W43");
+  });
 
   const badTimes = ["last Friday", "2026-02-30 10:00", "2026-10-25T25:00:00Z", "2026-10-25T10:00:00+99:00", 1761300000];
   for (const ts of badTimes) {

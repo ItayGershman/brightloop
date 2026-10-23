@@ -41,3 +41,9 @@ export const UTC_NAME = /^(Z|UTC|GMT)$/i;
 
 /** A stated UTC offset: sign, hours, optional minutes. */
 export const UTC_OFFSET = /^([+-])(\d{2}):?(\d{2})?$/;
+
+/**
+ * A common plan name, as a whole word: what a duplicate check needs to tell "Pro" from
+ * "Teams". Global, for matchAll. A plan with any other name is never merged as a duplicate.
+ */
+export const PLAN_NAME = /\b(free|hobby|starter|basic|core|pro|plus|premium|team|teams|business|enterprise|scale)\b/gi;

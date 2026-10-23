@@ -56,9 +56,9 @@ export function parseCasesFile(text: string): RunInput {
   return { signals, bannedWords, secrets, timezone, errors };
 }
 
-/** The input's time zone; UTC when it names none, and when it names one Intl does not know. */
+/** The input's time zone; UTC when it names none (missing or null), and when it names one Intl does not know. */
 function timeZone(value: unknown, errors: string[]): string {
-  if (value === undefined) return "UTC";
+  if (value === undefined || value === null) return "UTC";
   if (typeof value === "string" && isTimeZone(value)) return value;
   errors.push("input timezone is not a known time zone; weeks are counted in UTC");
   return "UTC";
