@@ -3,6 +3,8 @@ import type { Competitor } from "../config/competitors.ts";
 import { KNOWN_PRESS } from "../config/press.ts";
 import { GUEST_POST_SOURCE, SECOND_HAND_SOURCE } from "../text/patterns.ts";
 import { quotable } from "../text/quotable.ts";
+import { advise, type Advice } from "./advice.ts";
+import type { PricingChange } from "./change.ts";
 import { isOnDomainOrSubdomain, isRootOf, isUnder, sourceUrl } from "./source-url.ts";
 
 // How far a signal's source can be trusted: TRUST_LEVELS, one row per level, checked in
@@ -23,8 +25,8 @@ export interface Page {
 
 /** How an item from a trust level reads. */
 interface ItemWording {
-  action: string;
-  shouldWeRespond: (page: Page) => string;
+  /** The action and the answer to "should we respond?", given what the signal says changed. */
+  respond: (page: Page, change: PricingChange) => Advice;
   cta: (page: Page) => string;
   notes: (page: Page) => string;
 }
@@ -54,8 +56,8 @@ const TRUST_LEVELS: TrustLevel[] = [
     confidence: 0.9,
     label: ({ name }) => `confirmed: seen on ${name}'s own pricing page`,
     item: {
-      action: "watch 2 weeks",
-      shouldWeRespond: () => "Not yet: watch whether the change holds on the next two Monday runs.",
+      // Only the pricing page itself shows a change worth acting on: the action follows the change.
+      respond: (_page, change) => advise(change),
       cta: ({ name, link }) => `Open ${link} and check the ${name} price before ${AUDIENCE.deadline}.`,
       notes: ({ source }) => `Source: ${source}.`,
     },
@@ -67,8 +69,10 @@ const TRUST_LEVELS: TrustLevel[] = [
     confidence: 0.9,
     label: ({ name }) => `confirmed by ${name}'s own site, not yet seen on its pricing page`,
     item: {
-      action: "watch 1 week",
-      shouldWeRespond: ({ name }) => `Not yet: ${name} says it, but its pricing page does not show it yet; the next Monday run checks again.`,
+      respond: ({ name }) => ({
+        action: "watch 1 week",
+        shouldWeRespond: `Not yet: ${name} says it, but its pricing page does not show it yet; the next Monday run checks again.`,
+      }),
       cta: ({ name, link }) => `Open ${link} and check whether the ${name} price matches before ${AUDIENCE.deadline}.`,
       notes: ({ name, source }) => `Source: ${source}, ${name}'s own site but not its pricing page.`,
     },
@@ -100,8 +104,10 @@ const TRUST_LEVELS: TrustLevel[] = [
     confidence: 0.7,
     label: ({ name }) => `likely: reported by known press, not yet seen on ${name}'s own pricing page`,
     item: {
-      action: "watch 1 week",
-      shouldWeRespond: ({ name }) => `Not yet: a known outlet reports it, but ${name}'s own page does not show it yet; the next Monday run checks.`,
+      respond: ({ name }) => ({
+        action: "watch 1 week",
+        shouldWeRespond: `Not yet: a known outlet reports it, but ${name}'s own page does not show it yet; the next Monday run checks.`,
+      }),
       cta: ({ link }) => `Check ${link} before repeating this to ${AUDIENCE.reportsTo}; until it shows there, it is still being checked.`,
       notes: ({ name, source }) => `Press source, not ${name}'s own page: ${source}.`,
     },

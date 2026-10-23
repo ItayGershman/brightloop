@@ -8,8 +8,8 @@
       ],
       "confidence": 0.9,
       "confidence_label": "confirmed: seen on Lovable's own pricing page",
-      "action": "watch 2 weeks",
-      "why": "Can't compare yet: Brightloop's own-pricing tab is not connected. Lovable now shows $25/month. Should we respond? Not yet: watch whether the change holds on the next two Monday runs.",
+      "action": "respond now",
+      "why": "Still cheaper than us on Lovable Pro? Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Lovable Pro now shows $25/month. Should we respond? Yes, respond now: Pro is Lovable's lowest paid tier, the one most of our trials compare against.",
       "cta": "Open https://lovable.dev/pricing and check the Lovable price before the 11:00 leadership meeting.",
       "competitor": "Lovable",
       "page": "pricing",
@@ -18,7 +18,7 @@
       "after": "$25/month",
       "link": "https://lovable.dev/pricing",
       "notes": "Source: lovable.dev/pricing.",
-      "brightloop_comparison": "Can't compare yet: Brightloop's own-pricing tab is not connected. Lovable now shows $25/month."
+      "brightloop_comparison": "Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Lovable Pro now shows $25/month."
     }
   ],
   "skipped": [

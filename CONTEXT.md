@@ -28,6 +28,14 @@ _Avoid_: credibility, reputation
 A recommendation to the marketer built from one or more signals, or from a baseline, with a next action, a reason and a confidence.
 _Avoid_: alert, insight, card
 
+**Promotion**:
+A temporary price or offer on a competitor's pricing page (a promo link, an expiry date, an introductory price, "limited time" or discount wording); never a list-price change. A **possible promotion** has only hints (fine print, a bare percentage, "free forever"), so the item names the check still needed.
+_Avoid_: deal, price cut
+
+**Lowest paid tier**:
+A competitor's cheapest paid plan, where most Brightloop trials compare; a list-price change to it, or to what the free plan includes, leans to "respond now".
+_Avoid_: entry tier, starter tier
+
 **Snapshot**:
 The visible text and pricing facts of one competitor page as captured by one run; the next run compares against the latest one.
 _Avoid_: copy, capture, cache

@@ -8,8 +8,8 @@
       ],
       "confidence": 0.9,
       "confidence_label": "confirmed: seen on Lovable's own pricing page",
-      "action": "watch 2 weeks",
-      "why": "Can't compare yet: Brightloop's own-pricing tab is not connected. Lovable now shows $25/month. Should we respond? Not yet: watch whether the change holds on the next two Monday runs.",
+      "action": "respond now",
+      "why": "Still cheaper than us on Lovable Pro? Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Lovable Pro now shows $25/month. Should we respond? Yes, respond now: Pro is Lovable's lowest paid tier, the one most of our trials compare against.",
       "cta": "Open https://lovable.dev/pricing and check the Lovable price before the 11:00 leadership meeting.",
       "competitor": "Lovable",
       "page": "pricing",
@@ -18,7 +18,7 @@
       "after": "$25/month",
       "link": "https://lovable.dev/pricing",
       "notes": "Source: https://lovable.dev/pricing.",
-      "brightloop_comparison": "Can't compare yet: Brightloop's own-pricing tab is not connected. Lovable now shows $25/month."
+      "brightloop_comparison": "Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Lovable Pro now shows $25/month."
     },
     {
       "id": "pricing-st-2",
@@ -28,7 +28,7 @@
       "confidence": 0.9,
       "confidence_label": "confirmed by Replit's own site, not yet seen on its pricing page",
       "action": "watch 1 week",
-      "why": "Can't compare yet: Brightloop's own-pricing tab is not connected. Replit now shows $20/month. Should we respond? Not yet: Replit says it, but its pricing page does not show it yet; the next Monday run checks again.",
+      "why": "Still cheaper than us on Replit Core? Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Replit Core now shows $20/month. Should we respond? Not yet: Replit says it, but its pricing page does not show it yet; the next Monday run checks again.",
       "cta": "Open https://replit.com/pricing and check whether the Replit price matches before the 11:00 leadership meeting.",
       "competitor": "Replit",
       "page": "pricing",
@@ -37,7 +37,7 @@
       "after": "$20/month",
       "link": "https://replit.com/pricing",
       "notes": "Source: https://blog.replit.com/new-pricing, Replit's own site but not its pricing page.",
-      "brightloop_comparison": "Can't compare yet: Brightloop's own-pricing tab is not connected. Replit now shows $20/month."
+      "brightloop_comparison": "Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Replit Core now shows $20/month."
     },
     {
       "id": "pricing-st-3",
@@ -47,7 +47,7 @@
       "confidence": 0.9,
       "confidence_label": "confirmed by Bolt's own site, not yet seen on its pricing page",
       "action": "watch 1 week",
-      "why": "Can't compare yet: Brightloop's own-pricing tab is not connected. Bolt now shows $18/month. Should we respond? Not yet: Bolt says it, but its pricing page does not show it yet; the next Monday run checks again.",
+      "why": "Still cheaper than us on Bolt Pro? Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Bolt Pro now shows $18/month. Should we respond? Not yet: Bolt says it, but its pricing page does not show it yet; the next Monday run checks again.",
       "cta": "Open https://bolt.new/pricing and check whether the Bolt price matches before the 11:00 leadership meeting.",
       "competitor": "Bolt",
       "page": "pricing",
@@ -56,7 +56,7 @@
       "after": "$18/month",
       "link": "https://bolt.new/pricing",
       "notes": "Source: https://bolt.new/blog/pricing-update, Bolt's own site but not its pricing page.",
-      "brightloop_comparison": "Can't compare yet: Brightloop's own-pricing tab is not connected. Bolt now shows $18/month."
+      "brightloop_comparison": "Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Bolt Pro now shows $18/month."
     },
     {
       "id": "pricing-st-4",
@@ -66,7 +66,7 @@
       "confidence": 0.7,
       "confidence_label": "likely: reported by known press, not yet seen on Lovable's own pricing page",
       "action": "watch 1 week",
-      "why": "Can't compare yet: Brightloop's own-pricing tab is not connected. Lovable now shows $25/month. Should we respond? Not yet: a known outlet reports it, but Lovable's own page does not show it yet; the next Monday run checks.",
+      "why": "Still cheaper than us on Lovable Pro? Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Lovable Pro now shows $25/month. Should we respond? Not yet: a known outlet reports it, but Lovable's own page does not show it yet; the next Monday run checks.",
       "cta": "Check https://lovable.dev/pricing before repeating this to leadership; until it shows there, it is still being checked.",
       "competitor": "Lovable",
       "page": "pricing",
@@ -75,7 +75,7 @@
       "after": "$25/month",
       "link": "https://lovable.dev/pricing",
       "notes": "Press source, not Lovable's own page: techcrunch.com/2026/10/22/lovable-pricing.",
-      "brightloop_comparison": "Can't compare yet: Brightloop's own-pricing tab is not connected. Lovable now shows $25/month."
+      "brightloop_comparison": "Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Lovable Pro now shows $25/month."
     },
     {
       "id": "pricing-st-10",
@@ -84,8 +84,8 @@
       ],
       "confidence": 0.9,
       "confidence_label": "confirmed: seen on Lovable's own pricing page",
-      "action": "watch 2 weeks",
-      "why": "Can't compare yet: Brightloop's own-pricing tab is not connected. Lovable now shows $25/month. Should we respond? Not yet: watch whether the change holds on the next two Monday runs.",
+      "action": "respond now",
+      "why": "Still cheaper than us on Lovable Pro? Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Lovable Pro now shows $25/month. Should we respond? Yes, respond now: Pro is Lovable's lowest paid tier, the one most of our trials compare against.",
       "cta": "Open https://lovable.dev/pricing and check the Lovable price before the 11:00 leadership meeting.",
       "competitor": "Lovable",
       "page": "pricing",
@@ -94,7 +94,7 @@
       "after": "$25/month",
       "link": "https://lovable.dev/pricing",
       "notes": "Source: lovable.dev/pricing?utm_source=newsletter&ref=via-twitter.",
-      "brightloop_comparison": "Can't compare yet: Brightloop's own-pricing tab is not connected. Lovable now shows $25/month."
+      "brightloop_comparison": "Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Lovable Pro now shows $25/month."
     },
     {
       "id": "pricing-st-11",
@@ -104,7 +104,7 @@
       "confidence": 0.9,
       "confidence_label": "confirmed by Lovable's own site, not yet seen on its pricing page",
       "action": "watch 1 week",
-      "why": "Can't compare yet: Brightloop's own-pricing tab is not connected. Lovable's current price is on its pricing page. Should we respond? Not yet: Lovable says it, but its pricing page does not show it yet; the next Monday run checks again.",
+      "why": "Still cheaper than us on the Lovable plan that changed? Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Lovable shows $50/month. Should we respond? Not yet: Lovable says it, but its pricing page does not show it yet; the next Monday run checks again.",
       "cta": "Open https://lovable.dev/pricing and check whether the Lovable price matches before the 11:00 leadership meeting.",
       "competitor": "Lovable",
       "page": "pricing",
@@ -113,7 +113,7 @@
       "after": null,
       "link": "https://lovable.dev/pricing",
       "notes": "Source: https://lovable.dev/blog/new-partner-program, Lovable's own site but not its pricing page.",
-      "brightloop_comparison": "Can't compare yet: Brightloop's own-pricing tab is not connected. Lovable's current price is on its pricing page."
+      "brightloop_comparison": "Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Lovable shows $50/month."
     }
   ],
   "skipped": [
