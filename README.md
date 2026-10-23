@@ -34,7 +34,7 @@ Typechecks, runs the repo check for the brief's hidden markers, then the case su
 | `src/run.ts` | One run: input in, rules, in-run checks, result out. Orchestration only |
 | `src/input/` | The two ways into a run. `parseCasesFile`: a cases file text into the run input (signals, banned words, secret-like config values, problems). `liveInput`: captured snapshots into the run input, one baseline signal per page seen for the first time |
 | `src/capture/` | The live capture: Chrome opens each watched page and keeps its visible text; snapshots are stored and read back from `snapshots/`. `capture/index.ts` (`captureLiveInput`) is the only import point |
-| `src/judging/` | The rule engine (`runRules`), the rules (`RULES`), the source trust levels (`source-trust.ts`), reading a source as a URL (`source-url.ts`), the pricing item builder and the baseline rule |
+| `src/judging/` | The rule engine (`runRules`), the rules (`RULES`), the source trust levels (`source-trust.ts`), reading a source as a URL (`source-url.ts`), the pricing item builder and the baseline rule; for a pricing item, its promotion markers (`promotion.ts`), the plan it is on (`plan.ts`), the action (`advice.ts`) and the Brightloop comparison (`comparison.ts`) |
 | `src/checks/` | The in-run checks; `checks/index.ts` is the only import point |
 | `src/config/` | The audience, the competitor registry and the known press outlets |
 | `src/text/` | Reading outside text: named patterns, quoting, price change, the plans on a pricing page, the brief's markers |
@@ -53,12 +53,12 @@ The required wrapper (`built_for`, `items`, `skipped`, `run`) plus these fields 
 
 | Field | Meaning |
 |---|---|
-| `confidence_label` | The confidence in plain words, e.g. "confirmed: seen on Lovable's own pricing page" |
+| `confidence_label` | The confidence in plain words, e.g. "confirmed: seen on Lovable's own pricing page", or "unconfirmed, possible promo: ..." when the rules cannot tell a promotion from a list-price change |
 | `cta` | What Maya should do next |
 | `competitor`, `page` | Which competitor and which of its pages |
-| `what_changed`, `before`, `after` | The change as stated; `before` and `after` only when the signal states both |
+| `what_changed`, `before`, `after` | The change as stated; `before` and `after` only when the signal states both and it is not a promotion or a possible one |
 | `link` | The competitor's own pricing page |
-| `notes` | Where the signal came from |
+| `notes` | Where the signal came from, and any promotion markers found |
 | `brightloop_comparison` | Whether the competitor is still cheaper than Brightloop on that tier, or why that can't be said yet |
 | `week` | The ISO week (`2026-W43`) the change was seen in, counted in the input's `timezone`; `null` when the signal has no readable time |
 | `tiers` | Baseline items only: every plan on the pricing page, `{ name, price, period, struck_price, billing, limits }`, in the page's words; `billing` is null when the page does not say |

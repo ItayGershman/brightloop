@@ -1,0 +1,191 @@
+{
+  "built_for": "maya",
+  "items": [
+    {
+      "id": "pricing-ta-1",
+      "source_ids": [
+        "ta-1"
+      ],
+      "confidence": 0.9,
+      "confidence_label": "confirmed: seen on Lovable's own pricing page",
+      "action": "respond now",
+      "why": "Still cheaper than us on Lovable Pro? Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Lovable Pro now shows $30/month. Should we respond? Yes, respond now: Pro is Lovable's lowest paid tier, the one most of our trials compare against.",
+      "cta": "Open https://lovable.dev/pricing and check the Lovable price before the 11:00 leadership meeting.",
+      "competitor": "Lovable",
+      "page": "pricing",
+      "what_changed": "Pro plan shown at $30/month (was $25 last week).",
+      "before": "$25",
+      "after": "$30/month",
+      "link": "https://lovable.dev/pricing",
+      "notes": "Source: lovable.dev/pricing.",
+      "brightloop_comparison": "Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Lovable Pro now shows $30/month.",
+      "week": "2026-W43"
+    },
+    {
+      "id": "pricing-ta-2",
+      "source_ids": [
+        "ta-2"
+      ],
+      "confidence": 0.9,
+      "confidence_label": "confirmed: seen on Replit's own pricing page",
+      "action": "respond now",
+      "why": "Still cheaper than us on Replit's free plan? Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Replit's free plan costs nothing; what it includes is on https://replit.com/pricing. Should we respond? Yes, respond now: it changes what Replit's free plan includes, and trials upgrade from the free plan.",
+      "cta": "Open https://replit.com/pricing and check the Replit price before the 11:00 leadership meeting.",
+      "competitor": "Replit",
+      "page": "pricing",
+      "what_changed": "Free plan now includes 3 apps, down from 10.",
+      "before": null,
+      "after": null,
+      "link": "https://replit.com/pricing",
+      "notes": "Source: replit.com/pricing.",
+      "brightloop_comparison": "Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Replit's free plan costs nothing; what it includes is on https://replit.com/pricing.",
+      "week": "2026-W43"
+    },
+    {
+      "id": "pricing-ta-3",
+      "source_ids": [
+        "ta-3"
+      ],
+      "confidence": 0.9,
+      "confidence_label": "confirmed: seen on Bolt's own pricing page",
+      "action": "respond now",
+      "why": "Still cheaper than us on Bolt's free plan? Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Bolt's free plan costs nothing; what it includes is on https://bolt.new/pricing. Should we respond? Yes, respond now: it changes what Bolt's free plan includes, and trials upgrade from the free plan.",
+      "cta": "Open https://bolt.new/pricing and check the Bolt price before the 11:00 leadership meeting.",
+      "competitor": "Bolt",
+      "page": "pricing",
+      "what_changed": "Free plan daily token limit lowered to 100k, down from 150k.",
+      "before": null,
+      "after": null,
+      "link": "https://bolt.new/pricing",
+      "notes": "Source: bolt.new/pricing.",
+      "brightloop_comparison": "Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Bolt's free plan costs nothing; what it includes is on https://bolt.new/pricing.",
+      "week": "2026-W43"
+    },
+    {
+      "id": "pricing-ta-4",
+      "source_ids": [
+        "ta-4"
+      ],
+      "confidence": 0.9,
+      "confidence_label": "confirmed: seen on Lovable's own pricing page",
+      "action": "watch 2 weeks",
+      "why": "Still cheaper than us on Lovable Business? Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Lovable Business now shows $60/month. Should we respond? Not yet: Business is above Lovable's lowest paid tier, so few of our trials are affected. What would change the answer: Lovable making the same change on its lowest paid tier or its free plan.",
+      "cta": "Open https://lovable.dev/pricing and check the Lovable price before the 11:00 leadership meeting.",
+      "competitor": "Lovable",
+      "page": "pricing",
+      "what_changed": "Business plan shown at $60/month (was $50 last week).",
+      "before": "$50",
+      "after": "$60/month",
+      "link": "https://lovable.dev/pricing",
+      "notes": "Source: lovable.dev/pricing.",
+      "brightloop_comparison": "Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Lovable Business now shows $60/month.",
+      "week": "2026-W43"
+    },
+    {
+      "id": "pricing-ta-5",
+      "source_ids": [
+        "ta-5"
+      ],
+      "confidence": 0.9,
+      "confidence_label": "confirmed: seen on Bolt's own pricing page",
+      "action": "watch 2 weeks",
+      "why": "Still cheaper than us on Bolt Teams? Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Bolt Teams now shows $35/month. Should we respond? Not yet: Teams is above Bolt's lowest paid tier, so few of our trials are affected. What would change the answer: Bolt making the same change on its lowest paid tier or its free plan.",
+      "cta": "Open https://bolt.new/pricing and check the Bolt price before the 11:00 leadership meeting.",
+      "competitor": "Bolt",
+      "page": "pricing",
+      "what_changed": "Teams plan now $35/month per member (was $30).",
+      "before": "$30",
+      "after": "$35/month",
+      "link": "https://bolt.new/pricing",
+      "notes": "Source: bolt.new/pricing.",
+      "brightloop_comparison": "Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Bolt Teams now shows $35/month.",
+      "week": "2026-W43"
+    },
+    {
+      "id": "pricing-ta-6",
+      "source_ids": [
+        "ta-6"
+      ],
+      "confidence": 0.9,
+      "confidence_label": "confirmed: seen on Replit's own pricing page",
+      "action": "watch 1 week",
+      "why": "Still cheaper than us on the Replit plan that changed? Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Replit now shows $30/month. Should we respond? Not yet: the change does not name exactly one Replit plan. What would change the answer: https://replit.com/pricing showing it is the lowest paid tier or the free plan.",
+      "cta": "Open https://replit.com/pricing and check the Replit price before the 11:00 leadership meeting.",
+      "competitor": "Replit",
+      "page": "pricing",
+      "what_changed": "New monthly price shown at $30/month (was $25).",
+      "before": "$25",
+      "after": "$30/month",
+      "link": "https://replit.com/pricing",
+      "notes": "Source: replit.com/pricing.",
+      "brightloop_comparison": "Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Replit now shows $30/month.",
+      "week": "2026-W43"
+    },
+    {
+      "id": "pricing-ta-7",
+      "source_ids": [
+        "ta-7"
+      ],
+      "confidence": 0.9,
+      "confidence_label": "confirmed: seen on Replit's own pricing page",
+      "action": "watch 2 weeks",
+      "why": "Still cheaper than us on Replit Pro? Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Replit Pro now shows $120/month. Should we respond? Not yet: Pro is above Replit's lowest paid tier, so few of our trials are affected. What would change the answer: Replit making the same change on its lowest paid tier or its free plan.",
+      "cta": "Open https://replit.com/pricing and check the Replit price before the 11:00 leadership meeting.",
+      "competitor": "Replit",
+      "page": "pricing",
+      "what_changed": "Pro plan now $120/month (was $100).",
+      "before": "$100",
+      "after": "$120/month",
+      "link": "https://replit.com/pricing",
+      "notes": "Source: replit.com/pricing.",
+      "brightloop_comparison": "Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Replit Pro now shows $120/month.",
+      "week": "2026-W43"
+    },
+    {
+      "id": "pricing-ta-8",
+      "source_ids": [
+        "ta-8"
+      ],
+      "confidence": 0.9,
+      "confidence_label": "confirmed: seen on Bolt's own pricing page",
+      "action": "watch 1 week",
+      "why": "Still cheaper than us on the Bolt plan that changed? Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Bolt now shows $40/month. Should we respond? Not yet: the change does not name exactly one Bolt plan. What would change the answer: https://bolt.new/pricing showing it is the lowest paid tier or the free plan.",
+      "cta": "Open https://bolt.new/pricing and check the Bolt price before the 11:00 leadership meeting.",
+      "competitor": "Bolt",
+      "page": "pricing",
+      "what_changed": "Pro Teams bundle now $40/month (was $35).",
+      "before": "$35",
+      "after": "$40/month",
+      "link": "https://bolt.new/pricing",
+      "notes": "Source: bolt.new/pricing.",
+      "brightloop_comparison": "Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Bolt now shows $40/month.",
+      "week": "2026-W43"
+    },
+    {
+      "id": "pricing-ta-9",
+      "source_ids": [
+        "ta-9"
+      ],
+      "confidence": 0.9,
+      "confidence_label": "confirmed: seen on Lovable's own pricing page",
+      "action": "respond now",
+      "why": "Still cheaper than us on Lovable's free plan? Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Lovable's free plan costs nothing; what it includes is on https://lovable.dev/pricing. Should we respond? Yes, respond now: it changes what Lovable's free plan includes, and trials upgrade from the free plan.",
+      "cta": "Open https://lovable.dev/pricing and check the Lovable price before the 11:00 leadership meeting.",
+      "competitor": "Lovable",
+      "page": "pricing",
+      "what_changed": "Free now includes 3 projects, down from 5.",
+      "before": null,
+      "after": null,
+      "link": "https://lovable.dev/pricing",
+      "notes": "Source: lovable.dev/pricing.",
+      "brightloop_comparison": "Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Lovable's free plan costs nothing; what it includes is on https://lovable.dev/pricing.",
+      "week": "2026-W43"
+    }
+  ],
+  "skipped": [],
+  "run": {
+    "started_at": "2026-10-26T06:30:00.000Z",
+    "cost_usd": 0,
+    "errors": []
+  }
+}

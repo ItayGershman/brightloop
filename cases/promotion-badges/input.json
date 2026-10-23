@@ -1,0 +1,17 @@
+{
+  "week": "2026-W43",
+  "timezone": "Asia/Jerusalem",
+  "brand": { "name": "Brightloop", "banned_words": ["revolutionary", "game-changing", "seamless"] },
+  "signals": [
+    { "id": "pb-1", "type": "pricing", "competitor": "Lovable", "source": "lovable.dev/pricing", "ts": "2026-10-23T08:00:00Z",
+      "text": "Pro plan 30% off: $17.50/month (was $25). Limited time." },
+    { "id": "pb-2", "type": "pricing", "competitor": "Replit", "source": "https://replit.com/pricing?promo=fall", "ts": "2026-10-23T08:05:00Z",
+      "text": "Core plan $15/month (was $25)." },
+    { "id": "pb-3", "type": "pricing", "competitor": "Bolt", "source": "bolt.new/pricing", "ts": "2026-10-23T08:10:00Z",
+      "text": "Pro plan $15/month (was $25), offer ends Oct 31." },
+    { "id": "pb-4", "type": "pricing", "competitor": "Lovable", "source": "lovable.dev/pricing", "ts": "2026-10-23T08:15:00Z",
+      "text": "Pro plan $12.50/month for the first 3 months (was $25)." },
+    { "id": "pb-5", "type": "pricing", "competitor": "Lovable", "source": "AI summary forwarded in Slack", "ts": "2026-10-23T08:20:00Z",
+      "text": "Lovable cut prices: Pro now $17.50/month (was $25), 30% off." }
+  ]
+}

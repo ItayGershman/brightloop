@@ -1,0 +1,71 @@
+{
+  "built_for": "maya",
+  "items": [
+    {
+      "id": "pricing-np-1",
+      "source_ids": [
+        "np-1"
+      ],
+      "confidence": 0.9,
+      "confidence_label": "confirmed: seen on Bolt's own pricing page",
+      "action": "respond now",
+      "why": "Still cheaper than us on Bolt Pro? Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Bolt Pro now shows $30/month. Should we respond? Yes, respond now: Pro is Bolt's lowest paid tier, the one most of our trials compare against.",
+      "cta": "Open https://bolt.new/pricing and check the Bolt price before the 11:00 leadership meeting.",
+      "competitor": "Bolt",
+      "page": "pricing",
+      "what_changed": "Pro plan shown at $30/month (was $25 last week).",
+      "before": "$25",
+      "after": "$30/month",
+      "link": "https://bolt.new/pricing",
+      "notes": "Source: bolt.new/pricing.",
+      "brightloop_comparison": "Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Bolt Pro now shows $30/month.",
+      "week": "2026-W43"
+    },
+    {
+      "id": "pricing-np-2",
+      "source_ids": [
+        "np-2"
+      ],
+      "confidence": 0.9,
+      "confidence_label": "confirmed: seen on Replit's own pricing page",
+      "action": "respond now",
+      "why": "Still cheaper than us on Replit Core? Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Replit Core shows $25/month. Should we respond? Yes, respond now: Core is Replit's lowest paid tier, the one most of our trials compare against.",
+      "cta": "Open https://replit.com/pricing and check the Replit price before the 11:00 leadership meeting.",
+      "competitor": "Replit",
+      "page": "pricing",
+      "what_changed": "Core plan listed at $25/month.",
+      "before": null,
+      "after": null,
+      "link": "https://replit.com/pricing",
+      "notes": "Source: replit.com/pricing.",
+      "brightloop_comparison": "Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Replit Core shows $25/month.",
+      "week": "2026-W43"
+    },
+    {
+      "id": "pricing-np-3",
+      "source_ids": [
+        "np-3"
+      ],
+      "confidence": 0.9,
+      "confidence_label": "confirmed: seen on Lovable's own pricing page",
+      "action": "watch 2 weeks",
+      "why": "Still cheaper than us on Lovable Business? Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Lovable Business's current price is on https://lovable.dev/pricing. Should we respond? Not yet: Business is above Lovable's lowest paid tier, so few of our trials are affected. What would change the answer: Lovable making the same change on its lowest paid tier or its free plan.",
+      "cta": "Open https://lovable.dev/pricing and check the Lovable price before the 11:00 leadership meeting.",
+      "competitor": "Lovable",
+      "page": "pricing",
+      "what_changed": "Business plan now includes more seats.",
+      "before": null,
+      "after": null,
+      "link": "https://lovable.dev/pricing",
+      "notes": "Source: lovable.dev/pricing.",
+      "brightloop_comparison": "Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Lovable Business's current price is on https://lovable.dev/pricing.",
+      "week": "2026-W43"
+    }
+  ],
+  "skipped": [],
+  "run": {
+    "started_at": "2026-10-26T06:30:00.000Z",
+    "cost_usd": 0,
+    "errors": []
+  }
+}

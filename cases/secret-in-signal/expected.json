@@ -8,8 +8,8 @@
       ],
       "confidence": 0.9,
       "confidence_label": "confirmed: seen on Replit's own pricing page",
-      "action": "watch 2 weeks",
-      "why": "Can't compare yet: Brightloop's own-pricing tab is not connected. Replit now shows $20/month. Should we respond? Not yet: watch whether the change holds on the next two Monday runs.",
+      "action": "respond now",
+      "why": "Still cheaper than us on Replit Core? Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Replit Core now shows $20/month. Should we respond? Yes, respond now: Core is Replit's lowest paid tier, the one most of our trials compare against.",
       "cta": "Open https://replit.com/pricing and check the Replit price before the 11:00 leadership meeting.",
       "competitor": "Replit",
       "page": "pricing",
@@ -18,7 +18,7 @@
       "after": "$20/month",
       "link": "https://replit.com/pricing",
       "notes": "Source: replit.com/pricing.",
-      "brightloop_comparison": "Can't compare yet: Brightloop's own-pricing tab is not connected. Replit now shows $20/month.",
+      "brightloop_comparison": "Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Replit Core now shows $20/month.",
       "week": "2026-W43"
     }
   ],

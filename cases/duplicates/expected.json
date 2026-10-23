@@ -9,8 +9,8 @@
       ],
       "confidence": 0.9,
       "confidence_label": "confirmed: seen on Lovable's own pricing page",
-      "action": "watch 2 weeks",
-      "why": "Can't compare yet: Brightloop's own-pricing tab is not connected. Lovable now shows $25/month. Should we respond? Not yet: watch whether the change holds on the next two Monday runs.",
+      "action": "respond now",
+      "why": "Still cheaper than us on Lovable Pro? Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Lovable Pro now shows $25/month. Should we respond? Yes, respond now: Pro is Lovable's lowest paid tier, the one most of our trials compare against.",
       "cta": "Open https://lovable.dev/pricing and check the Lovable price before the 11:00 leadership meeting.",
       "competitor": "Lovable",
       "page": "pricing",
@@ -19,7 +19,7 @@
       "after": "$25/month",
       "link": "https://lovable.dev/pricing",
       "notes": "Source: lovable.dev/pricing. Also reported by du-3 at the same moment, for the same plan and price; the confidence is that of this source.",
-      "brightloop_comparison": "Can't compare yet: Brightloop's own-pricing tab is not connected. Lovable now shows $25/month.",
+      "brightloop_comparison": "Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Lovable Pro now shows $25/month.",
       "week": "2026-W43"
     },
     {
@@ -29,8 +29,8 @@
       ],
       "confidence": 0.9,
       "confidence_label": "confirmed: seen on Bolt's own pricing page",
-      "action": "watch 2 weeks",
-      "why": "Can't compare yet: Brightloop's own-pricing tab is not connected. Bolt now shows $25/month. Should we respond? Not yet: watch whether the change holds on the next two Monday runs.",
+      "action": "respond now",
+      "why": "Still cheaper than us on Bolt Pro? Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Bolt Pro now shows $25/month. Should we respond? Yes, respond now: Pro is Bolt's lowest paid tier, the one most of our trials compare against.",
       "cta": "Open https://bolt.new/pricing and check the Bolt price before the 11:00 leadership meeting.",
       "competitor": "Bolt",
       "page": "pricing",
@@ -39,7 +39,7 @@
       "after": "$25/month",
       "link": "https://bolt.new/pricing",
       "notes": "Source: bolt.new/pricing.",
-      "brightloop_comparison": "Can't compare yet: Brightloop's own-pricing tab is not connected. Bolt now shows $25/month.",
+      "brightloop_comparison": "Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Bolt Pro now shows $25/month.",
       "week": "2026-W43"
     },
     {
@@ -50,7 +50,7 @@
       "confidence": 0.9,
       "confidence_label": "confirmed: seen on Bolt's own pricing page",
       "action": "watch 2 weeks",
-      "why": "Can't compare yet: Brightloop's own-pricing tab is not connected. Bolt now shows $55/month. Should we respond? Not yet: watch whether the change holds on the next two Monday runs.",
+      "why": "Still cheaper than us on Bolt Teams? Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Bolt Teams now shows $55/month. Should we respond? Not yet: Teams is above Bolt's lowest paid tier, so few of our trials are affected. What would change the answer: Bolt making the same change on its lowest paid tier or its free plan.",
       "cta": "Open https://bolt.new/pricing and check the Bolt price before the 11:00 leadership meeting.",
       "competitor": "Bolt",
       "page": "pricing",
@@ -59,7 +59,7 @@
       "after": "$55/month",
       "link": "https://bolt.new/pricing",
       "notes": "Source: bolt.new/pricing.",
-      "brightloop_comparison": "Can't compare yet: Brightloop's own-pricing tab is not connected. Bolt now shows $55/month.",
+      "brightloop_comparison": "Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Bolt Teams now shows $55/month.",
       "week": "2026-W43"
     }
   ],

@@ -18,6 +18,18 @@ export interface Competitor {
   ownSections: string[];
   /** Other names a signal may give for it, such as its domain. Matched without case. */
   aliases: string[];
+  /** Its plan names, by place in the lineup. Names only: never a price (judging/plan.ts). */
+  tiers: Tiers;
+}
+
+/** Plan names as the competitor's own pricing page shows them. Matched as whole words, case included. */
+export interface Tiers {
+  /** The free plan's name, when the page gives it one ("Free"). */
+  free: string[];
+  /** The cheapest paid plan: where most trials start, so a change here leans to "respond now". */
+  lowestPaid: string[];
+  /** Every paid plan above it. */
+  higher: string[];
 }
 
 export const COMPETITORS: Competitor[] = [
@@ -28,6 +40,7 @@ export const COMPETITORS: Competitor[] = [
     homepage: "https://lovable.dev/",
     ownSections: ["https://lovable.dev/blog", "https://lovable.dev/changelog", "https://blog.lovable.dev/"],
     aliases: ["lovable.dev"],
+    tiers: { free: ["Free"], lowestPaid: ["Pro"], higher: ["Business", "Enterprise"] },
   },
   {
     name: "Replit",
@@ -36,6 +49,7 @@ export const COMPETITORS: Competitor[] = [
     homepage: "https://replit.com/",
     ownSections: ["https://replit.com/blog", "https://replit.com/changelog", "https://blog.replit.com/"],
     aliases: ["replit.com"],
+    tiers: { free: [], lowestPaid: ["Core"], higher: ["Pro", "Enterprise"] },
   },
   {
     name: "Bolt",
@@ -44,6 +58,7 @@ export const COMPETITORS: Competitor[] = [
     homepage: "https://bolt.new/",
     ownSections: ["https://bolt.new/blog", "https://bolt.new/changelog", "https://blog.bolt.new/"],
     aliases: ["bolt.new"],
+    tiers: { free: ["Free"], lowestPaid: ["Pro"], higher: ["Teams", "Enterprise"] },
   },
 ];
 

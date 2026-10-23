@@ -1,0 +1,151 @@
+{
+  "built_for": "maya",
+  "items": [
+    {
+      "id": "pricing-rd-1",
+      "source_ids": [
+        "rd-1"
+      ],
+      "confidence": 0.9,
+      "confidence_label": "confirmed: seen on Lovable's own pricing page",
+      "action": "respond now",
+      "why": "Still cheaper than us on Lovable Pro? Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Lovable Pro now shows $20. Should we respond? Yes, respond now: Pro is Lovable's lowest paid tier, the one most of our trials compare against.",
+      "cta": "Open https://lovable.dev/pricing and check the Lovable price before the 11:00 leadership meeting.",
+      "competitor": "Lovable",
+      "page": "pricing",
+      "what_changed": "Pro $25 → $20.",
+      "before": "$25",
+      "after": "$20",
+      "link": "https://lovable.dev/pricing",
+      "notes": "Source: lovable.dev/pricing.",
+      "brightloop_comparison": "Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Lovable Pro now shows $20.",
+      "week": "2026-W43"
+    },
+    {
+      "id": "pricing-rd-2",
+      "source_ids": [
+        "rd-2"
+      ],
+      "confidence": 0.9,
+      "confidence_label": "confirmed: seen on Bolt's own pricing page",
+      "action": "respond now",
+      "why": "Still cheaper than us on Bolt Pro? Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Bolt Pro now shows $30/month. Should we respond? Yes, respond now: Pro is Bolt's lowest paid tier, the one most of our trials compare against.",
+      "cta": "Open https://bolt.new/pricing and check the Bolt price before the 11:00 leadership meeting.",
+      "competitor": "Bolt",
+      "page": "pricing",
+      "what_changed": "Pro price moved from $25/month to $30/month.",
+      "before": "$25/month",
+      "after": "$30/month",
+      "link": "https://bolt.new/pricing",
+      "notes": "Source: bolt.new/pricing.",
+      "brightloop_comparison": "Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Bolt Pro now shows $30/month.",
+      "week": "2026-W43"
+    },
+    {
+      "id": "pricing-rd-3",
+      "source_ids": [
+        "rd-3"
+      ],
+      "confidence": 0.9,
+      "confidence_label": "confirmed: seen on Lovable's own pricing page",
+      "action": "watch 1 week",
+      "why": "Still cheaper than us on Lovable Pro? Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Lovable Pro shows $200 per year; it is not compared with the earlier $25, which is for a different period. Should we respond? Not yet: $200 per year and $25 are for different periods, so they are not compared. What would change the answer: https://lovable.dev/pricing showing Lovable Pro's price for the same period as before.",
+      "cta": "Open https://lovable.dev/pricing and check the Lovable price before the 11:00 leadership meeting.",
+      "competitor": "Lovable",
+      "page": "pricing",
+      "what_changed": "Pro now $200 per year (was $25).",
+      "before": null,
+      "after": null,
+      "link": "https://lovable.dev/pricing",
+      "notes": "Source: lovable.dev/pricing.",
+      "brightloop_comparison": "Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Lovable Pro shows $200 per year; it is not compared with the earlier $25, which is for a different period.",
+      "week": "2026-W43"
+    },
+    {
+      "id": "pricing-rd-4",
+      "source_ids": [
+        "rd-4"
+      ],
+      "confidence": 0.9,
+      "confidence_label": "confirmed: seen on Replit's own pricing page",
+      "action": "watch 1 week",
+      "why": "Still cheaper than us on Replit Core? Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Replit Core shows $180 billed annually; it is not compared with the earlier $20/month, which is for a different period. Should we respond? Not yet: $180 billed annually and $20/month are for different periods, so they are not compared. What would change the answer: https://replit.com/pricing showing Replit Core's price for the same period as before.",
+      "cta": "Open https://replit.com/pricing and check the Replit price before the 11:00 leadership meeting.",
+      "competitor": "Replit",
+      "page": "pricing",
+      "what_changed": "Core now $180 billed annually (was $20/month).",
+      "before": null,
+      "after": null,
+      "link": "https://replit.com/pricing",
+      "notes": "Source: replit.com/pricing.",
+      "brightloop_comparison": "Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Replit Core shows $180 billed annually; it is not compared with the earlier $20/month, which is for a different period.",
+      "week": "2026-W43"
+    },
+    {
+      "id": "pricing-rd-5",
+      "source_ids": [
+        "rd-5"
+      ],
+      "confidence": 0.9,
+      "confidence_label": "confirmed: seen on Bolt's own pricing page",
+      "action": "respond now",
+      "why": "Still cheaper than us on Bolt Pro? Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Bolt Pro's current price is on https://bolt.new/pricing. Should we respond? Yes, respond now: Pro is Bolt's lowest paid tier, the one most of our trials compare against.",
+      "cta": "Open https://bolt.new/pricing and check the Bolt price before the 11:00 leadership meeting.",
+      "competitor": "Bolt",
+      "page": "pricing",
+      "what_changed": "Pro plan: $25 and $20 both appear on the page.",
+      "before": null,
+      "after": null,
+      "link": "https://bolt.new/pricing",
+      "notes": "Source: bolt.new/pricing.",
+      "brightloop_comparison": "Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Bolt Pro's current price is on https://bolt.new/pricing.",
+      "week": "2026-W43"
+    },
+    {
+      "id": "pricing-rd-6",
+      "source_ids": [
+        "rd-6"
+      ],
+      "confidence": 0.9,
+      "confidence_label": "confirmed: seen on Lovable's own pricing page",
+      "action": "respond now",
+      "why": "Still cheaper than us on Lovable Pro? Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Lovable Pro now shows $25/month. Should we respond? Yes, respond now: Pro is Lovable's lowest paid tier, the one most of our trials compare against.",
+      "cta": "Open https://lovable.dev/pricing and check the Lovable price before the 11:00 leadership meeting.",
+      "competitor": "Lovable",
+      "page": "pricing",
+      "what_changed": "Pro plan now $25/month, down from $30/month.",
+      "before": "$30/month",
+      "after": "$25/month",
+      "link": "https://lovable.dev/pricing",
+      "notes": "Source: lovable.dev/pricing.",
+      "brightloop_comparison": "Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Lovable Pro now shows $25/month.",
+      "week": "2026-W43"
+    },
+    {
+      "id": "pricing-rd-7",
+      "source_ids": [
+        "rd-7"
+      ],
+      "confidence": 0.9,
+      "confidence_label": "confirmed: seen on Replit's own pricing page",
+      "action": "respond now",
+      "why": "Still cheaper than us on Replit Core? Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Replit Core now shows $30/month. Should we respond? Yes, respond now: Core is Replit's lowest paid tier, the one most of our trials compare against.",
+      "cta": "Open https://replit.com/pricing and check the Replit price before the 11:00 leadership meeting.",
+      "competitor": "Replit",
+      "page": "pricing",
+      "what_changed": "**Core** plan price up 20%: $30/month (was $25).",
+      "before": "$25",
+      "after": "$30/month",
+      "link": "https://replit.com/pricing",
+      "notes": "Source: replit.com/pricing.",
+      "brightloop_comparison": "Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Replit Core now shows $30/month.",
+      "week": "2026-W43"
+    }
+  ],
+  "skipped": [],
+  "run": {
+    "started_at": "2026-10-26T06:30:00.000Z",
+    "cost_usd": 0,
+    "errors": []
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "week": "2026-W43",
+  "timezone": "Asia/Jerusalem",
+  "brand": { "name": "Brightloop", "banned_words": ["revolutionary", "game-changing", "seamless"] },
+  "signals": [
+    { "id": "rd-1", "type": "pricing", "competitor": "Lovable", "source": "lovable.dev/pricing", "ts": "2026-10-23T08:00:00Z",
+      "text": "Pro $25 → $20." },
+    { "id": "rd-2", "type": "pricing", "competitor": "Bolt", "source": "bolt.new/pricing", "ts": "2026-10-23T08:05:00Z",
+      "text": "Pro price moved from $25/month to $30/month." },
+    { "id": "rd-3", "type": "pricing", "competitor": "Lovable", "source": "lovable.dev/pricing", "ts": "2026-10-23T08:10:00Z",
+      "text": "Pro now $200 per year (was $25)." },
+    { "id": "rd-4", "type": "pricing", "competitor": "Replit", "source": "replit.com/pricing", "ts": "2026-10-23T08:15:00Z",
+      "text": "Core now $180 billed annually (was $20/month)." },
+    { "id": "rd-5", "type": "pricing", "competitor": "Bolt", "source": "bolt.new/pricing", "ts": "2026-10-23T08:20:00Z",
+      "text": "Pro plan: $25 and $20 both appear on the page." },
+    { "id": "rd-6", "type": "pricing", "competitor": "Lovable", "source": "lovable.dev/pricing", "ts": "2026-10-23T08:25:00Z",
+      "text": "Pro plan now $25/month, down from $30/month." },
+    { "id": "rd-7", "type": "pricing", "competitor": "Replit", "source": "replit.com/pricing", "ts": "2026-10-23T08:30:00Z",
+      "text": "**Core** plan price up 20%: $30/month (was $25)." }
+  ]
+}

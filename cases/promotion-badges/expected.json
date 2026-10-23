@@ -1,0 +1,96 @@
+{
+  "built_for": "maya",
+  "items": [
+    {
+      "id": "pricing-pb-1",
+      "source_ids": [
+        "pb-1"
+      ],
+      "confidence": 0.9,
+      "confidence_label": "confirmed: seen on Lovable's own pricing page",
+      "action": "watch 2 weeks",
+      "why": "Still cheaper than us on Lovable Pro? Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Lovable Pro shows $17.50/month as a promotional price; its list price is on https://lovable.dev/pricing. Should we respond? Not yet: this is a promotion (\"limited time\" wording, discount wording), not a list-price change. What would change the answer: Lovable Pro still showing the promotional price after the promotion ends.",
+      "cta": "Open https://lovable.dev/pricing and check the Lovable price before the 11:00 leadership meeting.",
+      "competitor": "Lovable",
+      "page": "pricing",
+      "what_changed": "Pro plan 30% off: $17.50/month (was $25). Limited time.",
+      "before": null,
+      "after": null,
+      "link": "https://lovable.dev/pricing",
+      "notes": "Source: lovable.dev/pricing. Promotion (\"limited time\" wording, discount wording): not a list-price change.",
+      "brightloop_comparison": "Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Lovable Pro shows $17.50/month as a promotional price; its list price is on https://lovable.dev/pricing.",
+      "week": "2026-W43"
+    },
+    {
+      "id": "pricing-pb-2",
+      "source_ids": [
+        "pb-2"
+      ],
+      "confidence": 0.9,
+      "confidence_label": "confirmed: seen on Replit's own pricing page",
+      "action": "watch 2 weeks",
+      "why": "Still cheaper than us on Replit Core? Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Replit Core shows $15/month as a promotional price; its list price is on https://replit.com/pricing. Should we respond? Not yet: this is a promotion (a promo link), not a list-price change. What would change the answer: Replit Core still showing the promotional price after the promotion ends.",
+      "cta": "Open https://replit.com/pricing and check the Replit price before the 11:00 leadership meeting.",
+      "competitor": "Replit",
+      "page": "pricing",
+      "what_changed": "Core plan $15/month (was $25).",
+      "before": null,
+      "after": null,
+      "link": "https://replit.com/pricing",
+      "notes": "Source: https://replit.com/pricing?promo=fall. Promotion (a promo link): not a list-price change.",
+      "brightloop_comparison": "Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Replit Core shows $15/month as a promotional price; its list price is on https://replit.com/pricing.",
+      "week": "2026-W43"
+    },
+    {
+      "id": "pricing-pb-3",
+      "source_ids": [
+        "pb-3"
+      ],
+      "confidence": 0.9,
+      "confidence_label": "confirmed: seen on Bolt's own pricing page",
+      "action": "watch 2 weeks",
+      "why": "Still cheaper than us on Bolt Pro? Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Bolt Pro shows $15/month as a promotional price; its list price is on https://bolt.new/pricing. Should we respond? Not yet: this is a promotion (an expiry date), not a list-price change. What would change the answer: Bolt Pro still showing the promotional price after the promotion ends.",
+      "cta": "Open https://bolt.new/pricing and check the Bolt price before the 11:00 leadership meeting.",
+      "competitor": "Bolt",
+      "page": "pricing",
+      "what_changed": "Pro plan $15/month (was $25), offer ends Oct 31.",
+      "before": null,
+      "after": null,
+      "link": "https://bolt.new/pricing",
+      "notes": "Source: bolt.new/pricing. Promotion (an expiry date): not a list-price change.",
+      "brightloop_comparison": "Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Bolt Pro shows $15/month as a promotional price; its list price is on https://bolt.new/pricing.",
+      "week": "2026-W43"
+    },
+    {
+      "id": "pricing-pb-4",
+      "source_ids": [
+        "pb-4"
+      ],
+      "confidence": 0.9,
+      "confidence_label": "confirmed: seen on Lovable's own pricing page",
+      "action": "watch 2 weeks",
+      "why": "Still cheaper than us on Lovable Pro? Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Lovable Pro shows $12.50/month as a promotional price; its list price is on https://lovable.dev/pricing. Should we respond? Not yet: this is a promotion (an introductory price), not a list-price change. What would change the answer: Lovable Pro still showing the promotional price after the promotion ends.",
+      "cta": "Open https://lovable.dev/pricing and check the Lovable price before the 11:00 leadership meeting.",
+      "competitor": "Lovable",
+      "page": "pricing",
+      "what_changed": "Pro plan $12.50/month for the first 3 months (was $25).",
+      "before": null,
+      "after": null,
+      "link": "https://lovable.dev/pricing",
+      "notes": "Source: lovable.dev/pricing. Promotion (an introductory price): not a list-price change.",
+      "brightloop_comparison": "Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Lovable Pro shows $12.50/month as a promotional price; its list price is on https://lovable.dev/pricing.",
+      "week": "2026-W43"
+    }
+  ],
+  "skipped": [
+    {
+      "id": "pb-5",
+      "reason": "pricing claim from a sponsored, anonymous or second-hand source, not reported: unconfirmed (confidence 0.2) and not seen on Lovable's own pricing page. Check https://lovable.dev/pricing before repeating it to leadership."
+    }
+  ],
+  "run": {
+    "started_at": "2026-10-26T06:30:00.000Z",
+    "cost_usd": 0,
+    "errors": []
+  }
+}

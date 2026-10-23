@@ -1,0 +1,25 @@
+{
+  "week": "2026-W43",
+  "timezone": "Asia/Jerusalem",
+  "brand": { "name": "Brightloop", "banned_words": ["revolutionary", "game-changing", "seamless"] },
+  "signals": [
+    { "id": "ta-1", "type": "pricing", "competitor": "Lovable", "source": "lovable.dev/pricing", "ts": "2026-10-23T08:00:00Z",
+      "text": "Pro plan shown at $30/month (was $25 last week)." },
+    { "id": "ta-2", "type": "pricing", "competitor": "Replit", "source": "replit.com/pricing", "ts": "2026-10-23T08:05:00Z",
+      "text": "Free plan now includes 3 apps, down from 10." },
+    { "id": "ta-3", "type": "pricing", "competitor": "Bolt", "source": "bolt.new/pricing", "ts": "2026-10-23T08:10:00Z",
+      "text": "Free plan daily token limit lowered to 100k, down from 150k." },
+    { "id": "ta-4", "type": "pricing", "competitor": "Lovable", "source": "lovable.dev/pricing", "ts": "2026-10-23T08:15:00Z",
+      "text": "Business plan shown at $60/month (was $50 last week)." },
+    { "id": "ta-5", "type": "pricing", "competitor": "Bolt", "source": "bolt.new/pricing", "ts": "2026-10-23T08:20:00Z",
+      "text": "Teams plan now $35/month per member (was $30)." },
+    { "id": "ta-6", "type": "pricing", "competitor": "Replit", "source": "replit.com/pricing", "ts": "2026-10-23T08:25:00Z",
+      "text": "New monthly price shown at $30/month (was $25)." },
+    { "id": "ta-7", "type": "pricing", "competitor": "Replit", "source": "replit.com/pricing", "ts": "2026-10-23T08:30:00Z",
+      "text": "Pro plan now $120/month (was $100)." },
+    { "id": "ta-8", "type": "pricing", "competitor": "Bolt", "source": "bolt.new/pricing", "ts": "2026-10-23T08:35:00Z",
+      "text": "Pro Teams bundle now $40/month (was $35)." },
+    { "id": "ta-9", "type": "pricing", "competitor": "Lovable", "source": "lovable.dev/pricing", "ts": "2026-10-23T08:40:00Z",
+      "text": "Free now includes 3 projects, down from 5." }
+  ]
+}
