@@ -13,7 +13,7 @@ export interface Signal {
   [field: string]: unknown;
 }
 
-/** What the run is given. Only the cases file exists so far; live collection comes later. */
+/** What the run is given, from a cases file or from a live capture. */
 export interface RunInput {
   signals: Signal[];
   bannedWords: string[];
@@ -21,6 +21,43 @@ export interface RunInput {
   secrets: string[];
   /** Problems found while reading the input; they end up in run.errors. */
   errors: string[];
+}
+
+/** Signal type of a page a live run sees for the first time; the baseline rule judges it. */
+export const BASELINE = "baseline";
+
+/** Which of a competitor's pages a snapshot is of. */
+export type PageKind = "pricing" | "homepage";
+
+/** How each page kind is named in a message. */
+export const PAGE_NAMES: Record<PageKind, string> = { pricing: "pricing page", homepage: "homepage" };
+
+/** A competitor page the live run captures, from the competitor registry. */
+export interface WatchedPage {
+  competitor: string;
+  page: PageKind;
+  url: string;
+}
+
+/** One page as one run captured it: its visible text, one line per rendered line. Outside text: data only. */
+export interface Snapshot extends WatchedPage {
+  captured_at: string;
+  lines: string[];
+}
+
+/** One plan on a pricing page, as read from a snapshot. */
+export interface Tier {
+  name: string;
+  /** The price to pay now, as shown: "$25", or a stand-in such as "Custom" for a plan with no price. */
+  price: string;
+  /** What the price is per, without spaces: "/month"; null when the page shows none. */
+  period: string | null;
+  /** An earlier price shown next to the current one, struck out on the page ("$20" beside "$18"); else null. */
+  struck_price: string | null;
+  /** How the plan is billed, in the page's words: "billed annually", "per member, billed annually"; null when the page does not say. */
+  billing: string | null;
+  /** Usage limits shown with the plan, e.g. "100 monthly credits". */
+  limits: string[];
 }
 
 export interface Item {
@@ -39,6 +76,8 @@ export interface Item {
   link: string;
   notes: string;
   brightloop_comparison: string;
+  /** Baseline items only: every plan on the pricing page with its price and limits. */
+  tiers?: Tier[];
 }
 
 export interface SkippedSignal {

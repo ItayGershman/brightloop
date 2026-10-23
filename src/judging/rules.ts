@@ -1,5 +1,6 @@
 import { AUDIENCE } from "../config/audience.ts";
 import { findCompetitor } from "../config/competitors.ts";
+import { baseline } from "./baseline.ts";
 import { pricingItem } from "./pricing-item.ts";
 import { eachSignal, skip, type Rule } from "./run-rules.ts";
 import { isReportable, sourceTrust, unreportedClaim } from "./source-trust.ts";
@@ -36,4 +37,4 @@ export const pricing: Rule = eachSignal((signal) => {
   return { kind: "item", item: pricingItem(signal, competitor, trust) };
 });
 
-export const RULES: Rule[] = [outsideScope, pricing];
+export const RULES: Rule[] = [outsideScope, baseline, pricing];
