@@ -1,0 +1,14 @@
+{
+  "week": "2026-W43",
+  "timezone": "Mars/Olympus_Mons",
+  "brand": { "name": "Brightloop", "banned_words": "seamless" },
+  "signals": [
+    "Lovable Pro is $25 now",
+    { "type": "pricing", "competitor": "Lovable", "source": "lovable.dev/pricing", "text": "Pro $25/month (was $20)." },
+    { "id": "ml-1", "type": "pricing", "competitor": "Lovable", "source": "lovable.dev/pricing", "ts": "last Friday",
+      "text": "Pro plan shown at $25/month (was $20 last week)." },
+    { "id": "ml-2", "type": "pricing", "competitor": "Bolt", "source": "bolt.new/pricing", "ts": "2026-02-30 10:00",
+      "text": "Pro plan shown at $25/month (was $20 last week)." },
+    { "id": "ml-3", "type": 7, "competitor": "Bolt", "ts": 1761300000 }
+  ]
+}

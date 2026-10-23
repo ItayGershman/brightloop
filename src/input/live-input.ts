@@ -1,5 +1,7 @@
+import { AUDIENCE } from "../config/audience.ts";
 import { competitorSlug } from "../config/competitors.ts";
 import { BASELINE, type RunInput, type Signal, type Snapshot } from "../domain/types.ts";
+import { readTimestamp } from "../text/zoned-time.ts";
 
 // The second way into a run, beside the cases file: freshly captured snapshots, each with
 // the latest earlier snapshot of the same page if there is one. It yields the same run input,
@@ -29,8 +31,9 @@ export function liveInput(pages: CapturedPage[], captureErrors: string[]): RunIn
       page: current.page,
       source: current.url,
       ts: current.captured_at,
+      utc: readTimestamp(current.captured_at, AUDIENCE.timezone),
       lines: current.lines,
     });
   }
-  return { signals, bannedWords: [], secrets: [], errors };
+  return { signals, bannedWords: [], secrets: [], timezone: AUDIENCE.timezone, errors };
 }

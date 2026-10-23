@@ -41,7 +41,7 @@ Typechecks, runs the repo check for the brief's hidden markers, then the case su
 | `src/domain/` | The shared types: `Signal`, `RunInput`, `Snapshot`, `Tier`, `Item`, `SkippedSignal`, `Result` |
 | `snapshots/` | The committed snapshots, one file per page per live run. Real data, replayed by the tests with no browser |
 
-To add a judging rule: write the function in `src/judging/rules.ts`, put it in `RULES`, and add a case under `cases/<name>/` (`input.json` and `expected.json`).
+To add a judging rule: write the function in `src/judging/rules.ts`, put it in `JUDGING` (a rule that needs the whole batch, like `mergeDuplicates`, goes in `RULES` before the rules it feeds), and add a case under `cases/<name>/` (`input.json` and `expected.json`).
 
 To add a source trust level: add a row to `TRUST_LEVELS` in `src/judging/source-trust.ts`, above the catch-all, and a case. To add a press outlet: one entry in `KNOWN_PRESS` in `src/config/press.ts`.
 
@@ -60,4 +60,5 @@ The required wrapper (`built_for`, `items`, `skipped`, `run`) plus these fields 
 | `link` | The competitor's own pricing page |
 | `notes` | Where the signal came from |
 | `brightloop_comparison` | Whether the competitor is still cheaper than Brightloop on that tier, or why that can't be said yet |
+| `week` | The ISO week (`2026-W43`) the change was seen in, counted in the input's `timezone`; `null` when the signal has no readable time |
 | `tiers` | Baseline items only: every plan on the pricing page, `{ name, price, period, struck_price, billing, limits }`, in the page's words; `billing` is null when the page does not say |

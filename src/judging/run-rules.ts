@@ -7,8 +7,8 @@ import type { Item, Signal, SkippedSignal } from "../domain/types.ts";
 // How later tickets fit: a rule that needs the whole batch, such as merging duplicates (#5),
 // goes before the rules it feeds, decides a group of signals in one judgement (an item with
 // several source_ids), and leaves the others for the rules after it. A rule that refines an
-// existing one replaces it in RULES. Either way: change RULES, add the function, add a case
-// file under cases/.
+// existing one replaces it in JUDGING. Either way: change the list in rules.ts, add the
+// function, add a case file under cases/.
 
 export type Judgement = { kind: "item"; item: Item } | { kind: "skipped"; skipped: SkippedSignal };
 export type Rule = (pending: Signal[]) => Judgement[];

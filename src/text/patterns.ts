@@ -44,6 +44,26 @@ export const SECOND_HAND_SOURCE =
 /** A guest post, singular or plural: "launchpad.example, guest post", "/guest-posts/". */
 export const GUEST_POST_SOURCE = /\bguest[- ]posts?\b/i;
 
+/**
+ * A date and time, "T" or a space between, optional seconds and fraction, then an optional
+ * zone: "Z", "UTC", "GMT", "+03:00", "+0300" or "+03". Groups: year, month, day, hour,
+ * minute, second, fraction, zone.
+ */
+export const TIMESTAMP =
+  /^(\d{4})-(\d{2})-(\d{2})[T ](\d{2}):(\d{2})(?::(\d{2})(?:\.(\d{1,9}))?)?\s*(Z|UTC|GMT|[+-]\d{2}(?::?\d{2})?)?$/i;
+
+/** A zone that names UTC itself. */
+export const UTC_NAME = /^(Z|UTC|GMT)$/i;
+
+/** A stated UTC offset: sign, hours, optional minutes. */
+export const UTC_OFFSET = /^([+-])(\d{2}):?(\d{2})?$/;
+
+/**
+ * A common plan name, as a whole word: what a duplicate check needs to tell "Pro" from
+ * "Teams". Global, for matchAll. A plan with any other name is never merged as a duplicate.
+ */
+export const PLAN_NAME = /\b(free|hobby|starter|basic|core|pro|plus|premium|team|teams|business|enterprise|scale)\b/gi;
+
 /** A pricing-page line that starts with a price: "$25", "$0", "$20 $18 / month, billed annually". */
 export const PRICE_LINE = /^\$\d/;
 

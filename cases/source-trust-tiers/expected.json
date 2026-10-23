@@ -18,7 +18,8 @@
       "after": "$25/month",
       "link": "https://lovable.dev/pricing",
       "notes": "Source: https://lovable.dev/pricing.",
-      "brightloop_comparison": "Can't compare yet: Brightloop's own-pricing tab is not connected. Lovable now shows $25/month."
+      "brightloop_comparison": "Can't compare yet: Brightloop's own-pricing tab is not connected. Lovable now shows $25/month.",
+      "week": "2026-W43"
     },
     {
       "id": "pricing-st-2",
@@ -37,7 +38,8 @@
       "after": "$20/month",
       "link": "https://replit.com/pricing",
       "notes": "Source: https://blog.replit.com/new-pricing, Replit's own site but not its pricing page.",
-      "brightloop_comparison": "Can't compare yet: Brightloop's own-pricing tab is not connected. Replit now shows $20/month."
+      "brightloop_comparison": "Can't compare yet: Brightloop's own-pricing tab is not connected. Replit now shows $20/month.",
+      "week": "2026-W43"
     },
     {
       "id": "pricing-st-3",
@@ -56,7 +58,8 @@
       "after": "$18/month",
       "link": "https://bolt.new/pricing",
       "notes": "Source: https://bolt.new/blog/pricing-update, Bolt's own site but not its pricing page.",
-      "brightloop_comparison": "Can't compare yet: Brightloop's own-pricing tab is not connected. Bolt now shows $18/month."
+      "brightloop_comparison": "Can't compare yet: Brightloop's own-pricing tab is not connected. Bolt now shows $18/month.",
+      "week": "2026-W43"
     },
     {
       "id": "pricing-st-4",
@@ -75,7 +78,8 @@
       "after": "$25/month",
       "link": "https://lovable.dev/pricing",
       "notes": "Press source, not Lovable's own page: techcrunch.com/2026/10/22/lovable-pricing.",
-      "brightloop_comparison": "Can't compare yet: Brightloop's own-pricing tab is not connected. Lovable now shows $25/month."
+      "brightloop_comparison": "Can't compare yet: Brightloop's own-pricing tab is not connected. Lovable now shows $25/month.",
+      "week": "2026-W43"
     },
     {
       "id": "pricing-st-10",
@@ -94,7 +98,8 @@
       "after": "$25/month",
       "link": "https://lovable.dev/pricing",
       "notes": "Source: lovable.dev/pricing?utm_source=newsletter&ref=via-twitter.",
-      "brightloop_comparison": "Can't compare yet: Brightloop's own-pricing tab is not connected. Lovable now shows $25/month."
+      "brightloop_comparison": "Can't compare yet: Brightloop's own-pricing tab is not connected. Lovable now shows $25/month.",
+      "week": "2026-W43"
     },
     {
       "id": "pricing-st-11",
@@ -113,7 +118,8 @@
       "after": null,
       "link": "https://lovable.dev/pricing",
       "notes": "Source: https://lovable.dev/blog/new-partner-program, Lovable's own site but not its pricing page.",
-      "brightloop_comparison": "Can't compare yet: Brightloop's own-pricing tab is not connected. Lovable's current price is on its pricing page."
+      "brightloop_comparison": "Can't compare yet: Brightloop's own-pricing tab is not connected. Lovable's current price is on its pricing page.",
+      "week": "2026-W43"
     }
   ],
   "skipped": [
