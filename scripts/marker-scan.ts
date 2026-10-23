@@ -10,14 +10,14 @@ const PUBLIC_REGISTRY = "https://registry.npmjs.org/";
 
 // Brightloop's own prices are read from the own-pricing tab at run time and never committed
 // (DECISIONS.md). The real amounts are not known here, so this catches the shape instead: the
-// name, up to three words, then a dollar amount or an amount in USD ("<name> Starter $29",
-// "<name>'s Pro: $49"). A sentence that names Brightloop and then a competitor's price
+// name, up to three words, then a dollar amount, an amount in USD, or an amount per month
+// ("<name> Starter $29", "<name>'s Pro: $49", "<name> Pro 49/month"). A sentence that names Brightloop and then a competitor's price
 // ("no Brightloop price is used. Replit Core shows $25") does not match: no word run crosses
 // the full stop. Captured pages and run outputs are left out: they quote competitors' public
 // pages, never the own-pricing tab, and a competitor page naming Brightloop next to a price
 // must not stop the Monday run from committing.
 const OUTSIDE_TEXT = [/^snapshots\//, /^runs\//];
-const BRIGHTLOOP_PRICE = /\bBrightloop(?:'s)?(?:\s+[A-Za-z][\w-]*){0,3}\s*(?:[:=(,-]\s*)?(?:\$\s?\d|\d[\d.,]*\s*(?:USD|dollars)\b)/i;
+const BRIGHTLOOP_PRICE = /\bBrightloop(?:'s)?(?:\s+[A-Za-z][\w-]*){0,3}\s*(?:[:=(,-]\s*)?(?:\$\s?\d|\d[\d.,]*\s*(?:USD|dollars\b|\/\s*mo(?:nth)?\b|(?:per|a)\s+month\b))/i;
 
 function scanned(path: string): boolean {
   return !ALLOWED.some((pattern) => pattern.test(path));

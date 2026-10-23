@@ -18,9 +18,10 @@ export type { SheetKeys, SheetStore };
 // and after is. The same change in a later week is a new row. The changes tab's columns are
 // found by its header, so a row lands under the right names if Maya reorders or adds columns.
 //
-// What counts as the Sheet failing (exit 1): it could not be reached, read or written. A tab
-// that was read but holds something unusable (no tier column, a price that is not a number)
-// is Maya's data, not a failure: run.errors says so and the comparison says it can't be made.
+// The Sheet fails the run (exit 1) when it cannot be reached, read or written, and when the
+// own-pricing tab holds something unusable (no tier or price column, a price that is not a
+// number): either way a comparison Maya expects is missing, and the scheduled job must be
+// red. The rows are still appended and written to the CSV; run.errors says what went wrong.
 
 /** The Sheet when both keys are set; otherwise none, and the adapter is never built. */
 export function sheetFromEnv(
@@ -39,7 +40,7 @@ export interface Delivered {
   rows: string[][];
   appended: number;
   alreadyInSheet: number;
-  /** True when the Sheet could not be read or written; the problem is in result.run.errors. */
+  /** True when the Sheet could not be read or written, or its own-pricing tab is unusable; the problem is in result.run.errors. */
   sheetFailed: boolean;
 }
 
@@ -53,6 +54,7 @@ export async function runAndDeliver(input: RunInput, options: { sheet?: SheetSto
       const read = readOwnPricing(await sheet.readOwnPricing());
       ownPricing = read.ownPricing;
       errors.push(...read.errors);
+      sheetFailed = read.errors.length > 0;
     } catch (error) {
       sheetFailed = true;
       ownPricing = { state: "unreadable" };

@@ -209,7 +209,7 @@ describe("the repo check: no Brightloop price is committed", () => {
   const brand = "Bright" + "loop";
 
   test("fails on a Brightloop price written next to the name", () => {
-    for (const text of [`${brand} Starter $29/month`, `${brand}'s Pro: $49`, `${brand} = $9`, `${brand} Starter 29 USD`]) {
+    for (const text of [`${brand} Starter $29/month`, `${brand}'s Pro: $49`, `${brand} = $9`, `${brand} Starter 29 USD`, `${brand} Starter 29/month`, `${brand} Pro 49 per month`]) {
       assert.deepEqual(repoProblems([{ path: "src/x.ts", text }]), ["src/x.ts: looks like a Brightloop price; Brightloop's prices are read from the own-pricing tab at run time, never committed"], text);
     }
   });

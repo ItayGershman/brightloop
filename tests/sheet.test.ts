@@ -185,6 +185,16 @@ describe("a run delivered to the Sheet", () => {
     assert.match(result.items[0].brightloop_comparison, /^Can't compare: Brightloop's own-pricing tab is empty/);
   });
 
+  test("an own-pricing tab with an unusable row or no price column fails the run, like a Sheet that cannot be read", async () => {
+    for (const ownPricing of [[["tier", "monthly price (USD)"], ["Test Starter", "soon"]], [["plan", "price"], ["Test", "5"]]]) {
+      const { store, changes } = fakeSheet({ ownPricing });
+      const { sheetFailed, result } = await runAndDeliver(casesInput(signal), { sheet: store, startedAt: STARTED_AT });
+      assert.equal(sheetFailed, true);
+      assert.ok(result.run.errors.some((error) => error.startsWith("own-pricing tab")));
+      assert.equal(changes.length, 2, "the rows are still appended");
+    }
+  });
+
   test("rows are appended under Maya's header; an empty changes tab gets the header first", async () => {
     const { store, changes } = fakeSheet();
     const { rows } = await runAndDeliver(casesInput(signal), { sheet: store, startedAt: STARTED_AT });
