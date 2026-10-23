@@ -1,7 +1,7 @@
 import { AUDIENCE } from "../config/audience.ts";
 import { competitorSlug, findCompetitor, type Competitor } from "../config/competitors.ts";
 import { BASELINE, type Item, type Signal, type Tier } from "../domain/types.ts";
-import { isPaidPrice, pricingTiers } from "../text/pricing-tiers.ts";
+import { isPaidPrice, pricingTiers, shownPrice } from "../text/pricing-tiers.ts";
 import { quotable } from "../text/quotable.ts";
 import { eachSignal, skip, type Rule } from "./run-rules.ts";
 
@@ -54,13 +54,6 @@ function baselineItem(signal: Signal, competitor: Competitor, tiers: Tier[]): It
     brightloop_comparison: comparison,
     tiers,
   };
-}
-
-/** A plan's price in one phrase: "$18/month, billed annually (struck-out $20)". */
-function shownPrice(tier: Tier): string {
-  const billing = tier.billing ? `, ${tier.billing}` : "";
-  const struck = tier.struck_price ? ` (struck-out ${tier.struck_price})` : "";
-  return `${tier.price}${tier.period ?? ""}${billing}${struck}`;
 }
 
 /** The page's lines, cleaned for quoting; anything that is not a list of strings gives none. */

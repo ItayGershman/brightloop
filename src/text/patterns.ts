@@ -132,9 +132,9 @@ export const PLAN_LIMIT_LINE =
 /** "limited time", "limited-time". */
 export const LIMITED_TIME = /\blimited[- ]time\b/i;
 
-/** A discount stated as one: "30% off", "sale", "discount", "coupon", "promo code", "special offer". */
+/** A discount stated as one: "30% off", "2 months free", "sale", "discount", "coupon", "promo code", "special offer". */
 export const DISCOUNT_WORDING =
-  /\d+(?:\.\d+)?\s*%\s*off\b|\b(?:sale|discount(?:ed)?|coupon|promo(?:tional)? (?:code|price|offer)|special offer|launch offer|black friday|cyber monday)\b/i;
+  /\d+(?:\.\d+)?\s*%\s*off\b|\b\d+ months? free\b|\b(?:sale|discount(?:ed)?|coupon|promo(?:tional)? (?:code|price|offer)|special offer|launch offer|black friday|cyber monday)\b/i;
 
 const MONTH = String.raw`(?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\.?`;
 const WEEKDAY = String.raw`(?:mon|tues|wednes|thurs|fri|satur|sun)day`;
@@ -166,3 +166,6 @@ export function planNamePattern(name: string): RegExp {
 
 /** "free plan", "free tier", "free mode" (Replit's name for its free plan). */
 export const FREE_PLAN = /\bfree (?:plan|tier|mode)\b/i;
+
+/** A dollar amount anywhere in a line: "$27", "Total of $216 $300 / year", "$20 towards more powerful models". */
+export const DOLLAR_AMOUNT = /\$\d/;

@@ -1,0 +1,27 @@
+{
+  "derived": "Derived test fixture, not a real capture: each page's later snapshot is an edited copy of the real snapshot it names, made only for the replay tests. The real snapshot history is under snapshots/.",
+  "what": "Lovable drops its Pro plan and adds a cheaper Lite plan after Business: as many plans gone as new, but not a rename.",
+  "pages": [
+    {
+      "from": "snapshots/lovable/pricing/2026-10-23T08-24-20.861Z.json",
+      "captured_at": "2026-10-26T05:30:00.000Z",
+      "edits": [
+        {
+          "from": "Pro",
+          "through": "Design systems",
+          "becomes": []
+        },
+        {
+          "after": "Priority support",
+          "insert": [
+            "Lite",
+            "Everything to get going.",
+            "$10",
+            "/ month",
+            "50 monthly credits"
+          ]
+        }
+      ]
+    }
+  ]
+}

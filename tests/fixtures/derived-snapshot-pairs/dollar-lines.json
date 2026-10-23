@@ -1,0 +1,26 @@
+{
+  "derived": "Derived test fixture, not a real capture: each page's later snapshot is an edited copy of the real snapshot it names, made only for the replay tests. The real snapshot history is under snapshots/.",
+  "what": "Dollar amounts that are not the plan's price: Replit's Core allowance '$20 towards more powerful models' becomes $10, and Bolt's Pro yearly total changes while its monthly price stays $18.",
+  "pages": [
+    {
+      "from": "snapshots/replit/pricing/2026-10-23T08-24-34.382Z.json",
+      "captured_at": "2026-10-26T05:30:00.000Z",
+      "edits": [
+        {
+          "line": "$20 towards more powerful models",
+          "becomes": "$10 towards more powerful models"
+        }
+      ]
+    },
+    {
+      "from": "snapshots/bolt/pricing/2026-10-23T08-24-47.555Z.json",
+      "captured_at": "2026-10-26T05:30:00.000Z",
+      "edits": [
+        {
+          "line": "Total of $216 $300 / year",
+          "becomes": "Total of $228 $300 / year"
+        }
+      ]
+    }
+  ]
+}

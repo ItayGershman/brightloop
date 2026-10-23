@@ -78,12 +78,10 @@ describe("a live run with no earlier snapshot, from the committed snapshots", ()
 describe("a live run where a page cannot become a baseline", () => {
   const [pricing] = firstSnapshots();
 
-  test("a page with an earlier snapshot is reported, not judged, until comparing snapshots is built", () => {
+  test("a page with an earlier snapshot is compared with it, not recorded as a second baseline", () => {
     const result = run(liveInput([{ current: pricing, earlier: pricing }], []), { startedAt: STARTED_AT });
-    assert.deepEqual(landedIds(result), []);
-    assert.deepEqual(result.run.errors, [
-      `${pricing.url} has an earlier snapshot; comparing snapshots is not built yet, so it was not judged`,
-    ]);
+    assert.deepEqual(result.items, []);
+    assert.deepEqual(landedIds(result), ["unchanged-lovable-pricing"]);
   });
 
   test("a pricing page with no readable plans is skipped as a changed page structure", () => {

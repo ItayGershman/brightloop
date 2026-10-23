@@ -62,8 +62,8 @@ function duplicateGroups(signals: Signal[]): Signal[][] {
 /** Undefined for a signal that is never merged: no readable time, no competitor, or a pricing claim without one plan and one new price. */
 function fingerprint(signal: Signal): Fingerprint | undefined {
   const competitor = findCompetitor(signal.competitor)?.name ?? lowerQuoted(signal.competitor);
-  // A baseline is one per page by construction, never a second report of anything.
-  if (!signal.utc || competitor === "" || signal.type === BASELINE) return undefined;
+  // A baseline, and a snapshot diff's signal, is one per page or plan by construction, never a second report of anything.
+  if (!signal.utc || competitor === "" || signal.type === BASELINE || signal.diff) return undefined;
   const parts = [String(signal.utc.getTime()), signal.type, competitor];
   if (signal.type !== "pricing") return { key: JSON.stringify(parts), source: lowerQuoted(signal.source) };
   const change = planAndPrice(signal);

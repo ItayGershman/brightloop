@@ -1,11 +1,11 @@
 import { watchedPages } from "../config/competitors.ts";
 import type { RunInput, Snapshot, WatchedPage } from "../domain/types.ts";
-import { liveInput } from "../input/live-input.ts";
+import { inputFromPages, liveInput, pageSignals, type CapturedPage } from "../input/live-input.ts";
 import { pricingTiers } from "../text/pricing-tiers.ts";
 import { capturePages } from "./capture-pages.ts";
-import { latestSnapshot, writeSnapshot } from "./snapshot-store.ts";
+import { latestSnapshot, storedSnapshots, writeSnapshot } from "./snapshot-store.ts";
 
-export { storedSnapshots } from "./snapshot-store.ts";
+export { storedSnapshots, writeSnapshot } from "./snapshot-store.ts";
 
 // A live capture: every watched page is opened, its snapshot stored, and the run input built
 // from the new snapshots and the latest earlier ones. This file is the only import point;
@@ -42,7 +42,13 @@ export async function captureLiveInput(options: CaptureOptions): Promise<RunInpu
     errors.push(`${snapshot.url}: page structure changed, check by hand; no plans could be read, so the snapshot was not stored`);
     return false;
   });
+  // Nor is one whose changes cannot be placed on a plan: the next run compares against the
+  // last snapshot it could read, so the change is not lost behind an unreadable one.
+  const judged = new Map(
+    snapshots.filter((current) => !unreadable.has(current.url)).map((current) => [current.url, pageSignals({ current, earlier: earlier.get(current.url) })]),
+  );
   for (const snapshot of snapshots) {
+    if (judged.get(snapshot.url)?.error) continue;
     try {
       writeSnapshot(options.snapshotsDir, snapshot);
     } catch {
@@ -54,8 +60,28 @@ export async function captureLiveInput(options: CaptureOptions): Promise<RunInpu
   for (const url of unreadable) {
     errors.push(`${url}: the latest stored snapshot could not be read, so this page was not judged`);
   }
-  return liveInput(
-    snapshots.filter((current) => !unreadable.has(current.url)).map((current) => ({ current, earlier: earlier.get(current.url) })),
-    errors,
-  );
+  return inputFromPages([...judged.values()], errors);
+}
+
+/**
+ * A replay: the run input from snapshots already stored, with no browser and no network.
+ * Each page's latest snapshot is compared with the one before it; a page with one snapshot
+ * replays as its baseline. Never throws: problems go to its errors.
+ */
+export function replayInput(snapshotsDir: string, pages: WatchedPage[] = watchedPages()): RunInput {
+  const errors: string[] = [];
+  const replayed: CapturedPage[] = [];
+  for (const page of pages) {
+    let stored: Snapshot[];
+    try {
+      stored = storedSnapshots(snapshotsDir, page);
+    } catch {
+      errors.push(`${page.url}: a stored snapshot could not be read, so this page was not replayed`);
+      continue;
+    }
+    const [earlier, current] = stored.length === 1 ? [undefined, stored[0]] : stored.slice(-2);
+    if (current) replayed.push({ current, earlier });
+    else errors.push(`${page.url}: no stored snapshot to replay`);
+  }
+  return liveInput(replayed, errors);
 }
