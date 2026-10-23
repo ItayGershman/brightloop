@@ -1,9 +1,10 @@
+import { AUDIENCE } from "../audience.ts";
 import { containsBannedWord } from "./banned-words.ts";
 import { brokenRules, isNonEmptyString, isRecord, type FieldRule } from "./rules.ts";
 
 /** The fixed shape around the items. */
 const WRAPPER_RULES: FieldRule[] = [
-  { field: "built_for", test: (value) => value === "maya", problem: 'built_for is not "maya"' },
+  { field: "built_for", test: (value) => value === AUDIENCE.builtFor, problem: `built_for is not "${AUDIENCE.builtFor}"` },
   { field: "items", test: Array.isArray, problem: "items is not a list" },
   { field: "skipped", test: Array.isArray, problem: "skipped is not a list" },
   { field: "run", test: isRecord, problem: "run is missing" },
