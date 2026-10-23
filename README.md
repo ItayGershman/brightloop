@@ -26,6 +26,10 @@ A manual run on a machine with Google Chrome installed. It opens the pricing pag
 
 No browser, no network, no keys. For every watched page, the latest stored snapshot is compared with the one before it, exactly as a live run would; a page with one snapshot replays as its baseline. The tests replay pairs made of a real committed snapshot and an edited copy of it, described in `tests/fixtures/derived-snapshot-pairs/`; those copies are test fixtures, never written to `snapshots/`.
 
+## The Monday run
+
+`.github/workflows/scheduled-run.yml` runs `./run --live` on GitHub Actions every Monday at 08:30 Jerusalem time, and on demand from the Actions tab ("Run workflow") for demos and re-runs. GitHub schedules are in UTC, so the workflow fires at 05:30 and 06:30 UTC and a first job (`src/schedule/time-gate.ts`) lets through only the one that is 08:xx in `Asia/Jerusalem`; a manual run is never held back. Each run installs Chrome, captures the pages with a window on a virtual display, commits the new snapshots, `runs/result.json` and one line in `runs/run-log.jsonl` (start time, pages fetched, `cost_usd`, errors) as `github-actions[bot]`, and needs no secret. Runs never overlap: a run started while one is going waits for it. A page a site blocks is reported in `run.errors` and the run log, never stored; capture it on a machine of your own with `./run --live` and commit the snapshot.
+
 ## Proof
 
 ```sh
@@ -47,6 +51,8 @@ Typechecks, runs the repo check for the brief's hidden markers, then the case su
 | `src/config/` | The audience, the competitor registry and the known press outlets |
 | `src/text/` | Reading outside text: named patterns, quoting, price change, the plans on a pricing page, the brief's markers |
 | `src/domain/` | The shared types: `Signal`, `RunInput`, `Snapshot`, `Tier`, `Item`, `SkippedSignal`, `Result` |
+| `src/schedule/` | The scheduled run: the 08:xx Jerusalem time gate and the run log |
+| `runs/` | Written by the scheduled and manual runs: the latest `result.json` and `run-log.jsonl`, one line per run |
 | `snapshots/` | The committed snapshots, one file per page per live run. Real data, replayed by the tests with no browser |
 
 To add a judging rule: write the function in `src/judging/rules.ts`, put it in `JUDGING` (a rule that needs the whole batch, like `mergeDuplicates`, goes in `RULES` before the rules it feeds), and add a case under `cases/<name>/` (`input.json` and `expected.json`).
