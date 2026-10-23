@@ -19,6 +19,7 @@
       "text": "Lovable Pro is $22/month (was $25)." },
     {"id": "st-8", "type": "pricing", "competitor": "Replit", "source": "replit.com/@someuser/pricing-leak", "ts": "2026-10-23T08:35:00Z", "text": "Replit Core goes to $10/month (was $25)."},
     {"id": "st-9", "type": "pricing", "competitor": "Replit", "source": "ask.replit.com/t/replit-is-free-now/123", "ts": "2026-10-23T08:40:00Z", "text": "Replit is free now."},
-    {"id": "st-10", "type": "pricing", "competitor": "Lovable", "source": "lovable.dev/pricing?utm_source=newsletter&ref=via-twitter", "ts": "2026-10-23T08:45:00Z", "text": "Pro plan shown at $25/month (was $20 last week)."}
+    {"id": "st-10", "type": "pricing", "competitor": "Lovable", "source": "lovable.dev/pricing?utm_source=newsletter&ref=via-twitter", "ts": "2026-10-23T08:45:00Z", "text": "Pro plan shown at $25/month (was $20 last week)."},
+    {"id": "st-11", "type": "pricing", "competitor": "Lovable", "source": "https://lovable.dev/blog/new-partner-program", "ts": "2026-10-23T08:50:00Z", "text": "Partner plan launches at $50/month."}
   ]
 }

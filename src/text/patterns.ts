@@ -29,13 +29,15 @@ export const CREDENTIAL_KEY = /key|token|secret|passw/i;
 export const PRINTABLE_WITHOUT_SPACES = /^[^\s\p{C}]+$/u;
 
 /**
- * Words in a signal's source, or in a source URL's path, that mark a claim as paid for,
- * anonymous or passed on second-hand: "sponsored post", "newsletter", "AI summary",
- * "forwarded", "via", "u/anon", "rumour", and paid-content sections of press sites
- * ("/sponsor/", "/partner-content/", "/brand-studio/", "/brandvoice/", "/paid-post/").
+ * Words that mark a claim as paid for, anonymous or passed on second-hand, looked for in a
+ * source's text, or in a source URL's host and path. Every word it matches, singular and plural:
+ * paid: sponsor, sponsored, sponsorship, advertorial, promoted, partner, partnership,
+ *   brand studio (brand-studio, brandstudio), brandvoice, paid post (paid-post);
+ * second-hand: newsletter, AI summary, AI-generated, summarised (summarized), forwarded, fwd, via;
+ * anonymous or unchecked: anonymous, anon ("u/anon"), rumour (rumor), unverified.
  */
 export const SECOND_HAND_SOURCE =
-  /\b(?:sponsor(?:ed)?|advertorial|promoted|partner|brand[- ]?studio|brandvoice|paid[- ]post|newsletter|ai[- ](?:summary|generated)|summari[sz]ed|forwarded|fwd|via|anonymous|anon|rumou?r|unverified)\b/i;
+  /\b(?:sponsor(?:s|ed|ships?)?|advertorials?|promoted|partners?(?:hips?)?|brand[- ]?studios?|brandvoice|paid[- ]posts?|newsletters?|ai[- ](?:summary|summaries|generated)|summari[sz]ed|forwarded|fwd|via|anonymous|anon|rumou?rs?|unverified)\b/i;
 
-/** A guest post: "launchpad.example, guest post". */
-export const GUEST_POST_SOURCE = /\bguest[- ]post\b/i;
+/** A guest post, singular or plural: "launchpad.example, guest post", "/guest-posts/". */
+export const GUEST_POST_SOURCE = /\bguest[- ]posts?\b/i;

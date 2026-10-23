@@ -3,7 +3,7 @@ import type { Competitor } from "../config/competitors.ts";
 import { KNOWN_PRESS } from "../config/press.ts";
 import { GUEST_POST_SOURCE, SECOND_HAND_SOURCE } from "../text/patterns.ts";
 import { quotable } from "../text/quotable.ts";
-import { isOfficialPricingPage, isOnDomain, isOwnPage, sourceUrl } from "./official-page.ts";
+import { isOnDomainOrSubdomain, isRootOf, isUnder, sourceUrl } from "./source-url.ts";
 
 // How far a signal's source can be trusted: TRUST_LEVELS, one row per level, checked in
 // order, and sourceTrust, the one place a source is classified. Confidence starts from the
@@ -44,9 +44,37 @@ interface TrustLevel {
 export type ReportableTrust = TrustLevel & { item: ItemWording };
 
 const TRUST_LEVELS: TrustLevel[] = [
-  // Second-hand wording comes first, so "lovable.dev/pricing, via a newsletter" or a sponsored
-  // section of a press site is never read as the page or the outlet it mentions. For a URL
-  // only its path is read, so "?utm_source=newsletter" on the official page changes nothing.
+  // The competitor's own pages come first and only match a bare URL, so a source with words
+  // around a URL ("lovable.dev/pricing/ via a newsletter") is never read as the page it
+  // mentions, while a word in the competitor's own path ("/blog/new-partner-program") does
+  // not make its own page second-hand.
+  {
+    name: "the competitor's own pricing page",
+    matches: (source, competitor) => matchesUrl(source, (url) => isUnder(url, competitor.pricingPage)),
+    confidence: 0.9,
+    label: ({ name }) => `confirmed: seen on ${name}'s own pricing page`,
+    item: {
+      action: "watch 2 weeks",
+      shouldWeRespond: () => "Not yet: watch whether the change holds on the next two Monday runs.",
+      cta: ({ name, link }) => `Open ${link} and check the ${name} price before ${AUDIENCE.deadline}.`,
+      notes: ({ source }) => `Source: ${source}.`,
+    },
+  },
+  {
+    name: "another page of the competitor's own site",
+    matches: (source, competitor) =>
+      matchesUrl(source, (url) => isRootOf(url, competitor.homepage) || competitor.ownSections.some((section) => isUnder(url, section))),
+    confidence: 0.9,
+    label: ({ name }) => `confirmed by ${name}'s own site, not yet seen on its pricing page`,
+    item: {
+      action: "watch 1 week",
+      shouldWeRespond: ({ name }) => `Not yet: ${name} says it, but its pricing page does not show it yet; the next Monday run checks again.`,
+      cta: ({ name, link }) => `Open ${link} and check whether the ${name} price matches before ${AUDIENCE.deadline}.`,
+      notes: ({ name, source }) => `Source: ${source}, ${name}'s own site but not its pricing page.`,
+    },
+  },
+  // For a URL, the words are read from its host and path, never its query, so a paid
+  // subdomain ("sponsored.theverge.com") counts and "?utm_source=newsletter" does not.
   {
     name: "a sponsored, anonymous or second-hand source",
     matches: (source) => SECOND_HAND_SOURCE.test(wordingOf(source)),
@@ -60,39 +88,15 @@ const TRUST_LEVELS: TrustLevel[] = [
     label: () => "weak",
   },
   {
-    name: "the competitor's own pricing page",
-    matches: isOfficialPricingPage,
-    confidence: 0.9,
-    label: ({ name }) => `confirmed: seen on ${name}'s own pricing page`,
-    item: {
-      action: "watch 2 weeks",
-      shouldWeRespond: () => "Not yet: watch whether the change holds on the next two Monday runs.",
-      cta: ({ name, link }) => `Open ${link} and check the ${name} price before ${AUDIENCE.deadline}.`,
-      notes: ({ source }) => `Source: ${source}.`,
-    },
-  },
-  {
-    name: "another page of the competitor's own site",
-    matches: isOwnPage,
-    confidence: 0.9,
-    label: ({ name }) => `confirmed by ${name}'s own site, not yet seen on its pricing page`,
-    item: {
-      action: "watch 1 week",
-      shouldWeRespond: ({ name }) => `Not yet: ${name} says it, but its pricing page does not show it yet; the next Monday run checks again.`,
-      cta: ({ name, link }) => `Open ${link} and check whether the ${name} price matches before ${AUDIENCE.deadline}.`,
-      notes: ({ name, source }) => `Source: ${source}, ${name}'s own site but not its pricing page.`,
-    },
-  },
-  {
     // A user's page or a forum thread on the competitor's domain is someone else talking.
     name: "a user page or forum on the competitor's domain",
-    matches: isOnDomain,
+    matches: (source, competitor) => matchesUrl(source, (url) => isOnDomainOrSubdomain(url.hostname, competitor.domain)),
     confidence: 0.2,
     label: () => "unconfirmed",
   },
   {
     name: "known press",
-    matches: (source) => isKnownPress(source),
+    matches: (source) => matchesUrl(source, (url) => KNOWN_PRESS.some((outlet) => isOnDomainOrSubdomain(url.hostname, outlet))),
     confidence: 0.7,
     label: ({ name }) => `likely: reported by known press, not yet seen on ${name}'s own pricing page`,
     item: {
@@ -118,6 +122,7 @@ export function sourceTrust(source: unknown, competitor: Competitor): TrustLevel
   return level;
 }
 
+/** The level turns a pricing claim into an item. */
 export function isReportable(level: TrustLevel): level is ReportableTrust {
   return level.item !== undefined;
 }
@@ -131,13 +136,14 @@ export function unreportedClaim(level: TrustLevel, competitor: Competitor): stri
   );
 }
 
-/** The words to look at in a source: a URL's path only, otherwise the whole text. */
+/** The words to look at in a source: a URL's host and path, otherwise the whole text. */
 function wordingOf(source: string): string {
-  return sourceUrl(source)?.pathname ?? source;
+  const url = sourceUrl(source);
+  return url ? `${url.hostname}${url.pathname}` : source;
 }
 
-/** A URL on a known outlet's host or one of its subdomains. */
-function isKnownPress(source: string): boolean {
-  const host = sourceUrl(source)?.hostname.toLowerCase();
-  return host !== undefined && KNOWN_PRESS.some((outlet) => host === outlet || host.endsWith(`.${outlet}`));
+/** The source parses as a URL and the URL passes the test. */
+function matchesUrl(source: string, test: (url: URL) => boolean): boolean {
+  const url = sourceUrl(source);
+  return url !== undefined && test(url);
 }

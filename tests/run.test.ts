@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { describe, test } from "node:test";
 import { AUDIENCE } from "../src/config/audience.ts";
 import { COMPETITORS } from "../src/config/competitors.ts";
+import { isOnDomainOrSubdomain } from "../src/judging/source-url.ts";
 import { OUTPUT_MARKER } from "../src/text/markers.ts";
 import { briefExample, landedIds, pricingSignal, runCases } from "./helpers.ts";
 
@@ -44,8 +45,7 @@ for (const competitor of COMPETITORS) {
       assert.equal(pricingUrl.hostname, competitor.domain);
       assert.equal(new URL(competitor.homepage).hostname, competitor.domain);
       for (const section of competitor.ownSections) {
-        const host = new URL(section).hostname;
-        assert.ok(host === competitor.domain || host.endsWith(`.${competitor.domain}`), section);
+        assert.ok(isOnDomainOrSubdomain(new URL(section).hostname, competitor.domain), section);
       }
     });
 
@@ -83,6 +83,7 @@ for (const competitor of COMPETITORS) {
     const spoofs = [
       `${competitor.domain}/@someuser/pricing-leak`,
       `ask.${competitor.domain}/t/free-now/123`,
+      `sponsored.${competitor.domain}/pricing`,
       `${competitor.homepage}community/free`,
       `reddit.com/r/${competitor.domain}`,
       `sponsored post quoting ${competitor.domain}`,

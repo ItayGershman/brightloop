@@ -1,6 +1,6 @@
 // The competitors the watch covers, with their own pages: "no link, no number". Adding a
-// competitor is one entry in COMPETITORS; the lookup and the official-page check
-// (judging/official-page.ts) read only from it, and the tests loop over every entry.
+// competitor is one entry in COMPETITORS; the lookup and the trust levels
+// (judging/source-trust.ts) read only from it, and the tests loop over every entry.
 
 export interface Competitor {
   name: string;

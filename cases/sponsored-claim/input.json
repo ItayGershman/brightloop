@@ -17,6 +17,11 @@
       "text": "Bolt is free forever." },
     {"id": "sc-6", "type": "pricing", "competitor": "Bolt", "source": "techcrunch.com/sponsor/bolt-free", "ts": "2026-10-23T09:25:00Z", "text": "Bolt is free forever."},
     {"id": "sc-7", "type": "pricing", "competitor": "Bolt", "source": "techcrunch.com/partner-content/bolt-free", "ts": "2026-10-23T09:30:00Z", "text": "Bolt drops all paid plans."},
-    {"id": "sc-8", "type": "pricing", "competitor": "Bolt", "source": "https://techcrunch.com/brand-studio/bolt", "ts": "2026-10-23T09:35:00Z", "text": "Bolt Pro is now $0/month (was $20)."}
+    {"id": "sc-8", "type": "pricing", "competitor": "Bolt", "source": "https://techcrunch.com/brand-studio/bolt", "ts": "2026-10-23T09:35:00Z", "text": "Bolt Pro is now $0/month (was $20)."},
+    {"id": "sc-9", "type": "pricing", "competitor": "Bolt", "source": "forbes.com/brandvoice/bolt-pricing", "ts": "2026-10-23T09:40:00Z", "text": "Bolt Pro is now $5/month (was $20)."},
+    {"id": "sc-10", "type": "pricing", "competitor": "Lovable", "source": "techcrunch.com/paid-post/lovable-deal", "ts": "2026-10-23T09:45:00Z", "text": "Lovable Pro is half price for good."},
+    {"id": "sc-11", "type": "pricing", "competitor": "Replit", "source": "techcrunch.com/sponsors/replit", "ts": "2026-10-23T09:50:00Z", "text": "Replit Core is free this year."},
+    {"id": "sc-12", "type": "pricing", "competitor": "Bolt", "source": "sponsored.theverge.com/bolt", "ts": "2026-10-23T09:55:00Z", "text": "Bolt drops Pro to $0/month (was $20)."},
+    {"id": "sc-13", "type": "pricing", "competitor": "Lovable", "source": "newsletter.techcrunch.com/lovable", "ts": "2026-10-23T10:00:00Z", "text": "Lovable cuts Pro to $12/month (was $25)."}
   ]
 }

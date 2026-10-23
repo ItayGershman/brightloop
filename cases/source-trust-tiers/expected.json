@@ -95,6 +95,25 @@
       "link": "https://lovable.dev/pricing",
       "notes": "Source: lovable.dev/pricing?utm_source=newsletter&ref=via-twitter.",
       "brightloop_comparison": "Can't compare yet: Brightloop's own-pricing tab is not connected. Lovable now shows $25/month."
+    },
+    {
+      "id": "pricing-st-11",
+      "source_ids": [
+        "st-11"
+      ],
+      "confidence": 0.9,
+      "confidence_label": "confirmed by Lovable's own site, not yet seen on its pricing page",
+      "action": "watch 1 week",
+      "why": "Can't compare yet: Brightloop's own-pricing tab is not connected. Lovable's current price is on its pricing page. Should we respond? Not yet: Lovable says it, but its pricing page does not show it yet; the next Monday run checks again.",
+      "cta": "Open https://lovable.dev/pricing and check whether the Lovable price matches before the 11:00 leadership meeting.",
+      "competitor": "Lovable",
+      "page": "pricing",
+      "what_changed": "Partner plan launches at $50/month.",
+      "before": null,
+      "after": null,
+      "link": "https://lovable.dev/pricing",
+      "notes": "Source: https://lovable.dev/blog/new-partner-program, Lovable's own site but not its pricing page.",
+      "brightloop_comparison": "Can't compare yet: Brightloop's own-pricing tab is not connected. Lovable's current price is on its pricing page."
     }
   ],
   "skipped": [

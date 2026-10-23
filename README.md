@@ -25,7 +25,7 @@ Typechecks, runs the repo check for the brief's hidden markers, then the case su
 | `src/cli.ts` | Parses the command line, reads the cases file, writes `result.json`. Nothing else |
 | `src/run.ts` | One run: input in, rules, in-run checks, result out. Orchestration only |
 | `src/input/` | `parseCasesFile`: a cases file text into the run input (signals, banned words, secret-like config values, problems) |
-| `src/judging/` | The rule engine (`runRules`), the rules (`RULES`), the official-page check, the source trust levels (`source-trust.ts`) and the pricing item builder |
+| `src/judging/` | The rule engine (`runRules`), the rules (`RULES`), the source trust levels (`source-trust.ts`), reading a source as a URL (`source-url.ts`) and the pricing item builder |
 | `src/checks/` | The in-run checks; `checks/index.ts` is the only import point |
 | `src/config/` | The audience, the competitor registry and the known press outlets |
 | `src/text/` | Reading outside text: named patterns, quoting, price change, the brief's markers |

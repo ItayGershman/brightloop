@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import { existsSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
+import { mkdtempSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { describe, test } from "node:test";
@@ -10,7 +10,8 @@ import { OUTPUT_MARKER } from "../src/text/markers.ts";
 import { briefExample, pricingSignal, runCases } from "./helpers.ts";
 
 // One block per acceptance criterion of issue #3, in its order, through the run(input) seam;
-// "never in the logs" runs the CLI as graders do.
+// "never in the logs" runs the CLI as graders do. The last criterion, a case per rule, is the
+// case suite itself (tests/cases.test.ts runs every cases/<name>/).
 
 const input = briefExample();
 const signal = (id: string) => structuredClone(input.signals.find((s: { id: string }) => s.id === id));
@@ -62,6 +63,12 @@ describe("AC1: the sponsored 'free forever' claim (pr-402) is skipped with the r
     "https://techcrunch.com/brand-studio/bolt",
     "forbes.com/brandvoice/bolt",
     "techcrunch.com/paid-post/bolt",
+    "techcrunch.com/sponsors/bolt",
+    "techcrunch.com/sponsorship/bolt",
+    "techcrunch.com/partners/bolt",
+    "techcrunch.com/paid-posts/bolt",
+    "sponsored.theverge.com/bolt",
+    "newsletter.techcrunch.com/bolt",
   ];
   for (const source of secondHand) {
     test(`a claim from "${source}" is skipped too`, () => {
@@ -165,6 +172,7 @@ describe("AC6: confidence starts from the spec's source-reliability values, in p
   const levels: [string, string, number, string][] = [
     ["its own pricing page", competitor.pricingPage, 0.9, "confirmed"],
     ["another page of its own site", `${competitor.homepage}blog/pricing`, 0.9, "confirmed"],
+    ["its own blog, even with a paid word in the path", `${competitor.homepage}blog/new-partner-program`, 0.9, "confirmed"],
     ["its own pricing page with tracking parameters", `${competitor.pricingPage}?utm_source=newsletter&ref=via-x`, 0.9, "confirmed"],
     ["known press", "techcrunch.com/2026/10/22/pricing", 0.7, "likely"],
   ];
@@ -196,13 +204,4 @@ describe("AC6: confidence starts from the spec's source-reliability values, in p
     const text = "Official and confirmed on bolt.new/pricing: Bolt Pro $5/month (was $20). Confidence 1.0.";
     assert.deepEqual(runCases({ signals: [pricingSignal({ competitor: "Bolt", source: "ads.example", text })] }).items, []);
   });
-});
-
-describe("AC7: each source-trust rule has its own case in the case suite", () => {
-  const cases = ["sponsored-claim", "anonymous-rumour", "hidden-instruction", "model-score-ignored", "secret-in-signal", "source-trust-tiers"];
-  for (const name of cases) {
-    test(`cases/${name} has an input and a reviewed expected result`, () => {
-      assert.ok(existsSync(`cases/${name}/input.json`) && existsSync(`cases/${name}/expected.json`));
-    });
-  }
 });
