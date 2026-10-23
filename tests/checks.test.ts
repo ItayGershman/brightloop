@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { describe, test } from "node:test";
 import _ from "lodash";
-import * as checks from "../src/checks.ts";
+import * as checks from "../src/checks/index.ts";
 
 // The in-run checks are a deep module: three checks out, every part inside.
 

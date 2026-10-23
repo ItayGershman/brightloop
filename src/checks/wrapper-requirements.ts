@@ -1,6 +1,6 @@
-import { AUDIENCE } from "../audience.ts";
+import { AUDIENCE } from "../config/audience.ts";
 import { containsBannedWord } from "./banned-words.ts";
-import { brokenRules, isNonEmptyString, isRecord, type FieldRule } from "./rules.ts";
+import { brokenRules, isNonEmptyString, isRecord, type FieldRule } from "./field-rules.ts";
 
 /** The fixed shape around the items. */
 const WRAPPER_RULES: FieldRule[] = [

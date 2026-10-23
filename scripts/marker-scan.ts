@@ -1,4 +1,4 @@
-import { CODE_MARKERS } from "../src/markers.ts";
+import { CODE_MARKERS } from "../src/text/markers.ts";
 
 // Only these files may name the markers: the docs that record the traps, and the brief's
 // example input, kept verbatim so the case suite proves the run ignores what is inside it.

@@ -18,6 +18,23 @@ npm ci && npm test
 
 Typechecks, runs the repo check for the brief's hidden markers, then the case suite (`cases/<name>/input.json` must give `cases/<name>/expected.json`) and the tests. CI runs it on every push.
 
+## Where the code lives
+
+| Folder or file | What it owns |
+|---|---|
+| `src/cli.ts` | Parses the command line, reads the cases file, writes `result.json`. Nothing else |
+| `src/run.ts` | One run: input in, rules, in-run checks, result out. Orchestration only |
+| `src/input/` | `parseCasesFile`: a cases file text into the run input (signals, banned words, secret-like config values, problems) |
+| `src/judging/` | The rule engine (`runRules`), the rules (`RULES`), the official-page check, the pricing item builder and its trust levels |
+| `src/checks/` | The in-run checks; `checks/index.ts` is the only import point |
+| `src/config/` | The audience and the competitor registry |
+| `src/text/` | Reading outside text: named patterns, quoting, price change, the brief's markers |
+| `src/domain/` | The shared types: `Signal`, `RunInput`, `Item`, `SkippedSignal`, `Result` |
+
+To add a judging rule: write the function in `src/judging/rules.ts`, put it in `RULES`, and add a case under `cases/<name>/` (`input.json` and `expected.json`).
+
+To add a competitor: add one entry to `COMPETITORS` in `src/config/competitors.ts`. The tests already loop over every entry.
+
 ## Output fields
 
 The required wrapper (`built_for`, `items`, `skipped`, `run`) plus these fields on each item:

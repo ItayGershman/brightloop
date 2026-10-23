@@ -1,4 +1,4 @@
-import { OUTPUT_MARKER } from "../markers.ts";
+import { OUTPUT_MARKER } from "../text/markers.ts";
 
 /** A value that must never be written, looked for in the JSON text of whatever is checked. */
 interface ForbiddenValue {

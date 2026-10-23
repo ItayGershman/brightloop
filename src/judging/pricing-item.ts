@@ -1,8 +1,9 @@
-import { AUDIENCE } from "./audience.ts";
-import { isOfficialPricingPage, type Competitor } from "./competitors.ts";
-import { priceChange } from "./price-change.ts";
-import { quotable } from "./quotable.ts";
-import type { Item, Signal } from "./types.ts";
+import { AUDIENCE } from "../config/audience.ts";
+import type { Competitor } from "../config/competitors.ts";
+import type { Item, Signal } from "../domain/types.ts";
+import { priceChange } from "../text/price-change.ts";
+import { quotable } from "../text/quotable.ts";
+import { isOfficialPricingPage } from "./official-page.ts";
 
 // One builder for every pricing item. What differs with how far a source can be trusted
 // lives in TRUST_LEVELS, one row per level, checked in order. Source trust (#3) adds its
