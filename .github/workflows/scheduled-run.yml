@@ -1,0 +1,86 @@
+name: scheduled-run
+
+# The Monday run at 08:30 Jerusalem time, and the same run on demand (demos, the recording,
+# re-runs). GitHub schedules are in UTC and Israel changes clocks, so there are two Monday
+# entries; the gate job lets through only the one that is 08:xx in Asia/Jerusalem.
+# Needs no secret: the run captures public pages and commits what it found.
+
+on:
+  schedule:
+    - cron: "30 5 * * 1"
+    - cron: "30 6 * * 1"
+  workflow_dispatch:
+    inputs:
+      headless:
+        description: "Run Chrome headless instead of with a window on a virtual display"
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+# Two runs never race on the snapshots or the run log: a second one waits for the first.
+concurrency:
+  group: scheduled-run
+  cancel-in-progress: false
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    outputs:
+      run: ${{ steps.gate.outputs.run }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            scripts/schedule-gate.ts
+            src/schedule
+            src/config
+            package.json
+          sparse-checkout-cone-mode: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - id: gate
+        run: node scripts/schedule-gate.ts "${{ github.event_name }}"
+
+  run:
+    needs: gate
+    if: needs.gate.outputs.run == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - name: Install Google Chrome
+        run: npx playwright-core install --with-deps --force chrome
+      - id: start
+        run: echo "at=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_OUTPUT"
+      - id: live
+        name: Live run
+        continue-on-error: true
+        env:
+          HEADLESS: ${{ inputs.headless && '--headless' || '' }}
+        run: xvfb-run --auto-servernum ./run --live --output runs/result.json $HEADLESS
+      - name: Append to the run log
+        if: always()
+        run: npx tsx scripts/append-run-log.ts "${{ steps.start.outputs.at }}" runs/result.json snapshots runs/run-log.jsonl
+      - name: No forbidden marker in anything about to be committed
+        run: npm run repo-check
+      - name: Commit the snapshots, the result and the run log
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add snapshots runs
+          git commit -m "${{ github.event_name }} run at ${{ steps.start.outputs.at }}: $(tail -n 1 runs/run-log.jsonl | node -e 'const e = JSON.parse(require("fs").readFileSync(0, "utf8")); console.log(`${e.pages_fetched} of ${e.pages_watched} pages, ${e.errors.length} errors`)')"
+          git pull --rebase origin "${{ github.ref_name }}"
+          git push origin "HEAD:${{ github.ref_name }}"
+      - name: Fail if the live run itself failed
+        if: steps.live.outcome == 'failure'
+        run: exit 1
