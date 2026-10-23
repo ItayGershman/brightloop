@@ -3,7 +3,9 @@ name: scheduled-run
 # The Monday run at 08:30 Jerusalem time, and the same run on demand (demos, the recording,
 # re-runs). GitHub schedules are in UTC and Israel changes clocks, so there are two Monday
 # entries; the gate job lets through only the one that is 08:xx in Asia/Jerusalem.
-# Needs no secret: the run captures public pages and commits what it found.
+# The run captures public pages and commits what it found. With the Sheet secret and
+# variable set, the live step also reads the own-pricing tab and appends the rows to Maya's
+# Sheet; without them it writes the CSV only. They are given to that one step, nothing else.
 
 on:
   schedule:
@@ -75,9 +77,11 @@ jobs:
         continue-on-error: true
         env:
           HEADLESS: ${{ inputs.headless && '--headless' || '' }}
+          GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+          SHEET_ID: ${{ vars.SHEET_ID }}
         # The last run's committed result goes first, so a crash cannot pass it off as this run's.
         run: |
-          rm -f runs/result.json
+          rm -f runs/result.json runs/result.csv
           xvfb-run --auto-servernum ./run --live --output runs/result.json $HEADLESS
       - id: log
         name: Append to the run log
@@ -88,7 +92,7 @@ jobs:
       # A forbidden marker in a page fails the job and nothing is committed, the run log line included.
       - name: No forbidden marker in anything about to be committed
         run: npm run repo-check
-      - name: Commit the snapshots, the result and the run log
+      - name: Commit the snapshots, the result, its CSV and the run log
         env:
           MESSAGE: "${{ github.event_name }} run at ${{ steps.start.outputs.at }}: ${{ steps.log.outputs.summary }}"
         run: |

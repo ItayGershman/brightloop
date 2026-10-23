@@ -1,15 +1,15 @@
 import { AUDIENCE } from "../config/audience.ts";
 import { findCompetitor } from "../config/competitors.ts";
-import { PAGE_COPY, PAGE_NAMES, UNCHANGED } from "../domain/types.ts";
-import { baseline } from "./baseline.ts";
+import { PAGE_COPY, PAGE_NAMES, UNCHANGED, type OwnPricing } from "../domain/types.ts";
+import { baselineRule } from "./baseline.ts";
 import { mergeDuplicates } from "./duplicates.ts";
 import { pricingItem } from "./pricing-item.ts";
 import { eachSignal, skip, type Rule } from "./run-rules.ts";
 import { isReportable, sourceTrust, unreportedClaim } from "./source-trust.ts";
 
 // The judging rules, in the order they run. Adding a rule: write the function here, put it
-// in JUDGING (or, for a rule that must see every pending signal at once, in RULES before the
-// rules it feeds), add a case file under cases/.
+// in the list in judgingRules (a rule that must see every pending signal at once goes before
+// the rules it feeds, like mergeDuplicates), add a case file under cases/.
 //
 // Signal text is data: it is cleaned and quoted, never read as an instruction. Building the
 // item itself is in pricing-item.ts; how far a source is trusted is in source-trust.ts.
@@ -47,17 +47,28 @@ export const pageWithoutAction: Rule = eachSignal((signal) => {
  * A pricing signal becomes an item only for a competitor whose own page we know, and only
  * from a source trusted enough to report; a third-party claim is skipped with the reason.
  */
-export const pricing: Rule = eachSignal((signal) => {
-  if (signal.type !== "pricing") return undefined;
-  const competitor = findCompetitor(signal.competitor);
-  if (!competitor) return skip(signal, "pricing signal, but there is no official page for this competitor");
-  const trust = sourceTrust(signal.source, competitor);
-  if (!isReportable(trust)) return skip(signal, unreportedClaim(trust, competitor));
-  return { kind: "item", item: pricingItem(signal, competitor, trust) };
-});
+export function pricingRule(own?: OwnPricing): Rule {
+  return eachSignal((signal) => {
+    if (signal.type !== "pricing") return undefined;
+    const competitor = findCompetitor(signal.competitor);
+    if (!competitor) return skip(signal, "pricing signal, but there is no official page for this competitor");
+    const trust = sourceTrust(signal.source, competitor);
+    if (!isReportable(trust)) return skip(signal, unreportedClaim(trust, competitor));
+    return { kind: "item", item: pricingItem(signal, competitor, trust, own) };
+  });
+}
 
-/** The rules that judge one signal, or one group of duplicates, at a time. */
-const JUDGING: Rule[] = [outsideScope, baseline, pageWithoutAction, pricing];
+export const pricing: Rule = pricingRule();
 
-/** Duplicates go first: each group is judged once by the rules it feeds (duplicates.ts). */
-export const RULES: Rule[] = [mergeDuplicates(JUDGING), ...JUDGING];
+/**
+ * The rules, in order, for a run with Brightloop's own pricing (absent: not connected). The
+ * baseline and pricing rules compare with it; duplicates go first, and each group is judged
+ * once by the rules it feeds (duplicates.ts).
+ */
+export function judgingRules(own?: OwnPricing): Rule[] {
+  const judging = [outsideScope, baselineRule(own), pageWithoutAction, pricingRule(own)];
+  return [mergeDuplicates(judging), ...judging];
+}
+
+/** The rules for a run without Brightloop's own pricing. */
+export const RULES: Rule[] = judgingRules();

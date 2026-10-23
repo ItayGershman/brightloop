@@ -1,14 +1,20 @@
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
-import { dirname } from "node:path";
+import { dirname, format, parse } from "node:path";
 import type { RunInput } from "./domain/types.ts";
 import { inputWithError, parseCasesFile } from "./input/parse-cases-file.ts";
-import { run } from "./run.ts";
+import { toCsv } from "./sheet/csv.ts";
+import { runAndDeliver, sheetFromEnv } from "./sheet/deliver.ts";
+import { COLUMNS } from "./sheet/rows.ts";
 
 // run --input cases.json --output result.json
 // run --live --output result.json [--snapshots snapshots] [--headless]
 // run --replay --output result.json [--snapshots snapshots]
-// Bad input still produces a result.json with the problem in run.errors; only a wrong
-// command line exits non-zero. Signal text, page text and config values are never logged.
+// Bad input still produces a result.json with the problem in run.errors, and the same rows
+// as Maya's sheet in a CSV beside it (result.csv). A live run with both keys in the
+// environment (GOOGLE_SERVICE_ACCOUNT_JSON, SHEET_ID) also reads the own-pricing tab and
+// appends the rows to the Sheet; a cases file or a replay never touches the Sheet. A wrong
+// command line exits 2, a Sheet that failed exits 1. Signal text, page text, config values
+// and keys are never logged.
 
 const USAGE =
   "usage: run --input <cases.json> --output <result.json>\n" +
@@ -36,10 +42,13 @@ async function main(argv: string[]): Promise<number> {
       : capture.replayInput(snapshotsDir)
     : readCasesFile(inputPath ?? "");
 
-  const result = run(input);
+  const sheet = live ? sheetFromEnv(process.env) : undefined;
+  const { result, rows, appended, alreadyInSheet, sheetFailed } = await runAndDeliver(input, { sheet });
+  const csvPath = format({ ...parse(outputPath), base: undefined, ext: ".csv" });
   try {
     mkdirSync(dirname(outputPath), { recursive: true });
     writeFileSync(outputPath, `${JSON.stringify(result, null, 2)}\n`);
+    writeFileSync(csvPath, toCsv(COLUMNS, rows));
   } catch {
     console.error(`could not write ${outputPath}: --output must be a file path\n${USAGE}`);
     return 2;
@@ -47,7 +56,15 @@ async function main(argv: string[]): Promise<number> {
   console.log(
     `Wrote ${outputPath}: ${result.items.length} items, ${result.skipped.length} skipped, ${result.run.errors.length} errors.`,
   );
-  return 0;
+  console.log(`Wrote ${csvPath}: ${rows.length} rows.`);
+  if (live) {
+    console.log(
+      sheet
+        ? `Sheet: ${sheetFailed ? "failed, see run.errors; " : ""}${appended} rows appended, ${alreadyInSheet} already there.`
+        : "Sheet: no keys, so the rows are in the CSV only.",
+    );
+  }
+  return sheetFailed ? 1 : 0;
 }
 
 function readCasesFile(path: string): RunInput {
