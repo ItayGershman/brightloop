@@ -1,0 +1,39 @@
+{
+  "built_for": "maya",
+  "items": [],
+  "skipped": [
+    {
+      "id": "unchanged-lovable-pricing",
+      "reason": "nothing moved: Lovable's pricing page is the same as in the snapshot of 2026-10-23T08:24:20.861Z"
+    },
+    {
+      "id": "unchanged-lovable-homepage",
+      "reason": "nothing moved: Lovable's homepage is the same as in the snapshot of 2026-10-23T08:24:31.495Z"
+    },
+    {
+      "id": "unchanged-replit-pricing",
+      "reason": "nothing moved: Replit's pricing page is the same as in the snapshot of 2026-10-23T08:24:34.382Z"
+    },
+    {
+      "id": "copy-replit-homepage",
+      "reason": "homepage copy, no action: 6 changed lines since the snapshot of 2026-10-23T08:24:36.610Z"
+    },
+    {
+      "id": "unchanged-bolt-pricing",
+      "reason": "nothing moved: Bolt's pricing page is the same as in the snapshot of 2026-10-23T08:24:47.555Z"
+    },
+    {
+      "id": "unchanged-bolt-homepage",
+      "reason": "nothing moved: Bolt's homepage is the same as in the snapshot of 2026-10-23T08:24:58.575Z"
+    }
+  ],
+  "run": {
+    "started_at": "2026-10-23T15:15:49.376Z",
+    "cost_usd": 0,
+    "errors": []
+  },
+  "slack": {
+    "line": "pricing watch for 11:00: nothing moved since the last check. details: https://docs.google.com/spreadsheets/d/1HXgiG-YdpvyPeCEomQ_hPWTGilRTM9jP4e01DB9M5Os/edit",
+    "status": "not posted: no SLACK_WEBHOOK_URL"
+  }
+}
