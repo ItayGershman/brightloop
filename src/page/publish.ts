@@ -51,11 +51,18 @@ export function base44Publisher(keys: Base44Keys, fetchImpl: typeof fetch = fetc
       } catch {
         throw new PublishError(NO_ANSWER);
       }
-      if (!answer.ok) throw new PublishError(`Base44 answered ${answer.status}`);
+      if (!answer.ok) throw new PublishError(`Base44 answered ${answer.status}${await reason(answer, keys.token)}`);
       const body = (await answer.json().catch(() => ({}))) as { app_url?: unknown };
       return { url: typeof body.app_url === "string" ? body.app_url : "" };
     },
   };
+}
+
+/** Base44's own short reason (its JSON "message"), with the token cut out should it ever be echoed; empty when there is none. */
+async function reason(answer: Response, token: string): Promise<string> {
+  const body = (await answer.json().catch(() => ({}))) as { message?: unknown };
+  if (typeof body.message !== "string" || body.message.trim() === "") return "";
+  return `: ${body.message.replaceAll(token, "[token]").replace(/\s+/g, " ").trim().slice(0, 200)}`;
 }
 
 /** A gzipped tar archive (ustar) of plain files at its root. */

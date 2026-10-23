@@ -282,6 +282,10 @@ describe("publishing the page", () => {
       assert.equal(error.message, "Base44 answered 403");
       return true;
     });
+    const explained = (async () => new Response(JSON.stringify({ message: "Token tok-secret lacks   full access" }), { status: 401 })) as unknown as typeof fetch;
+    await assert.rejects(base44Publisher({ token: "tok-secret", appId: "a" }, explained).publish(html), {
+      message: "Base44 answered 401: Token [token] lacks full access",
+    });
     const silent = (async () => {
       throw new Error("tok-secret");
     }) as unknown as typeof fetch;
