@@ -18,6 +18,10 @@ export interface RunLogEntry {
   cost_usd: number | null;
   /** The run's errors from result.json, plus any problem reading it. */
   errors: string[];
+  /** The run's one Slack line from result.json; null when the run wrote none. */
+  slack_line: string | null;
+  /** Whether that line was posted ("posted", or why not); null when the run wrote none. */
+  slack_status: string | null;
 }
 
 /** The log line for one run, from its start time, its result.json and the snapshots folder. */
@@ -35,6 +39,7 @@ export function runLogEntry(options: {
     pages_watched: pages.length,
     cost_usd: result.cost_usd,
     errors: result.errors,
+    ...readSlack(options.resultPath),
   };
 }
 
@@ -66,4 +71,15 @@ function readRun(resultPath: string): Pick<RunLogEntry, "cost_usd" | "errors"> {
     // Falls through to the error below.
   }
   return { cost_usd: null, errors: ["result.json could not be read"] };
+}
+
+function readSlack(resultPath: string): Pick<RunLogEntry, "slack_line" | "slack_status"> {
+  try {
+    const slack: unknown = (JSON.parse(readFileSync(resultPath, "utf8")) as { slack?: unknown }).slack;
+    const { line, status } = (slack ?? {}) as { line?: unknown; status?: unknown };
+    if (typeof line === "string" && typeof status === "string") return { slack_line: line, slack_status: status };
+  } catch {
+    // No result, or one that cannot be read: readRun already says so in errors.
+  }
+  return { slack_line: null, slack_status: null };
 }

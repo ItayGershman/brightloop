@@ -11,7 +11,7 @@
     "start": "tsx src/cli.ts",
     "typecheck": "tsc --noEmit",
     "repo-check": "tsx scripts/repo-check.ts",
-    "suite": "tsx --test --test-reporter=spec tests/*.test.ts",
+    "suite": "SLACK_WEBHOOK_URL= tsx --test --test-reporter=spec tests/*.test.ts",
     "test": "npm run typecheck && npm run repo-check && npm run suite"
   },
   "devDependencies": {

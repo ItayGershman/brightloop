@@ -13,7 +13,8 @@ if (!resultPath || !snapshotsDir || !logPath || Number.isNaN(start.getTime())) {
 }
 const entry = runLogEntry({ startedAt: start, resultPath, snapshotsDir });
 appendRunLog(logPath, entry);
-const summary = `${entry.pages_fetched} of ${entry.pages_watched} pages fetched, ${entry.errors.length} errors`;
+const slack = entry.slack_status === "posted" ? "Slack line posted" : "Slack line not posted";
+const summary = `${entry.pages_fetched} of ${entry.pages_watched} pages fetched, ${entry.errors.length} errors, ${slack}`;
 console.log(`Run log: ${summary}.`);
 // The errors are the run's own sentences, never page text, so the job log can show them.
 for (const error of entry.errors) console.log(`  ${error}`);

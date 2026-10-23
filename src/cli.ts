@@ -2,6 +2,7 @@ import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname } from "node:path";
 import type { RunInput } from "./domain/types.ts";
 import { inputWithError, parseCasesFile } from "./input/parse-cases-file.ts";
+import { deliverSlackLine } from "./report/index.ts";
 import { run } from "./run.ts";
 
 // run --input cases.json --output result.json
@@ -9,6 +10,7 @@ import { run } from "./run.ts";
 // run --replay --output result.json [--snapshots snapshots]
 // Bad input still produces a result.json with the problem in run.errors; only a wrong
 // command line exits non-zero. Signal text, page text and config values are never logged.
+// Every result carries its Slack line; it is posted only when SLACK_WEBHOOK_URL is set.
 
 const USAGE =
   "usage: run --input <cases.json> --output <result.json>\n" +
@@ -36,7 +38,7 @@ async function main(argv: string[]): Promise<number> {
       : capture.replayInput(snapshotsDir)
     : readCasesFile(inputPath ?? "");
 
-  const result = run(input);
+  const result = await deliverSlackLine(run(input), { env: process.env });
   try {
     mkdirSync(dirname(outputPath), { recursive: true });
     writeFileSync(outputPath, `${JSON.stringify(result, null, 2)}\n`);
@@ -47,6 +49,7 @@ async function main(argv: string[]): Promise<number> {
   console.log(
     `Wrote ${outputPath}: ${result.items.length} items, ${result.skipped.length} skipped, ${result.run.errors.length} errors.`,
   );
+  console.log(`Slack line ${result.slack?.status}.`);
   return 0;
 }
 
