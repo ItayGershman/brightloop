@@ -1,5 +1,8 @@
 import { readFileSync } from "node:fs";
-import type { Result } from "../src/domain/types.ts";
+import { storedSnapshots } from "../src/capture/index.ts";
+import { watchedPages } from "../src/config/competitors.ts";
+import type { Result, RunInput } from "../src/domain/types.ts";
+import { liveInput } from "../src/input/live-input.ts";
 import { parseCasesFile } from "../src/input/parse-cases-file.ts";
 import type { Rule } from "../src/judging/run-rules.ts";
 import { run } from "../src/run.ts";
@@ -25,6 +28,12 @@ export function pricingSignal(fields: Record<string, unknown>): Record<string, u
     text: "Pro plan shown at $25/month (was $20 last week).",
     ...fields,
   };
+}
+
+/** A live run's input as on the first run: each watched page's earliest committed snapshot, so every page is a baseline. */
+export function firstRunInput(): RunInput {
+  const snapshots = watchedPages().flatMap((page) => storedSnapshots("snapshots", page).slice(0, 1));
+  return liveInput(snapshots.map((current) => ({ current })), []);
 }
 
 /** Every input id, from items and skipped, sorted. */

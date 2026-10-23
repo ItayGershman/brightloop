@@ -44,7 +44,7 @@ Every run writes `result.csv` beside `result.json` (for `--output runs/result.js
 | `action`, `why` | The item's `action` and `why` (still cheaper than us on that tier, and should we respond) |
 | `confidence` | The confidence in words, then the score: "confirmed: seen on Bolt's own pricing page (0.9)" |
 
-Skipped signals are not rows: they are in `result.json` with their reasons. Cells are quoted as CSV needs (commas, quotes, line breaks), and a cell starting `=`, `+`, `-` or `@` gets a leading apostrophe so a spreadsheet shows it as text.
+Skipped signals are not rows: they are in `result.json` with their reasons. Cells are quoted as CSV needs (commas, quotes, line breaks), and a cell starting `=`, `+`, `-`, `@`, a tab or a carriage return gets a leading apostrophe so a spreadsheet shows it as text instead of running it as a formula (outside text is data, ADR-0001); the Sheet itself gets the cell as typed, stored as text. `--output` must not end in `.csv`.
 
 The live run also appends the rows to the Google Sheet that stands in for Maya's (tab `changes`), when both of these are set in its environment:
 

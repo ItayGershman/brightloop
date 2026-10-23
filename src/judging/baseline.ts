@@ -14,10 +14,10 @@ const ACTION = "no action, baseline recorded";
 /** Our own capture of the competitor's own page: as sure as a signal gets, short of a person checking. */
 const CONFIDENCE = 0.9;
 
-/** Baseline signals from a live capture: one item per competitor, from its pricing page. */
-export const baseline: Rule = baselineRule();
-
-/** The baseline rule, comparing with Brightloop's own pricing when the run has it. */
+/**
+ * Baseline signals from a live capture: one item per competitor, from its pricing page,
+ * compared with Brightloop's own pricing when the run has it.
+ */
 export function baselineRule(own?: OwnPricing): Rule {
   return eachSignal((signal) => {
     if (signal.type !== BASELINE) return undefined;
