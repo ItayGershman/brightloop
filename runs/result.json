@@ -2,122 +2,6 @@
   "built_for": "maya",
   "items": [
     {
-      "id": "baseline-replit",
-      "source_ids": [
-        "baseline-replit-pricing"
-      ],
-      "confidence": 0.9,
-      "confidence_label": "confirmed: read from Replit's own pricing page on 2026-10-23",
-      "action": "no action, baseline recorded",
-      "why": "Can't compare yet: Brightloop's own-pricing tab is empty. Replit's lowest paid plan, Core, shows $18/month, billed annually (struck-out $20). Should we respond? No: this is the first snapshot of Replit's pricing page, so nothing has changed yet; the next run compares against it.",
-      "cta": "Use these as Replit's current prices when leadership asks; open https://replit.com/pricing for every plan detail.",
-      "competitor": "Replit",
-      "page": "pricing",
-      "what_changed": "Baseline recorded: first snapshot of Replit's pricing page, no change yet.",
-      "before": null,
-      "after": "Core $18/month, billed annually (struck-out $20); Pro $90/month, billed annually (struck-out $100); Enterprise Custom",
-      "link": "https://replit.com/pricing",
-      "notes": "Prices as the page shows them by default, with the billing it states, captured 2026-10-23T12:20:01.240Z. Limits: Core: Up to 30 hours of chat on Free Mode, Up to 60 projects on Free Mode, Unlimited workspaces; Pro: 10 parallel agents, Up to 15 collaborators, Invite up to 50 viewers, $100 credits; Enterprise: none shown.",
-      "brightloop_comparison": "Can't compare yet: Brightloop's own-pricing tab is empty. Replit's lowest paid plan, Core, shows $18/month, billed annually (struck-out $20).",
-      "tiers": [
-        {
-          "name": "Core",
-          "price": "$18",
-          "period": "/month",
-          "struck_price": "$20",
-          "billing": "billed annually",
-          "limits": [
-            "Up to 30 hours of chat on Free Mode",
-            "Up to 60 projects on Free Mode",
-            "Unlimited workspaces"
-          ]
-        },
-        {
-          "name": "Pro",
-          "price": "$90",
-          "period": "/month",
-          "struck_price": "$100",
-          "billing": "billed annually",
-          "limits": [
-            "10 parallel agents",
-            "Up to 15 collaborators",
-            "Invite up to 50 viewers",
-            "$100 credits"
-          ]
-        },
-        {
-          "name": "Enterprise",
-          "price": "Custom",
-          "period": null,
-          "struck_price": null,
-          "billing": null,
-          "limits": []
-        }
-      ],
-      "week": "2026-W43"
-    },
-    {
-      "id": "baseline-bolt",
-      "source_ids": [
-        "baseline-bolt-pricing"
-      ],
-      "confidence": 0.9,
-      "confidence_label": "confirmed: read from Bolt's own pricing page on 2026-10-23",
-      "action": "no action, baseline recorded",
-      "why": "Can't compare yet: Brightloop's own-pricing tab is empty. Bolt's lowest paid plan, Pro, shows $18/month, billed annually. Should we respond? No: this is the first snapshot of Bolt's pricing page, so nothing has changed yet; the next run compares against it.",
-      "cta": "Use these as Bolt's current prices when leadership asks; open https://bolt.new/pricing for every plan detail.",
-      "competitor": "Bolt",
-      "page": "pricing",
-      "what_changed": "Baseline recorded: first snapshot of Bolt's pricing page, no change yet.",
-      "before": null,
-      "after": "Free $0/month; Pro $18/month, billed annually; Teams $27/month, per member, billed annually; Enterprise Custom",
-      "link": "https://bolt.new/pricing",
-      "notes": "Prices as the page shows them by default, with the billing it states, captured 2026-10-23T12:20:16.254Z. Limits: Free: 1M tokens/month to try Bolt, Unlimited databases; Pro: 10M tokens/month, rollover included; Teams: none shown; Enterprise: Unlimited tokens, priced by consumption.",
-      "brightloop_comparison": "Can't compare yet: Brightloop's own-pricing tab is empty. Bolt's lowest paid plan, Pro, shows $18/month, billed annually.",
-      "tiers": [
-        {
-          "name": "Free",
-          "price": "$0",
-          "period": "/month",
-          "struck_price": null,
-          "billing": null,
-          "limits": [
-            "1M tokens/month to try Bolt",
-            "Unlimited databases"
-          ]
-        },
-        {
-          "name": "Pro",
-          "price": "$18",
-          "period": "/month",
-          "struck_price": null,
-          "billing": "billed annually",
-          "limits": [
-            "10M tokens/month, rollover included"
-          ]
-        },
-        {
-          "name": "Teams",
-          "price": "$27",
-          "period": "/month",
-          "struck_price": null,
-          "billing": "per member, billed annually",
-          "limits": []
-        },
-        {
-          "name": "Enterprise",
-          "price": "Custom",
-          "period": null,
-          "struck_price": null,
-          "billing": null,
-          "limits": [
-            "Unlimited tokens, priced by consumption"
-          ]
-        }
-      ],
-      "week": "2026-W43"
-    },
-    {
       "id": "pricing-change-lovable-pricing-pro",
       "source_ids": [
         "change-lovable-pricing-pro"
@@ -133,7 +17,7 @@
       "before": "$22/month",
       "after": "$25/month",
       "link": "https://lovable.dev/pricing",
-      "notes": "Source: https://lovable.dev/pricing. Compared with the snapshot of 2026-10-23T08:24:20.861Z. Changed lines: price.",
+      "notes": "Source: https://lovable.dev/pricing. Compared with the snapshot of 2026-10-23T12:19:47.338Z. Changed lines: price.",
       "brightloop_comparison": "Can't compare: Brightloop's own-pricing tab is empty, so no Brightloop price is used. Lovable Pro now shows $25/month.",
       "week": "2026-W43"
     }
@@ -141,19 +25,27 @@
   "skipped": [
     {
       "id": "copy-lovable-homepage",
-      "reason": "homepage copy, no action: 2 changed lines since the snapshot of 2026-10-23T08:24:31.495Z"
+      "reason": "homepage copy, no action: 4 changed lines since the snapshot of 2026-10-23T12:19:58.171Z"
+    },
+    {
+      "id": "unchanged-replit-pricing",
+      "reason": "nothing moved: Replit's pricing page is the same as in the snapshot of 2026-10-23T12:20:01.240Z"
     },
     {
       "id": "copy-replit-homepage",
-      "reason": "homepage copy, no action: 6 changed lines since the snapshot of 2026-10-23T08:24:36.610Z"
+      "reason": "homepage copy, no action: 6 changed lines since the snapshot of 2026-10-23T12:20:04.733Z"
+    },
+    {
+      "id": "unchanged-bolt-pricing",
+      "reason": "nothing moved: Bolt's pricing page is the same as in the snapshot of 2026-10-23T12:20:16.254Z"
     },
     {
       "id": "copy-bolt-homepage",
-      "reason": "homepage copy, no action: 4 changed lines since the snapshot of 2026-10-23T08:24:58.575Z"
+      "reason": "homepage copy, no action: 4 changed lines since the snapshot of 2026-10-23T12:20:27.587Z"
     }
   ],
   "run": {
-    "started_at": "2026-10-23T12:20:28.315Z",
+    "started_at": "2026-10-23T12:41:16.897Z",
     "cost_usd": 0,
     "errors": []
   }
