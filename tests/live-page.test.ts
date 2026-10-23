@@ -111,6 +111,13 @@ describe("the live page renderer", () => {
     assert.match(html, /<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'"/);
   });
 
+  test("numbers from the run log are escaped too: a log line can hold anything", () => {
+    const hostile = { ...entry(), pages_fetched: "<img src=x onerror=alert(1)>", pages_watched: "<b>6</b>" } as unknown as RunLogEntry;
+    const html = renderPage({ result: result(), history: [hostile], timeZone: ZONE });
+    assert.doesNotMatch(html, /<img|<b>6/);
+    assert.match(html, /&lt;img src=x onerror=alert\(1\)&gt;/);
+  });
+
   test("a link that is not http or https is shown as text, not as a link", () => {
     const html = renderPage({ result: result({ items: [item({ link: "lovable.dev/pricing" })] }), timeZone: ZONE });
     assert.doesNotMatch(html, /<a href="lovable/);
@@ -224,6 +231,25 @@ describe("publishing the page", () => {
     assert.deepEqual(delivered.result.run.errors, ["live page not updated: no answer from Base44"]);
   });
 
+  test("Base44's own reason reaches the job log only, never run.errors", async () => {
+    const failing: PagePublisher = {
+      publish: async () => {
+        throw new PublishError("Base44 answered 403", "owner someone@example.com has no publish permission");
+      },
+    };
+    const delivered = await deliverPage(result(), { pagePath: join(tempDir(), "p.html"), timeZone: ZONE, publisher: failing, check: () => [] });
+    assert.deepEqual(delivered.result.run.errors, ["live page not updated: Base44 answered 403"]);
+    assert.equal(delivered.detail, "owner someone@example.com has no publish permission");
+  });
+
+  test("a page that cannot be written is a run error with its own status, never a crash", async () => {
+    const dir = tempDir();
+    writeFileSync(join(dir, "file"), "");
+    const delivered = await deliverPage(result(), { pagePath: join(dir, "file", "p.html"), timeZone: ZONE, check: () => [] });
+    assert.equal(delivered.status, "not published: the page could not be written");
+    assert.deepEqual(delivered.result.run.errors, ["live page not updated: the page could not be written"]);
+  });
+
   test("a page that fails the content check is not published", async () => {
     let published = false;
     const publisher: PagePublisher = {
@@ -283,8 +309,10 @@ describe("publishing the page", () => {
       return true;
     });
     const explained = (async () => new Response(JSON.stringify({ message: "Token tok-secret lacks   full access" }), { status: 401 })) as unknown as typeof fetch;
+    // Base44 own words go in `detail`, for the job log; the message, which reaches the public page, is the status only.
     await assert.rejects(base44Publisher({ token: "tok-secret", appId: "a" }, explained).publish(html), {
-      message: "Base44 answered 401: Token [token] lacks full access",
+      message: "Base44 answered 401",
+      detail: "Token [token] lacks full access",
     });
     const silent = (async () => {
       throw new Error("tok-secret");
@@ -355,5 +383,8 @@ describe("the page in the command line and the scheduled run", () => {
     const at = (needle: string) => WORKFLOW.indexOf(needle);
     assert.ok(at("./run --live") < at("scripts/publish-page.ts"));
     assert.ok(at("scripts/publish-page.ts") < at("scripts/append-run-log.ts"));
+    // The repo check before it gates it: a forbidden marker in a snapshot keeps the page down.
+    assert.match(publish, /if: \$\{\{ !cancelled\(\) && steps\.precheck\.outcome == 'success' \}\}/);
+    assert.ok(at("id: precheck") < at("scripts/publish-page.ts"));
   });
 });

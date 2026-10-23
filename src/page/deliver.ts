@@ -2,7 +2,7 @@ import { mkdirSync, writeFileSync } from "node:fs";
 import { dirname } from "node:path";
 import type { Result } from "../domain/types.ts";
 import type { RunLogEntry } from "../schedule/run-log.ts";
-import { PublishError, type PagePublisher } from "./publish.ts";
+import { NO_ANSWER, PublishError, type PagePublisher } from "./publish.ts";
 import { renderPage } from "./render-page.ts";
 
 // Writing the live page: always to a local file beside the run's outputs, then, only with a
@@ -15,12 +15,15 @@ export type PageStatus =
   | "published"
   | "not published: no BASE44_API_KEY or BASE44_APP_ID"
   | "not published: the page failed the content check"
+  | "not published: the page could not be written"
   | "not published: the upload failed";
 
 export interface DeliveredPage {
   /** The result, with any publishing problem added to run.errors. */
   result: Result;
   status: PageStatus;
+  /** Base44's own reason for a refused upload, for the job log only; never in the result. */
+  detail?: string;
   /** The published URL, when the page was published. */
   url?: string;
 }
@@ -36,9 +39,14 @@ export async function deliverPage(
     check: (html: string) => string[];
   },
 ): Promise<DeliveredPage> {
-  const html = renderPage({ result, history: options.history, timeZone: options.timeZone });
-  mkdirSync(dirname(options.pagePath), { recursive: true });
-  writeFileSync(options.pagePath, html);
+  let html: string;
+  try {
+    html = renderPage({ result, history: options.history, timeZone: options.timeZone });
+    mkdirSync(dirname(options.pagePath), { recursive: true });
+    writeFileSync(options.pagePath, html);
+  } catch {
+    return withError(result, "not published: the page could not be written", "the page could not be written");
+  }
   if (!options.publisher) return { result, status: "not published: no BASE44_API_KEY or BASE44_APP_ID" };
 
   const problems = options.check(html);
@@ -49,7 +57,8 @@ export async function deliverPage(
     const { url } = await options.publisher.publish(html);
     return { result, status: "published", url };
   } catch (error) {
-    return withError(result, "not published: the upload failed", error instanceof PublishError ? error.message : "no answer from Base44");
+    const known = error instanceof PublishError;
+    return { ...withError(result, "not published: the upload failed", known ? error.message : NO_ANSWER), detail: known ? error.detail : "" };
   }
 }
 

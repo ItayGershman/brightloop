@@ -11,8 +11,19 @@ export interface PagePublisher {
   publish(html: string): Promise<{ url: string }>;
 }
 
-/** A failure whose message names what went wrong and never the token. */
-export class PublishError extends Error {}
+/**
+ * A failure whose message names what went wrong and never the token. Base44's own reason, if
+ * it gave one, is in `detail`: for the person running the job, never for run.errors, which
+ * end up in committed files and on the public page.
+ */
+export class PublishError extends Error {
+  constructor(
+    message: string,
+    readonly detail = "",
+  ) {
+    super(message);
+  }
+}
 
 export interface Base44Keys {
   token: string;
@@ -21,7 +32,7 @@ export interface Base44Keys {
 
 const API = "https://app.base44.com";
 const TIMEOUT_MS = 60_000;
-const NO_ANSWER = "no answer from Base44";
+export const NO_ANSWER = "no answer from Base44";
 
 /** The Base44 publisher when both keys are set; otherwise none, and nothing is built. */
 export function publisherFromEnv(
@@ -51,7 +62,7 @@ export function base44Publisher(keys: Base44Keys, fetchImpl: typeof fetch = fetc
       } catch {
         throw new PublishError(NO_ANSWER);
       }
-      if (!answer.ok) throw new PublishError(`Base44 answered ${answer.status}${await reason(answer, keys.token)}`);
+      if (!answer.ok) throw new PublishError(`Base44 answered ${answer.status}`, await reason(answer, keys.token));
       const body = (await answer.json().catch(() => ({}))) as { app_url?: unknown };
       return { url: typeof body.app_url === "string" ? body.app_url : "" };
     },
@@ -62,7 +73,7 @@ export function base44Publisher(keys: Base44Keys, fetchImpl: typeof fetch = fetc
 async function reason(answer: Response, token: string): Promise<string> {
   const body = (await answer.json().catch(() => ({}))) as { message?: unknown };
   if (typeof body.message !== "string" || body.message.trim() === "") return "";
-  return `: ${body.message.replaceAll(token, "[token]").replace(/\s+/g, " ").trim().slice(0, 200)}`;
+  return body.message.replaceAll(token, "[token]").replace(/\s+/g, " ").trim().slice(0, 200);
 }
 
 /** A gzipped tar archive (ustar) of plain files at its root. */

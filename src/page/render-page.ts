@@ -142,7 +142,7 @@ function historySection(history: RunLogEntry[] | undefined, when: (iso: string) 
 <tbody>
 ${runs
   .map(
-    (entry) => `<tr><td>${esc(when(entry.started_at))}</td><td>${entry.pages_fetched} of ${plural(entry.pages_watched, "page")}</td><td>${problems(entry.errors)}</td><td>${slackCell(entry)}</td></tr>`,
+    (entry) => `<tr><td>${esc(when(entry.started_at))}</td><td>${esc(entry.pages_fetched)} of ${esc(plural(entry.pages_watched, "page"))}</td><td>${problems(entry.errors)}</td><td>${slackCell(entry)}</td></tr>`,
   )
   .join("\n")}
 </tbody>
@@ -205,12 +205,13 @@ function names(list: string[]): string {
   return list.length < 2 ? list.join("") : `${list.slice(0, -1).join(", ")} and ${list[list.length - 1]}`;
 }
 
-function plural(count: number, noun: string): string {
+function plural(count: unknown, noun: string): string {
   return `${count} ${noun}${count === 1 ? "" : "s"}`;
 }
 
-function esc(value: string): string {
-  return value
+/** Every value on the page goes through here, numbers included: a run log line is read from JSON and may hold anything. */
+function esc(value: unknown): string {
+  return String(value ?? "")
     .replaceAll("&", "&amp;")
     .replaceAll("<", "&lt;")
     .replaceAll(">", "&gt;")

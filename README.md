@@ -32,7 +32,7 @@ No browser, no network, no keys. For every watched page, the latest stored snaps
 
 ### The same run on this machine
 
-When GitHub Actions cannot run it, `scripts/local-run.sh` runs the same job here, in the workflow's order: the live run (Sheet rows and the Slack line), the repo check, the live page, the run log, the repo check again. Its keys come from `.env`: copy `.env.example` to `.env` (git ignores it) and fill in the values yourself; each step gets only its own keys, a key left empty skips its surface, and nothing prints a key. `scripts/local-run.sh --commit` then commits the snapshots and `runs/` and pushes them to `main`, as the workflow does; it refuses on any other branch, because a run's snapshots change what the replay tests read there. Run it from an up-to-date checkout of `main`, with Google Chrome installed.
+For local development, demos and re-runs, `scripts/local-run.sh` runs the same steps on your machine, in the workflow's order: the live run (Sheet rows and the Slack line), the repo check, the live page, the run log, the repo check again. Its keys come from `.env`: copy `.env.example` to `.env` (git ignores it) and fill in the values yourself. The file is read as data, never run as shell; each step gets only its own keys, even when your shell already exports some of them; a key left empty skips its surface; nothing prints a key. `scripts/local-run.sh --commit` then commits the snapshots and `runs/` and pushes them to `main`, as the workflow does; it refuses on any other branch, because a run's snapshots change what the replay tests read there. Run it from an up-to-date checkout of `main`, with Google Chrome installed.
 
 ## Maya's sheet and the CSV
 

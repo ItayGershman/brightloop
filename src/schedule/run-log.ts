@@ -56,7 +56,7 @@ export function readRunLog(logPath: string): RunLogEntry[] {
         // Lines from before the Slack line existed have no slack fields.
         const entry = JSON.parse(line) as Partial<RunLogEntry>;
         if (typeof entry.started_at !== "string" || !Array.isArray(entry.errors)) return [];
-        return [{ ...entry, slack_line: entry.slack_line ?? null, slack_status: entry.slack_status ?? null } as RunLogEntry];
+        return [{ ...entry, errors: entry.errors.map(String), slack_line: entry.slack_line ?? null, slack_status: entry.slack_status ?? null } as RunLogEntry];
       } catch {
         return [];
       }
