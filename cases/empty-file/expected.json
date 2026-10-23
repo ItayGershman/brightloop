@@ -1,0 +1,12 @@
+{
+  "built_for": "maya",
+  "items": [],
+  "skipped": [],
+  "run": {
+    "started_at": "2026-10-26T06:30:00.000Z",
+    "cost_usd": 0,
+    "errors": [
+      "input is empty"
+    ]
+  }
+}

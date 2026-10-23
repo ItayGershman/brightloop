@@ -31,7 +31,7 @@ Typechecks, runs the repo check for the brief's hidden markers, then the case su
 | `src/text/` | Reading outside text: named patterns, quoting, price change, the brief's markers |
 | `src/domain/` | The shared types: `Signal`, `RunInput`, `Item`, `SkippedSignal`, `Result` |
 
-To add a judging rule: write the function in `src/judging/rules.ts`, put it in `RULES`, and add a case under `cases/<name>/` (`input.json` and `expected.json`).
+To add a judging rule: write the function in `src/judging/rules.ts`, put it in `JUDGING` (a rule that needs the whole batch, like `mergeDuplicates`, goes in `RULES` before the rules it feeds), and add a case under `cases/<name>/` (`input.json` and `expected.json`).
 
 To add a competitor: add one entry to `COMPETITORS` in `src/config/competitors.ts`. The tests already loop over every entry.
 
@@ -48,3 +48,4 @@ The required wrapper (`built_for`, `items`, `skipped`, `run`) plus these fields 
 | `link` | The competitor's own pricing page |
 | `notes` | Where the signal came from |
 | `brightloop_comparison` | Whether the competitor is still cheaper than Brightloop on that tier, or why that can't be said yet |
+| `week` | The ISO week (`2026-W43`) the change was seen in, counted in the input's `timezone`; `null` when the signal has no readable time |

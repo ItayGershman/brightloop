@@ -27,3 +27,17 @@ export const CREDENTIAL_KEY = /key|token|secret|passw/i;
 
 /** Only printable characters and no whitespace, from start to end. */
 export const PRINTABLE_WITHOUT_SPACES = /^[^\s\p{C}]+$/u;
+
+/**
+ * A date and time, "T" or a space between, optional seconds and fraction, then an optional
+ * zone: "Z", "UTC", "GMT", "+03:00", "+0300" or "+03". Groups: year, month, day, hour,
+ * minute, second, fraction, zone.
+ */
+export const TIMESTAMP =
+  /^(\d{4})-(\d{2})-(\d{2})[T ](\d{2}):(\d{2})(?::(\d{2})(?:\.(\d{1,9}))?)?\s*(Z|UTC|GMT|[+-]\d{2}(?::?\d{2})?)?$/i;
+
+/** A zone that names UTC itself. */
+export const UTC_NAME = /^(Z|UTC|GMT)$/i;
+
+/** A stated UTC offset: sign, hours, optional minutes. */
+export const UTC_OFFSET = /^([+-])(\d{2}):?(\d{2})?$/;

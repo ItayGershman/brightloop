@@ -1,5 +1,6 @@
 import { AUDIENCE } from "../config/audience.ts";
 import { findCompetitor } from "../config/competitors.ts";
+import { mergeDuplicates } from "./duplicates.ts";
 import { pricingItem } from "./pricing-item.ts";
 import { eachSignal, skip, type Rule } from "./run-rules.ts";
 
@@ -30,4 +31,8 @@ export const pricing: Rule = eachSignal((signal) => {
   return { kind: "item", item: pricingItem(signal, competitor) };
 });
 
-export const RULES: Rule[] = [outsideScope, pricing];
+/** The rules that judge one story at a time. */
+const JUDGING: Rule[] = [outsideScope, pricing];
+
+/** Duplicates go first: each group is judged once by the rules it feeds (duplicates.ts). */
+export const RULES: Rule[] = [mergeDuplicates(JUDGING), ...JUDGING];

@@ -1,0 +1,21 @@
+{
+  "week": "2026-W43",
+  "timezone": "Asia/Jerusalem",
+  "brand": { "name": "Brightloop", "banned_words": ["revolutionary", "game-changing", "seamless"] },
+  "signals": [
+    { "id": "du-1", "type": "launch", "competitor": "Replit", "source": "x.com/@replit", "ts": "2026-10-24T23:30:00+03:00",
+      "text": "Agent 4 is live for every plan." },
+    { "id": "du-2", "type": "launch", "competitor": "Replit", "source": "techblog.example", "ts": "2026-10-24 20:30 UTC",
+      "text": "Replit rolls out Agent 4 to all tiers." },
+    { "id": "du-3", "type": "pricing", "competitor": "Lovable", "source": "press.example", "ts": "2026-10-23 08:00 UTC",
+      "text": "Lovable raises Pro to $25/month (was $20)." },
+    { "id": "du-4", "type": "pricing", "competitor": "lovable.dev", "source": "lovable.dev/pricing", "ts": "2026-10-23T11:00:00+03:00",
+      "text": "Pro plan shown at $25/month (was $20 last week)." },
+    { "id": "du-5", "type": "pricing", "competitor": "Bolt", "source": "bolt.new/pricing", "ts": "2026-10-23T09:00:00Z",
+      "text": "Pro plan shown at $25/month (was $20 last week)." },
+    { "id": "du-6", "type": "pricing", "competitor": "Bolt", "source": "bolt.new/pricing", "ts": "2026-10-23T09:00:00Z",
+      "text": "Teams plan shown at $55/month (was $50 last week)." },
+    { "id": "du-7", "type": "pricing", "competitor": "Bolt", "source": "newsletter.example", "ts": "2026-10-23T12:00:00+03:00",
+      "text": "Bolt Teams is $60/month (was $50)." }
+  ]
+}

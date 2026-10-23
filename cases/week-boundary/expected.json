@@ -1,0 +1,91 @@
+{
+  "built_for": "maya",
+  "items": [
+    {
+      "id": "pricing-wk-1",
+      "source_ids": [
+        "wk-1"
+      ],
+      "confidence": 0.9,
+      "confidence_label": "confirmed: seen on Lovable's own pricing page",
+      "action": "watch 2 weeks",
+      "why": "Can't compare yet: Brightloop's own-pricing tab is not connected. Lovable now shows $25/month. Should we respond? Not yet: watch whether the change holds on the next two Monday runs.",
+      "cta": "Open https://lovable.dev/pricing and check the Lovable price before the 11:00 leadership meeting.",
+      "competitor": "Lovable",
+      "page": "pricing",
+      "what_changed": "Pro plan shown at $25/month (was $20 last week).",
+      "before": "$20",
+      "after": "$25/month",
+      "link": "https://lovable.dev/pricing",
+      "notes": "Source: lovable.dev/pricing.",
+      "brightloop_comparison": "Can't compare yet: Brightloop's own-pricing tab is not connected. Lovable now shows $25/month.",
+      "week": "2026-W43"
+    },
+    {
+      "id": "pricing-wk-2",
+      "source_ids": [
+        "wk-2"
+      ],
+      "confidence": 0.9,
+      "confidence_label": "confirmed: seen on Replit's own pricing page",
+      "action": "watch 2 weeks",
+      "why": "Can't compare yet: Brightloop's own-pricing tab is not connected. Replit now shows $25/month. Should we respond? Not yet: watch whether the change holds on the next two Monday runs.",
+      "cta": "Open https://replit.com/pricing and check the Replit price before the 11:00 leadership meeting.",
+      "competitor": "Replit",
+      "page": "pricing",
+      "what_changed": "Core plan shown at $25/month (was $20 last week).",
+      "before": "$20",
+      "after": "$25/month",
+      "link": "https://replit.com/pricing",
+      "notes": "Source: replit.com/pricing.",
+      "brightloop_comparison": "Can't compare yet: Brightloop's own-pricing tab is not connected. Replit now shows $25/month.",
+      "week": "2026-W44"
+    },
+    {
+      "id": "pricing-wk-3",
+      "source_ids": [
+        "wk-3"
+      ],
+      "confidence": 0.9,
+      "confidence_label": "confirmed: seen on Bolt's own pricing page",
+      "action": "watch 2 weeks",
+      "why": "Can't compare yet: Brightloop's own-pricing tab is not connected. Bolt now shows $25/month. Should we respond? Not yet: watch whether the change holds on the next two Monday runs.",
+      "cta": "Open https://bolt.new/pricing and check the Bolt price before the 11:00 leadership meeting.",
+      "competitor": "Bolt",
+      "page": "pricing",
+      "what_changed": "Pro plan shown at $25/month (was $20 last week).",
+      "before": "$20",
+      "after": "$25/month",
+      "link": "https://bolt.new/pricing",
+      "notes": "Source: bolt.new/pricing.",
+      "brightloop_comparison": "Can't compare yet: Brightloop's own-pricing tab is not connected. Bolt now shows $25/month.",
+      "week": "2026-W43"
+    },
+    {
+      "id": "pricing-wk-4",
+      "source_ids": [
+        "wk-4"
+      ],
+      "confidence": 0.9,
+      "confidence_label": "confirmed: seen on Bolt's own pricing page",
+      "action": "watch 2 weeks",
+      "why": "Can't compare yet: Brightloop's own-pricing tab is not connected. Bolt now shows $55/month. Should we respond? Not yet: watch whether the change holds on the next two Monday runs.",
+      "cta": "Open https://bolt.new/pricing and check the Bolt price before the 11:00 leadership meeting.",
+      "competitor": "Bolt",
+      "page": "pricing",
+      "what_changed": "Teams plan shown at $55/month (was $50 last week).",
+      "before": "$50",
+      "after": "$55/month",
+      "link": "https://bolt.new/pricing",
+      "notes": "Source: bolt.new/pricing.",
+      "brightloop_comparison": "Can't compare yet: Brightloop's own-pricing tab is not connected. Bolt now shows $55/month.",
+      "week": "2026-W44"
+    }
+  ],
+  "skipped": [],
+  "run": {
+    "started_at": "2026-10-26T06:30:00.000Z",
+    "cost_usd": 0,
+    "errors": []
+  }
+}

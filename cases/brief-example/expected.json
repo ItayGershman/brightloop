@@ -18,7 +18,8 @@
       "after": "$25/month",
       "link": "https://lovable.dev/pricing",
       "notes": "Source: lovable.dev/pricing.",
-      "brightloop_comparison": "Can't compare yet: Brightloop's own-pricing tab is not connected. Lovable now shows $25/month."
+      "brightloop_comparison": "Can't compare yet: Brightloop's own-pricing tab is not connected. Lovable now shows $25/month.",
+      "week": "2026-W43"
     },
     {
       "id": "pricing-pr-402",
@@ -37,10 +38,19 @@
       "after": null,
       "link": "https://bolt.new/pricing",
       "notes": "Source is not Bolt's own page: sponsored post, ads.example.",
-      "brightloop_comparison": "Can't compare yet: Brightloop's own-pricing tab is not connected. Bolt's current price is on its pricing page."
+      "brightloop_comparison": "Can't compare yet: Brightloop's own-pricing tab is not connected. Bolt's current price is on its pricing page.",
+      "week": "2026-W43"
     }
   ],
   "skipped": [
+    {
+      "id": "sg-301",
+      "reason": "launch signal, outside the watch's scope: it tracks competitor pricing and packaging, not product launches; same event at the same moment as sg-302"
+    },
+    {
+      "id": "sg-302",
+      "reason": "launch signal, outside the watch's scope: it tracks competitor pricing and packaging, not product launches; same event at the same moment as sg-301"
+    },
     {
       "id": "ad-117",
       "reason": "ad signal, outside the watch's scope: it tracks competitor pricing and packaging, not ads"
@@ -48,14 +58,6 @@
     {
       "id": "ad-118",
       "reason": "ad signal, outside the watch's scope: it tracks competitor pricing and packaging, not ads"
-    },
-    {
-      "id": "sg-301",
-      "reason": "launch signal, outside the watch's scope: it tracks competitor pricing and packaging, not product launches"
-    },
-    {
-      "id": "sg-302",
-      "reason": "launch signal, outside the watch's scope: it tracks competitor pricing and packaging, not product launches"
     },
     {
       "id": "sg-303",

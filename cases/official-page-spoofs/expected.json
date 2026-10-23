@@ -18,7 +18,8 @@
       "after": "$15/month",
       "link": "https://bolt.new/pricing",
       "notes": "Source is not Bolt's own page: reddit.com/r/bolt.new.",
-      "brightloop_comparison": "Can't compare yet: Brightloop's own-pricing tab is not connected. Bolt now shows $15/month."
+      "brightloop_comparison": "Can't compare yet: Brightloop's own-pricing tab is not connected. Bolt now shows $15/month.",
+      "week": "2026-W43"
     },
     {
       "id": "pricing-sp-2",
@@ -37,7 +38,8 @@
       "after": "$10/month",
       "link": "https://lovable.dev/pricing",
       "notes": "Source is not Lovable's own page: sponsored post quoting lovable.dev.",
-      "brightloop_comparison": "Can't compare yet: Brightloop's own-pricing tab is not connected. Lovable now shows $10/month."
+      "brightloop_comparison": "Can't compare yet: Brightloop's own-pricing tab is not connected. Lovable now shows $10/month.",
+      "week": "2026-W43"
     },
     {
       "id": "pricing-sp-3",
@@ -56,7 +58,8 @@
       "after": "$12/month",
       "link": "https://lovable.dev/pricing",
       "notes": "Source is not Lovable's own page: lovable.dev.pricing-news.example/pricing.",
-      "brightloop_comparison": "Can't compare yet: Brightloop's own-pricing tab is not connected. Lovable now shows $12/month."
+      "brightloop_comparison": "Can't compare yet: Brightloop's own-pricing tab is not connected. Lovable now shows $12/month.",
+      "week": "2026-W43"
     },
     {
       "id": "pricing-sp-4",
@@ -75,7 +78,8 @@
       "after": "$5/month",
       "link": "https://replit.com/pricing",
       "notes": "Source is not Replit's own page: https://replit.com@deals.example/pricing.",
-      "brightloop_comparison": "Can't compare yet: Brightloop's own-pricing tab is not connected. Replit now shows $5/month."
+      "brightloop_comparison": "Can't compare yet: Brightloop's own-pricing tab is not connected. Replit now shows $5/month.",
+      "week": "2026-W43"
     },
     {
       "id": "pricing-sp-5",
@@ -94,7 +98,8 @@
       "after": "$25/month",
       "link": "https://replit.com/pricing",
       "notes": "Source: https://www.replit.com/pricing.",
-      "brightloop_comparison": "Can't compare yet: Brightloop's own-pricing tab is not connected. Replit now shows $25/month."
+      "brightloop_comparison": "Can't compare yet: Brightloop's own-pricing tab is not connected. Replit now shows $25/month.",
+      "week": "2026-W43"
     }
   ],
   "skipped": [],
