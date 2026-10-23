@@ -15,7 +15,7 @@ import type { Page, ReportableTrust } from "./source-trust.ts";
 export function pricingItem(signal: Signal, competitor: Competitor, trust: ReportableTrust): Item {
   const page: Page = { name: competitor.name, link: competitor.pricingPage, source: quotable(signal.source) ?? "" };
   const whatChanged = quotable(signal.text) ?? "";
-  const change = readChange(whatChanged, page.source, competitor);
+  const change = readChange(whatChanged, page.source, competitor, signal.diff?.price ?? null);
   // A promotion, or a possible one, is never reported as a list-price change. A snapshot
   // diff states its values in the page's words, limits and plan names included.
   const fromDiff = signal.diff && change.promotion.kind === "none" ? signal.diff : undefined;

@@ -1,6 +1,6 @@
 import { AUDIENCE } from "../config/audience.ts";
 import { findCompetitor } from "../config/competitors.ts";
-import { COPY, PAGE_NAMES, UNCHANGED } from "../domain/types.ts";
+import { PAGE_COPY, PAGE_NAMES, UNCHANGED } from "../domain/types.ts";
 import { baseline } from "./baseline.ts";
 import { mergeDuplicates } from "./duplicates.ts";
 import { pricingItem } from "./pricing-item.ts";
@@ -32,7 +32,7 @@ export const outsideScope: Rule = eachSignal((signal) => {
  * copy only (a homepage always is), or not changed at all ("nothing moved").
  */
 export const pageWithoutAction: Rule = eachSignal((signal) => {
-  if (signal.type !== COPY && signal.type !== UNCHANGED) return undefined;
+  if (signal.type !== PAGE_COPY && signal.type !== UNCHANGED) return undefined;
   const page = signal.page === "homepage" ? PAGE_NAMES.homepage : PAGE_NAMES.pricing;
   const since = signal.diff ? ` the snapshot of ${signal.diff.since}` : " its latest snapshot";
   if (signal.type === UNCHANGED) {

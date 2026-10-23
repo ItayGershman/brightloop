@@ -142,6 +142,48 @@ describe("each changed line is classified", () => {
     ]);
   });
 
+  test("a plan removed while another is added is never read as a rename with a new price", () => {
+    const result = replay("plan-replaced");
+    assert.deepEqual(result.items, []);
+    assert.equal(result.run.errors.length, 1);
+    assert.match(result.run.errors[0], /^https:\/\/lovable\.dev\/pricing: page structure changed, check by hand/);
+    assert.doesNotMatch(JSON.stringify(result), /\$10/);
+  });
+
+  test("plan cards shown in another order are copy only, not a plan change", () => {
+    const result = replay("plan-cards-moved");
+    assert.deepEqual(result.run.errors, []);
+    assert.deepEqual(result.items, []);
+    assert.deepEqual(result.skipped.map((entry) => entry.id), ["copy-lovable-pricing"]);
+  });
+
+  test("a dollar allowance on a plan is a limit, and the comparison shows the plan's own price", () => {
+    const result = replay("dollar-lines");
+    const item = only(result.items, "Replit");
+    assert.equal(item.before, "$20 towards more powerful models");
+    assert.equal(item.after, "$10 towards more powerful models");
+    assert.match(item.notes, /Changed lines: limit\./);
+    assert.match(item.brightloop_comparison, /Replit Core shows \$18\/month, billed annually \(struck-out \$20\)\.$/);
+  });
+
+  test("a plan's price lines that change while its price reads the same are checked by hand", () => {
+    const result = replay("dollar-lines");
+    assert.equal(result.items.filter((item) => item.competitor === "Bolt").length, 0);
+    assert.deepEqual(result.run.errors, [
+      "https://bolt.new/pricing: page structure changed, check by hand; the Pro plan's price lines changed but its price reads the same, so no change was reported",
+    ]);
+  });
+
+  test("promotion wording outside every plan card belongs to the page, not to the last plan", () => {
+    const result = replay("promotion-outside-plans");
+    assert.deepEqual(result.run.errors, []);
+    const item = only(result.items, "Lovable");
+    assert.equal(item.id, "pricing-change-lovable-pricing");
+    assert.match(item.what_changed, /^Lovable's pricing page: "2 months free; Verify student status/);
+    assert.doesNotMatch(item.what_changed, /Enterprise/);
+    assert.match(item.notes, /Changed lines: promotion marker\./);
+  });
+
   test("a renamed plan is a plan name change; a reworded tagline is pricing page copy", () => {
     const result = replay("plan-renamed");
     assert.deepEqual(result.run.errors, []);

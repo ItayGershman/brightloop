@@ -15,18 +15,21 @@ export interface PricingChange {
   text: string;
   /** The before and after prices the signal states, if any. */
   reading: PriceChange;
+  /** The plan's current price as its pricing page shows it, when a snapshot diff read it. */
+  listed: string | null;
   promotion: Promotion;
   plan: ChangedPlan;
 }
 
 /** The change a signal's quoted text and source describe. */
-export function readChange(text: string, source: string, competitor: Competitor): PricingChange {
+export function readChange(text: string, source: string, competitor: Competitor, listed: string | null = null): PricingChange {
   const reading = priceChange(text);
   return {
     competitor: competitor.name,
     link: competitor.pricingPage,
     text,
     reading,
+    listed,
     promotion: findPromotion(text, source, competitor.pricingPage, priceRose(reading)),
     plan: whichPlan(text, competitor),
   };

@@ -1,0 +1,39 @@
+{
+  "derived": "Derived test fixture, not a real capture: each page's later snapshot is an edited copy of the real snapshot it names, made only for the replay tests. The real snapshot history is under snapshots/.",
+  "what": "Lovable shows its Business card before its Pro card; no plan, price or limit changes.",
+  "pages": [
+    {
+      "from": "snapshots/lovable/pricing/2026-10-23T08-24-20.861Z.json",
+      "captured_at": "2026-10-26T05:30:00.000Z",
+      "edits": [
+        {
+          "from": "Business",
+          "through": "Priority support",
+          "becomes": []
+        },
+        {
+          "after": "Community support",
+          "insert": [
+            "Business",
+            "Advanced controls and power features for growing departments",
+            "$50",
+            "/ month",
+            "100 monthly credits",
+            "Get started",
+            "Unlimited users",
+            "Free grants",
+            "All Pro features",
+            "100 Business credits",
+            "Team workspace",
+            "Role-based access",
+            "Workspace publish",
+            "SSO",
+            "Security center",
+            "Design templates",
+            "Priority support"
+          ]
+        }
+      ]
+    }
+  ]
+}

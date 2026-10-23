@@ -1,0 +1,19 @@
+{
+  "derived": "Derived test fixture, not a real capture: each page's later snapshot is an edited copy of the real snapshot it names, made only for the replay tests. The real snapshot history is under snapshots/.",
+  "what": "Promotion wording that sits outside every plan card changes: Lovable's yearly toggle goes from '2 months free' to '3 months free', and the student discount line is removed.",
+  "pages": [
+    {
+      "from": "snapshots/lovable/pricing/2026-10-23T08-24-20.861Z.json",
+      "captured_at": "2026-10-26T05:30:00.000Z",
+      "edits": [
+        {
+          "line": "2 months free",
+          "becomes": "3 months free"
+        },
+        {
+          "remove": "Verify student status and get access to up to 50% off Lovable Pro."
+        }
+      ]
+    }
+  ]
+}

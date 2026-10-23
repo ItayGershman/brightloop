@@ -1,7 +1,6 @@
 import { watchedPages } from "../config/competitors.ts";
 import type { RunInput, Snapshot, WatchedPage } from "../domain/types.ts";
-import { liveInput, type CapturedPage } from "../input/live-input.ts";
-import { diffSignals } from "../input/snapshot-diff.ts";
+import { inputFromPages, liveInput, pageSignals, type CapturedPage } from "../input/live-input.ts";
 import { pricingTiers } from "../text/pricing-tiers.ts";
 import { capturePages } from "./capture-pages.ts";
 import { latestSnapshot, storedSnapshots, writeSnapshot } from "./snapshot-store.ts";
@@ -45,9 +44,11 @@ export async function captureLiveInput(options: CaptureOptions): Promise<RunInpu
   });
   // Nor is one whose changes cannot be placed on a plan: the next run compares against the
   // last snapshot it could read, so the change is not lost behind an unreadable one.
+  const judged = new Map(
+    snapshots.filter((current) => !unreadable.has(current.url)).map((current) => [current.url, pageSignals({ current, earlier: earlier.get(current.url) })]),
+  );
   for (const snapshot of snapshots) {
-    const before = earlier.get(snapshot.url);
-    if (before && diffSignals(snapshot, before).error) continue;
+    if (judged.get(snapshot.url)?.error) continue;
     try {
       writeSnapshot(options.snapshotsDir, snapshot);
     } catch {
@@ -59,10 +60,7 @@ export async function captureLiveInput(options: CaptureOptions): Promise<RunInpu
   for (const url of unreadable) {
     errors.push(`${url}: the latest stored snapshot could not be read, so this page was not judged`);
   }
-  return liveInput(
-    snapshots.filter((current) => !unreadable.has(current.url)).map((current) => ({ current, earlier: earlier.get(current.url) })),
-    errors,
-  );
+  return inputFromPages([...judged.values()], errors);
 }
 
 /**
