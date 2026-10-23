@@ -1,3 +1,4 @@
+import { AUDIENCE } from "./audience.ts";
 import { checkItem, checkResult, forbiddenValues } from "./checks.ts";
 import { judge, RULES, type Rule } from "./judge.ts";
 import type { Item, Result, SkippedSignal, Source } from "./types.ts";
@@ -19,7 +20,7 @@ export function run(source: Source, options: { startedAt?: Date; rules?: Rule[] 
       skipped.push(judgement.skipped);
       continue;
     }
-    // An item that fails a check never reaches Maya: its signals are skipped with the reason.
+    // An item that fails a check never reaches the audience: its signals are skipped with the reason.
     judgedItems += 1;
     const problems = checkItem(judgement.item, context);
     if (problems.length > 0) {
@@ -33,7 +34,7 @@ export function run(source: Source, options: { startedAt?: Date; rules?: Rule[] 
   }
 
   const result: Result = {
-    built_for: "maya",
+    built_for: AUDIENCE.builtFor,
     items,
     skipped,
     run: { started_at: (options.startedAt ?? new Date()).toISOString(), cost_usd: 0, errors },

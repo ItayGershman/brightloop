@@ -1,4 +1,5 @@
 import { CODE_MARKERS } from "./markers.ts";
+import { CREDENTIAL_KEY, PRINTABLE_WITHOUT_SPACES } from "./patterns.ts";
 import type { Signal, Source } from "./types.ts";
 
 /**
@@ -50,7 +51,7 @@ function usableId(id: string, secrets: string[]): boolean {
   return (
     id.length <= 100 &&
     id === id.trim() &&
-    /^[^\s\p{C}]+$/u.test(id) &&
+    PRINTABLE_WITHOUT_SPACES.test(id) &&
     !CODE_MARKERS.some((marker) => id.includes(marker)) &&
     !secrets.some((secret) => id.includes(secret))
   );
@@ -60,7 +61,7 @@ function usableId(id: string, secrets: string[]): boolean {
 function secretValues(config: unknown): string[] {
   if (!isObject(config)) return [];
   return Object.entries(config)
-    .filter(([key, value]) => /key|token|secret|passw/i.test(key) && typeof value === "string" && value.length >= 4)
+    .filter(([key, value]) => CREDENTIAL_KEY.test(key) && typeof value === "string" && value.length >= 4)
     .map(([, value]) => value as string);
 }
 
