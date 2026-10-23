@@ -1,0 +1,17 @@
+{
+  "derived": "Derived test fixture, not a real capture: each page's later snapshot is an edited copy of the real snapshot it names, made only for the replay tests. The real snapshot history is under snapshots/.",
+  "what": "Lovable redesigns its pricing page: the plan cards become a comparison table, so no plan can be read the way the page used to show them.",
+  "pages": [
+    {
+      "from": "snapshots/lovable/pricing/2026-10-23T08-24-20.861Z.json",
+      "captured_at": "2026-10-26T05:30:00.000Z",
+      "edits": [
+        {
+          "from": "Free",
+          "through": "Custom SLA",
+          "becomes": ["Compare plans", "Plan | Price | Credits", "Free | $0 | 5 daily credits", "Pro | $30 per month | 100 monthly credits", "Business | $60 per month | 100 monthly credits", "Enterprise | Platform fee | Custom"]
+        }
+      ]
+    }
+  ]
+}

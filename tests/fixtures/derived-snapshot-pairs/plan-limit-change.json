@@ -1,0 +1,11 @@
+{
+  "derived": "Derived test fixture, not a real capture: each page's later snapshot is an edited copy of the real snapshot it names, made only for the replay tests. The real snapshot history is under snapshots/.",
+  "what": "Lovable's Pro plan goes from 100 to 150 monthly credits; nothing else on the page changes.",
+  "pages": [
+    {
+      "from": "snapshots/lovable/pricing/2026-10-23T08-24-20.861Z.json",
+      "captured_at": "2026-10-26T05:30:00.000Z",
+      "edits": [{ "line": "100 monthly credits", "nth": 1, "becomes": "150 monthly credits" }]
+    }
+  ]
+}

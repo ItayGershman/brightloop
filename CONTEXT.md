@@ -44,6 +44,14 @@ _Avoid_: copy, capture, cache
 The first snapshot of a page, recorded when no earlier one exists; it yields an item stating current pricing, with no change.
 _Avoid_: initial state, seed
 
+**Snapshot diff**:
+The changed lines between a page's latest snapshot and the one before it, each classified as price, limit, free plan, plan name, promotion marker or copy only; only these lines are judged.
+_Avoid_: delta, patch
+
+**Replay**:
+A run over snapshots already stored, the latest two of each page, with no browser and no keys; in the tests, a real snapshot paired with an edited copy of it (a derived fixture).
+_Avoid_: mock run, simulation
+
 **Skipped signal**:
 A signal that did not become part of any item, recorded with the reason.
 _Avoid_: dropped, filtered, ignored

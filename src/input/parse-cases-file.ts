@@ -40,7 +40,9 @@ export function parseCasesFile(text: string): RunInput {
         if (raw.ts !== undefined && !utc) {
           errors.push(`${position} has a time (ts) that cannot be read; it was judged without one`);
         }
-        signals.push({ ...raw, id: raw.id, type: typeof raw.type === "string" ? raw.type : "", utc });
+        // A diff comes only from comparing two snapshots in a live run, never from the file.
+        const { diff: _fromFile, ...fields } = raw;
+        signals.push({ ...fields, id: raw.id, type: typeof raw.type === "string" ? raw.type : "", utc });
       }
     });
   }

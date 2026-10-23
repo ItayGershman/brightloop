@@ -12,6 +12,8 @@ export interface Signal {
   text?: string;
   /** The moment of `ts` in UTC, set when the input is read; absent if `ts` is missing or unreadable. */
   utc?: Date;
+  /** Set only for a signal made from a snapshot diff, by a live run or a replay; a cases file cannot set it. */
+  diff?: PageDiff;
   [field: string]: unknown;
 }
 
@@ -29,6 +31,30 @@ export interface RunInput {
 
 /** Signal type of a page a live run sees for the first time; the baseline rule judges it. */
 export const BASELINE = "baseline";
+
+/** Signal type of a page whose changes since its latest snapshot are copy only. */
+export const PAGE_COPY = "copy";
+
+/** Signal type of a page that is exactly as in its latest snapshot. */
+export const UNCHANGED = "unchanged";
+
+/** How a changed line of a snapshot diff is classified. */
+export type LineKind = "price" | "limit" | "free plan" | "plan name" | "promotion marker" | "copy only";
+
+/** What a snapshot diff found on one page, or on one plan of it. Page text: data only. */
+export interface PageDiff {
+  /** When the earlier snapshot it was compared with was captured. */
+  since: string;
+  /** The changed values in the page's words, earlier and current; null when that side shows none. */
+  before: string | null;
+  after: string | null;
+  /** The plan's current price as the page shows it; null outside every plan or for a removed plan. */
+  price: string | null;
+  /** The classes of the changed lines, each once. */
+  kinds: LineKind[];
+  /** How many lines changed: removed plus added. */
+  changedLines: number;
+}
 
 /** Which of a competitor's pages a snapshot is of. */
 export type PageKind = "pricing" | "homepage";

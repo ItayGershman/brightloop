@@ -27,14 +27,15 @@ export function compareWithBrightloop(change: PricingChange): Comparison {
 }
 
 /** What the competitor's price is, in words, from the signal alone. */
-function competitorPrice({ competitor, link, plan: changed, text, reading, promotion }: PricingChange): string {
+function competitorPrice({ competitor, link, plan: changed, text, reading, listed, promotion }: PricingChange): string {
   const plan = planName(competitor, changed);
   if (reading.differentPeriods) {
     const { earlier, later } = reading.differentPeriods;
     return `${plan} shows ${later}; it is not compared with the earlier ${earlier}, which is for a different period.`;
   }
   if (reading.after && promotion.kind === "none") return `${plan} now shows ${reading.after}.`;
-  const current = reading.after ?? onlyPrice(text);
+  // The page's own price for the plan, unless a promotion may be what the page shows.
+  const current = reading.after ?? (promotion.kind === "none" ? listed : null) ?? onlyPrice(text);
   if (!current && changed.place === "free") return `${plan} costs nothing; what it includes is on ${link}.`;
   if (!current) return `${plan}'s current price is on ${link}.`;
   if (promotion.kind === "promotion") return `${plan} shows ${current} as a promotional price; its list price is on ${link}.`;

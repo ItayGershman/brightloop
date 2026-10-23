@@ -96,3 +96,8 @@ function hasPromoUrlPart(source: string): boolean {
   const query = [...url.searchParams].flat();
   return [...segments, ...query].some((part) => PROMO_URL_PART.test(part));
 }
+
+/** True when one line of page text carries any promotion marker, settled or only a hint. */
+export function hasPromotionMarker(line: string): boolean {
+  return findPromotion(line, "", "", false).kind !== "none";
+}
