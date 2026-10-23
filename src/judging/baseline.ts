@@ -1,8 +1,9 @@
 import { AUDIENCE } from "../config/audience.ts";
 import { competitorSlug, findCompetitor, type Competitor } from "../config/competitors.ts";
-import { BASELINE, type Item, type Signal, type Tier } from "../domain/types.ts";
+import { BASELINE, type Item, type OwnPricing, type Signal, type Tier } from "../domain/types.ts";
 import { isPaidPrice, pricingTiers, shownPrice } from "../text/pricing-tiers.ts";
 import { quotable } from "../text/quotable.ts";
+import { baselineComparison } from "./comparison.ts";
 import { eachSignal, skip, type Rule } from "./run-rules.ts";
 
 // A page seen for the first time. Its pricing page becomes one item stating the competitor's
@@ -13,26 +14,31 @@ const ACTION = "no action, baseline recorded";
 /** Our own capture of the competitor's own page: as sure as a signal gets, short of a person checking. */
 const CONFIDENCE = 0.9;
 
-/** Baseline signals from a live capture: one item per competitor, from its pricing page. */
-export const baseline: Rule = eachSignal((signal) => {
-  if (signal.type !== BASELINE) return undefined;
-  const competitor = findCompetitor(signal.competitor);
-  if (!competitor) return skip(signal, "baseline recorded, but this competitor is not in the watch");
-  if (signal.page === "homepage") return skip(signal, "homepage baseline recorded: homepage copy, no action");
-  const lines = pageLines(signal.lines);
-  const tiers = pricingTiers(lines);
-  if (tiers.length === 0) {
-    return skip(signal, "pricing page baseline recorded, but no plans could be read from it: page structure changed, check by hand");
-  }
-  return { kind: "item", item: baselineItem(signal, competitor, tiers) };
-});
+/**
+ * Baseline signals from a live capture: one item per competitor, from its pricing page,
+ * compared with Brightloop's own pricing when the run has it.
+ */
+export function baselineRule(own?: OwnPricing): Rule {
+  return eachSignal((signal) => {
+    if (signal.type !== BASELINE) return undefined;
+    const competitor = findCompetitor(signal.competitor);
+    if (!competitor) return skip(signal, "baseline recorded, but this competitor is not in the watch");
+    if (signal.page === "homepage") return skip(signal, "homepage baseline recorded: homepage copy, no action");
+    const lines = pageLines(signal.lines);
+    const tiers = pricingTiers(lines);
+    if (tiers.length === 0) {
+      return skip(signal, "pricing page baseline recorded, but no plans could be read from it: page structure changed, check by hand");
+    }
+    return { kind: "item", item: baselineItem(signal, competitor, tiers, own) };
+  });
+}
 
-function baselineItem(signal: Signal, competitor: Competitor, tiers: Tier[]): Item {
+function baselineItem(signal: Signal, competitor: Competitor, tiers: Tier[], own?: OwnPricing): Item {
   const name = competitor.name;
   const link = competitor.pricingPage;
   const capturedOn = (quotable(signal.ts) ?? "").slice(0, 10) || "this run";
   const lowestPaid = tiers.find((tier) => isPaidPrice(tier.price)) ?? tiers[0];
-  const comparison = `Can't compare yet: Brightloop's own-pricing tab is not connected. ${name}'s lowest paid plan, ${lowestPaid.name}, shows ${shownPrice(lowestPaid)}.`;
+  const comparison = baselineComparison(name, lowestPaid, own);
 
   return {
     id: `${BASELINE}-${competitorSlug(name)}`,
