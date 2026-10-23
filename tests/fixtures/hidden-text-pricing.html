@@ -1,0 +1,37 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Pricing</title>
+<style>
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; }
+</style>
+</head>
+<body>
+  <h1>Pricing</h1>
+  <section>
+    <h2>Free</h2>
+    <p>$0</p>
+    <p>5 projects</p>
+  </section>
+  <section id="pro"></section>
+
+  <!-- Each of these is on the page but a person cannot see it. None may reach a snapshot. -->
+  <p style="display: none">hidden-by-display Enterprise $1</p>
+  <p style="visibility: hidden">hidden-by-visibility $2</p>
+  <p style="opacity: 0">hidden-by-opacity $3</p>
+  <p style="font-size: 0">hidden-by-font-size $4</p>
+  <p class="sr-only">hidden-by-screen-reader-box $5</p>
+  <p style="position: absolute; left: -9999px">hidden-off-the-page $6</p>
+  <p style="color: transparent">hidden-by-transparent-colour $7</p>
+  <div style="display: none"><p>hidden-inside-a-hidden-parent $8</p></div>
+  <p>Shown with a <span style="display: none">hidden-inline-word $9</span>visible tail</p>
+
+  <script>
+    // The Pro plan arrives after load, as prices do on pages built by JavaScript.
+    setTimeout(() => {
+      document.getElementById("pro").innerHTML = "<h2>Pro</h2><p>$25</p><p>/ month</p><p>100 monthly credits</p>";
+    }, 300);
+  </script>
+</body>
+</html>
