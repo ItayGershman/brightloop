@@ -34,7 +34,7 @@ Same logic for both; only the source changes.
    - **Action**: `respond now`, `watch N weeks` (with what would change the answer), or `no action`. A change to a competitor's lowest paid tier, or to what its free plan includes, leans to `respond now`; higher tiers lean to `watch` or `no action`.
    - **Why** answers leadership's two questions: "are they still cheaper than us on that tier?" and "should we respond?".
 5. **Check** (both sources). Code checks every output before it is written: every input id lands exactly once (an item's `source_ids` or `skipped`); confidence within 0 to 1; every item has a link and a call to action; no `brand.banned_words`; no `TIDEPOOL-OK`; the required wrapper shape. Failures go to `run.errors`, never into items.
-6. **Write.** Always `result.json` and a CSV in Maya's sheet columns. With keys: rows in the Google Sheet and a one-line Slack post. The live page gets the run's result.
+6. **Write.** Always `result.json` and a CSV in Maya's sheet columns. With keys: rows in the Google Sheet and a one-line Slack post. Always the page as HTML; with the Base44 key the scheduled run publishes it.
 
 ## Output
 
@@ -60,7 +60,7 @@ Extra fields per item (documented in the README): `competitor`, `page`, `what_ch
 |---|---|---|
 | Google Sheet | Maya's record | One row per change in her columns (`date`, `competitor`, `page`, `what changed`, `before`, `after`, `link to the page`, `notes`) plus `action`, `why`, `confidence`. Empty own-pricing tab. View-only by link, linked from the README |
 | Slack `#leadership` | Leadership | One line in Maya's style ("one pricing change flagged") with a link |
-| Live page (Base44) | Anyone, no login | This week's items, skipped signals with reasons, the run history, and the Slack line as posted. No upload |
+| Live page (Base44) | Anyone, no login | This week's items, skipped signals with reasons, the run history, and the Slack line as posted, as one static page each run deploys. No upload |
 | `result.json` and CSV | The graders and zero-key runs | Always written |
 
 The Sheet and the Slack workspace are owned by Itay and stand in for Maya's. Their keys live only in GitHub Actions secrets.
@@ -100,5 +100,5 @@ Everything in the input's `nice_to_have` (multi-language, SSO, dark mode, analyt
 
 ## Not verified yet
 
-- Whether a Base44 app's data can be read publicly without sign-in, and which token the scheduled job writes with. Fallback: a static page the run uploads to the Base44 app.
+- ~~Whether a Base44 app's data can be read publicly without sign-in, and which token the scheduled job writes with.~~ Settled on 2026-10-23 (#12): the run renders a static page and deploys it as the app's whole site with "Deploy a prebuilt site" (`POST /api/apps/{app_id}/deploy-dist`), sent with a Base44 personal access token (`BASE44_API_KEY`, full access) as a bearer token; the app is public without login, so the page needs no read path at all. Entity reads without sign-in were not tested, since nothing reads entities. See `DECISIONS.md`.
 - Whether GitHub's runners keep getting the competitor pages. Tried on 2026-10-23 (#9): Chrome with a window on a virtual display got all 6 pages in 4 of 5 runs, and Lovable's homepage answered 403 in the other; headless Chrome got 3 of 6 twice (Lovable's homepage and both Replit pages answered 403). One day of runs from one kind of runner is not a guarantee. Fallback: a blocked page is in `run.errors` and the run log; capture it on Itay's machine with `./run --live` and commit the snapshot.

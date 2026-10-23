@@ -28,7 +28,7 @@ No browser, no network, no keys. For every watched page, the latest stored snaps
 
 ## The Monday run
 
-`.github/workflows/scheduled-run.yml` runs `./run --live` on GitHub Actions every Monday at 08:30 Jerusalem time, and on demand from the Actions tab ("Run workflow") for demos and re-runs. GitHub schedules are in UTC, so the workflow fires at 05:30 and 06:30 UTC and a first job (`src/schedule/time-gate.ts`) lets through only the one that is 08:xx in `Asia/Jerusalem`; a manual run is never held back. Each run installs Chrome, captures the pages with a window on a virtual display, commits the new snapshots, `runs/result.json`, `runs/result.csv` and one line in `runs/run-log.jsonl` (start time, pages fetched, `cost_usd`, errors) as `github-actions[bot]`. With the Sheet secret and variable set it also appends the rows to the Sheet, and with the `SLACK_WEBHOOK_URL` secret set it posts the run's one line to `#leadership` (both below). Runs never overlap: a run started while one is going waits for it. A page a site blocks is reported in `run.errors` and the run log, never stored; capture it on a machine of your own with `./run --live` and commit the snapshot.
+`.github/workflows/scheduled-run.yml` runs `./run --live` on GitHub Actions every Monday at 08:30 Jerusalem time, and on demand from the Actions tab ("Run workflow") for demos and re-runs. GitHub schedules are in UTC, so the workflow fires at 05:30 and 06:30 UTC and a first job (`src/schedule/time-gate.ts`) lets through only the one that is 08:xx in `Asia/Jerusalem`; a manual run is never held back. Each run installs Chrome, captures the pages with a window on a virtual display, commits the new snapshots, `runs/result.json`, `runs/result.csv` and one line in `runs/run-log.jsonl` (start time, pages fetched, `cost_usd`, errors) as `github-actions[bot]`. With the Sheet secret and variable set it also appends the rows to the Sheet, with the `SLACK_WEBHOOK_URL` secret set it posts the run's one line to `#leadership`, and with the `BASE44_API_KEY` secret set it publishes the live page and commits it as `runs/result.html` (all below). Runs never overlap: a run started while one is going waits for it. A page a site blocks is reported in `run.errors` and the run log, never stored; capture it on a machine of your own with `./run --live` and commit the snapshot.
 
 ## Maya's sheet and the CSV
 
@@ -71,6 +71,14 @@ Every run, from any command, renders one line for leadership in Maya's own style
 
 The line is built from counts, actions and registered competitor names only: no quoted text, no confidence score, no price. The link is `DETAILS_URL` when it is set to an https link, otherwise Maya's sheet (`AUDIENCE.sheetUrl`). Only a live run (`--live`) with `SLACK_WEBHOOK_URL` set posts the line, to the channel the webhook belongs to, after `result.json` is first written; a cases file or a replay never posts, and without the key no poster is made and no network call happens. A failed post is added to `run.errors` with the reason ("Slack answered 404", "no answer from Slack"), never the webhook, and never stops the run.
 
+## The live page
+
+**https://brightloop-pricing-watch-11e53ec8.base44.app** (public, no login).
+
+One static page, in Maya's words: the latest run's items (what changed, before and after, the action, why, how sure in words with the score after it, the next step and the link to the competitor's page), the problems the run hit, the skipped signals with their reasons, the run history from `runs/run-log.jsonl` (newest first: pages checked, problems, the Slack line and whether it was posted) and the Slack line as posted.
+
+Every run, from any command, writes the page beside the result (`result.html`, no run history) and makes no network call. In the scheduled and manual runs, `scripts/publish-page.ts` renders it again with the run history and, with the `BASE44_API_KEY` secret (a Base44 personal access token with full access) and the `BASE44_APP_ID` variable set, uploads it to the Base44 app as its whole published site through the platform API's "Deploy a prebuilt site" (`POST /api/apps/{app_id}/deploy-dist`). A page that would carry a forbidden marker or something shaped like a Brightloop price is not published. A failed upload is added to `run.errors` and the run log ("live page not updated: Base44 answered 401"), never the token, never stops the run, and leaves the last page up. The page loads and runs nothing: its content policy allows no script, no image and no outside request, and every value on it is escaped.
+
 ## Proof
 
 ```sh
@@ -94,8 +102,9 @@ Typechecks, runs the repo check for the brief's hidden markers, then the case su
 | `src/domain/` | The shared types: `Signal`, `RunInput`, `Snapshot`, `Tier`, `Item`, `SkippedSignal`, `Result` |
 | `src/sheet/` | Maya's sheet: the rows (`renderRows`), the CSV, the own-pricing tab reader, the Google Sheets adapter behind `SheetStore`, and `runAndDeliver`, which reads own pricing, runs and appends the rows |
 | `src/schedule/` | The scheduled run: the 08:xx Jerusalem time gate and the run log |
+| `src/page/` | The live page: `renderPage` renders it from a result and the run log, `deliverPage` writes it and publishes it when a publisher is given, `publisherFromEnv` builds the Base44 publisher only with both keys; `page/index.ts` is the only import point |
 | `src/report/` | The Slack line: `slackLine` renders it from a result, `deliverSlackLine` posts it for a live run with `SLACK_WEBHOOK_URL` set, `detailsUrl` picks the link; `report/index.ts` is the only import point |
-| `runs/` | Written by the scheduled and manual runs: the latest `result.json`, its rows as `result.csv`, and `run-log.jsonl`, one line per run |
+| `runs/` | Written by the scheduled and manual runs: the latest `result.json`, its rows as `result.csv`, the live page as published (`result.html`), and `run-log.jsonl`, one line per run |
 | `snapshots/` | The committed snapshots, one file per page per live run. Real data, replayed by the tests with no browser |
 
 To add a judging rule: write the function in `src/judging/rules.ts`, put it in the judging list in `judgingRules` (a rule that needs the whole batch, like `mergeDuplicates`, goes before the rules it feeds), and add a case under `cases/<name>/` (`input.json` and `expected.json`).

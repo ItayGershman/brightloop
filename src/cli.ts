@@ -2,6 +2,7 @@ import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, format, parse } from "node:path";
 import type { RunInput } from "./domain/types.ts";
 import { inputWithError, parseCasesFile } from "./input/parse-cases-file.ts";
+import { renderPage } from "./page/index.ts";
 import { deliverSlackLine } from "./report/index.ts";
 import { toCsv } from "./sheet/csv.ts";
 import { runAndDeliver, sheetFromEnv } from "./sheet/deliver.ts";
@@ -18,6 +19,8 @@ import { COLUMNS } from "./sheet/tabs.ts";
 // and keys are never logged.
 // Every result carries its Slack line; only a live run with SLACK_WEBHOOK_URL set posts it,
 // after result.json is first written, so a posted line is never left unstored.
+// Every run also writes the live page as HTML beside the result (result.html), with no run
+// history; only the scheduled workflow publishes it (scripts/publish-page.ts).
 
 const USAGE =
   "usage: run --input <cases.json> --output <result.json>\n" +
@@ -32,8 +35,8 @@ async function main(argv: string[]): Promise<number> {
   const inputPath = flag(args, "--input");
   const outputPath = flag(args, "--output");
   const snapshotsDir = flag(args, "--snapshots") ?? DEFAULT_SNAPSHOTS_DIR;
-  // The CSV goes beside the result with a .csv extension, so the result itself cannot be one.
-  if (!outputPath || parse(outputPath).ext.toLowerCase() === ".csv" || [live, replay, Boolean(inputPath)].filter(Boolean).length !== 1) {
+  // The CSV and the page go beside the result with .csv and .html extensions, so the result itself cannot be either.
+  if (!outputPath || [".csv", ".html"].includes(parse(outputPath).ext.toLowerCase()) || [live, replay, Boolean(inputPath)].filter(Boolean).length !== 1) {
     console.error(USAGE);
     return 2;
   }
@@ -52,11 +55,13 @@ async function main(argv: string[]): Promise<number> {
   const json = (value: unknown) => `${JSON.stringify(value, null, 2)}\n`;
   if (!write(outputPath, json(judged)) || !write(csvPath, toCsv(COLUMNS, rows))) return 2;
   const result = await deliverSlackLine(judged, { env: process.env, post: live });
-  if (!write(outputPath, json(result))) return 2;
+  const pagePath = format({ ...parse(outputPath), base: undefined, ext: ".html" });
+  if (!write(outputPath, json(result)) || !write(pagePath, renderPage({ result, timeZone: input.timezone }))) return 2;
   console.log(
     `Wrote ${outputPath}: ${result.items.length} items, ${result.skipped.length} skipped, ${result.run.errors.length} errors.`,
   );
   console.log(`Wrote ${csvPath}: ${rows.length} rows.`);
+  console.log(`Wrote ${pagePath}: the live page for this run.`);
   if (live) {
     console.log(
       sheet

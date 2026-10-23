@@ -46,6 +46,23 @@ export function appendRunLog(logPath: string, entry: RunLogEntry): void {
   appendFileSync(logPath, `${JSON.stringify(entry)}\n`);
 }
 
+/** Every line of the run log, oldest first; a line that cannot be read is left out. No log is no history. */
+export function readRunLog(logPath: string): RunLogEntry[] {
+  if (!existsSync(logPath)) return [];
+  return readFileSync(logPath, "utf8")
+    .split("\n")
+    .flatMap((line) => {
+      try {
+        // Lines from before the Slack line existed have no slack fields.
+        const entry = JSON.parse(line) as Partial<RunLogEntry>;
+        if (typeof entry.started_at !== "string" || !Array.isArray(entry.errors)) return [];
+        return [{ ...entry, slack_line: entry.slack_line ?? null, slack_status: entry.slack_status ?? null } as RunLogEntry];
+      } catch {
+        return [];
+      }
+    });
+}
+
 /** Pages with a snapshot captured at or after the start: the ones this run fetched and stored. */
 function pagesFetched(snapshotsDir: string, pages: WatchedPage[], startedAt: Date): number {
   return pages.filter((page) => {
