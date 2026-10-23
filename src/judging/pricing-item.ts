@@ -2,6 +2,7 @@ import { AUDIENCE } from "../config/audience.ts";
 import type { Competitor } from "../config/competitors.ts";
 import type { Item, OwnPricing, PageDiff, Signal } from "../domain/types.ts";
 import { quotable } from "../text/quotable.ts";
+import { RESPOND_QUESTION } from "./advice.ts";
 import { listPriceChange, readChange } from "./change.ts";
 import { compareWithBrightloop } from "./comparison.ts";
 import type { Promotion } from "./promotion.ts";
@@ -30,7 +31,7 @@ export function pricingItem(signal: Signal, competitor: Competitor, trust: Repor
     confidence: trust.confidence,
     confidence_label: possible ? `unconfirmed, possible promo: the source is ${trust.name}` : trust.label(page),
     action: advice.action,
-    why: `${stillCheaper} Should we respond? ${advice.shouldWeRespond}`,
+    why: `${stillCheaper} ${RESPOND_QUESTION} ${advice.shouldWeRespond}`,
     cta: possible
       ? `Check still needed before ${AUDIENCE.deadline}: ${possible.checks.join("; ")}. Until then, tell ${AUDIENCE.reportsTo} "I'm checking".`
       : trust.item.cta(page),

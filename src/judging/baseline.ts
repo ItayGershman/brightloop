@@ -3,6 +3,7 @@ import { competitorSlug, findCompetitor, type Competitor } from "../config/compe
 import { BASELINE, type Item, type OwnPricing, type Signal, type Tier } from "../domain/types.ts";
 import { isPaidPrice, pricingTiers, shownPrice } from "../text/pricing-tiers.ts";
 import { quotable } from "../text/quotable.ts";
+import { RESPOND_QUESTION } from "./advice.ts";
 import { baselineComparison } from "./comparison.ts";
 import { eachSignal, skip, type Rule } from "./run-rules.ts";
 
@@ -47,7 +48,7 @@ function baselineItem(signal: Signal, competitor: Competitor, tiers: Tier[], own
     confidence: CONFIDENCE,
     confidence_label: `confirmed: read from ${name}'s own pricing page on ${capturedOn}`,
     action: BASELINE_ACTION,
-    why: `${comparison} Should we respond? No: this is the first snapshot of ${name}'s pricing page, so nothing has changed yet; the next run compares against it.`,
+    why: `${comparison} ${RESPOND_QUESTION} No: this is the first snapshot of ${name}'s pricing page, so nothing has changed yet; the next run compares against it.`,
     cta: `Use these as ${name}'s current prices when ${AUDIENCE.reportsTo} asks; open ${link} for every plan detail.`,
     competitor: name,
     page: "pricing",
