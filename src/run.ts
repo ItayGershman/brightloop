@@ -1,7 +1,7 @@
 import { checkItem, checkResult, forbiddenValues } from "./checks/index.ts";
 import { AUDIENCE } from "./config/audience.ts";
 import type { Item, Result, RunInput, SkippedSignal } from "./domain/types.ts";
-import { RULES } from "./judging/rules.ts";
+import { judgingRules } from "./judging/rules.ts";
 import { runRules, type Rule } from "./judging/run-rules.ts";
 import { itemWeeks } from "./judging/week.ts";
 
@@ -18,7 +18,7 @@ export function run(input: RunInput, options: { startedAt?: Date; rules?: Rule[]
   const weekOf = itemWeeks(input);
 
   let judgedItems = 0;
-  for (const judgement of runRules(input.signals, options.rules ?? RULES)) {
+  for (const judgement of runRules(input.signals, options.rules ?? judgingRules(input.ownPricing))) {
     if (judgement.kind === "skipped") {
       skipped.push(judgement.skipped);
       continue;

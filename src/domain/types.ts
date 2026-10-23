@@ -27,6 +27,24 @@ export interface RunInput {
   timezone: string;
   /** Problems found while reading the input; they end up in run.errors. */
   errors: string[];
+  /** Brightloop's own prices, from the own-pricing tab at run time; absent means not connected. */
+  ownPricing?: OwnPricing;
+}
+
+/**
+ * Brightloop's own tiers as read from the own-pricing tab of the audience's sheet. Read at
+ * run time only: never written into code, tests or committed files, and never into an output.
+ */
+export type OwnPricing =
+  | { state: "not connected" }
+  | { state: "unreadable" }
+  | { state: "empty" }
+  | { state: "read"; tiers: OwnTier[] };
+
+/** One row of the own-pricing tab. */
+export interface OwnTier {
+  name: string;
+  monthlyUsd: number;
 }
 
 /** Signal type of a page a live run sees for the first time; the baseline rule judges it. */

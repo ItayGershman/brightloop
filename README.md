@@ -28,7 +28,34 @@ No browser, no network, no keys. For every watched page, the latest stored snaps
 
 ## The Monday run
 
-`.github/workflows/scheduled-run.yml` runs `./run --live` on GitHub Actions every Monday at 08:30 Jerusalem time, and on demand from the Actions tab ("Run workflow") for demos and re-runs. GitHub schedules are in UTC, so the workflow fires at 05:30 and 06:30 UTC and a first job (`src/schedule/time-gate.ts`) lets through only the one that is 08:xx in `Asia/Jerusalem`; a manual run is never held back. Each run installs Chrome, captures the pages with a window on a virtual display, commits the new snapshots, `runs/result.json` and one line in `runs/run-log.jsonl` (start time, pages fetched, `cost_usd`, errors) as `github-actions[bot]`, and posts the run's one line to `#leadership` when the `SLACK_WEBHOOK_URL` secret is set (see below). Runs never overlap: a run started while one is going waits for it. A page a site blocks is reported in `run.errors` and the run log, never stored; capture it on a machine of your own with `./run --live` and commit the snapshot.
+`.github/workflows/scheduled-run.yml` runs `./run --live` on GitHub Actions every Monday at 08:30 Jerusalem time, and on demand from the Actions tab ("Run workflow") for demos and re-runs. GitHub schedules are in UTC, so the workflow fires at 05:30 and 06:30 UTC and a first job (`src/schedule/time-gate.ts`) lets through only the one that is 08:xx in `Asia/Jerusalem`; a manual run is never held back. Each run installs Chrome, captures the pages with a window on a virtual display, commits the new snapshots, `runs/result.json`, `runs/result.csv` and one line in `runs/run-log.jsonl` (start time, pages fetched, `cost_usd`, errors) as `github-actions[bot]`. With the Sheet secret and variable set it also appends the rows to the Sheet, and with the `SLACK_WEBHOOK_URL` secret set it posts the run's one line to `#leadership` (both below). Runs never overlap: a run started while one is going waits for it. A page a site blocks is reported in `run.errors` and the run log, never stored; capture it on a machine of your own with `./run --live` and commit the snapshot.
+
+## Maya's sheet and the CSV
+
+Every run writes `result.csv` beside `result.json` (for `--output runs/result.json`, `runs/result.csv`): one row per item, in Maya's sheet columns plus the run's judgement.
+
+| Column | What is in it |
+|---|---|
+| `date` | The day of the run, in the input's time zone (`2026-10-26`) |
+| `competitor`, `page` | Which competitor, and "pricing page" or "homepage" |
+| `what changed`, `before`, `after` | The item's `what_changed`, `before` and `after`; empty when the item has none. A baseline row has the plans in `after` |
+| `link to the page` | The competitor's own pricing page |
+| `notes` | The item's `notes`, then its call to action as "Next: ..." |
+| `action`, `why` | The item's `action` and `why` (still cheaper than us on that tier, and should we respond) |
+| `confidence` | The confidence in words, then the score: "confirmed: seen on Bolt's own pricing page (0.9)" |
+
+Skipped signals are not rows: they are in `result.json` with their reasons. Cells are quoted as CSV needs (commas, quotes, line breaks), and a cell starting `=`, `+`, `-`, `@`, a tab or a carriage return gets a leading apostrophe so a spreadsheet shows it as text instead of running it as a formula (outside text is data, ADR-0001); the Sheet itself gets the cell as typed, stored as text. `--output` must not end in `.csv`.
+
+The live run also appends the rows to the Google Sheet that stands in for Maya's (tab `changes`), when both of these are set in its environment:
+
+| Variable | What it is |
+|---|---|
+| `GOOGLE_SERVICE_ACCOUNT_JSON` | The JSON key of a Google service account with edit access to the Sheet |
+| `SHEET_ID` | The Sheet's id, from its URL |
+
+In the scheduled workflow they are the repository secret `GOOGLE_SERVICE_ACCOUNT_JSON` and the variable `SHEET_ID`, given to the live step only. Without them nothing connects to Google and the rows are in the CSV only; a cases file or a replay never writes to the Sheet, keys or not. A re-run in the same week appends only the rows the tab does not have yet (same week, competitor, page, what changed, before and after). A Sheet that cannot be read or written, or an own-pricing tab with no `tier` or `monthly price (USD)` column or a price that is not a number, is reported in `run.errors` and the run exits 1, after the rows are appended and `result.json` and the CSV are written.
+
+Brightloop's own prices are read at the start of that run from the Sheet's `own pricing` tab (columns `tier` and `monthly price (USD)`; `billing` and `notes` are for Maya). With them, `brightloop_comparison` and `why` say whether the competitor is cheaper than the Brightloop tier at the same place in the lineup, naming the tier but never writing a Brightloop amount, since `result.json` and the CSV are committed and the live page is public. With the tab empty, unreadable or not connected, they say the comparison can't be made and show the competitor's price.
 
 ## The Slack line
 
@@ -56,7 +83,7 @@ Typechecks, runs the repo check for the brief's hidden markers, then the case su
 
 | Folder or file | What it owns |
 |---|---|
-| `src/cli.ts` | Parses the command line, reads the cases file, starts a live capture or a replay, writes `result.json`. Nothing else |
+| `src/cli.ts` | Parses the command line, reads the cases file, starts a live capture or a replay, connects the Sheet for a live run with keys, writes `result.json` and the CSV. Nothing else |
 | `src/run.ts` | One run: input in, rules, in-run checks, result out. Orchestration only |
 | `src/input/` | The two ways into a run. `parseCasesFile`: a cases file text into the run input (signals, banned words, secret-like config values, problems). `liveInput`: captured snapshots into the run input, one baseline signal per page seen for the first time, and the snapshot diff's signals (`snapshot-diff.ts`) for a page seen before |
 | `src/capture/` | The live capture: Chrome opens each watched page and keeps its visible text; snapshots are stored and read back from `snapshots/`. `capture/index.ts` (`captureLiveInput`, `replayInput`) is the only import point |
@@ -65,12 +92,13 @@ Typechecks, runs the repo check for the brief's hidden markers, then the case su
 | `src/config/` | The audience (including the sheet the Slack line links to), the competitor registry and the known press outlets |
 | `src/text/` | Reading outside text: named patterns, quoting, price change, the plans on a pricing page, the brief's markers |
 | `src/domain/` | The shared types: `Signal`, `RunInput`, `Snapshot`, `Tier`, `Item`, `SkippedSignal`, `Result` |
+| `src/sheet/` | Maya's sheet: the rows (`renderRows`), the CSV, the own-pricing tab reader, the Google Sheets adapter behind `SheetStore`, and `runAndDeliver`, which reads own pricing, runs and appends the rows |
 | `src/schedule/` | The scheduled run: the 08:xx Jerusalem time gate and the run log |
 | `src/report/` | The Slack line: `slackLine` renders it from a result, `deliverSlackLine` posts it for a live run with `SLACK_WEBHOOK_URL` set, `detailsUrl` picks the link; `report/index.ts` is the only import point |
-| `runs/` | Written by the scheduled and manual runs: the latest `result.json` and `run-log.jsonl`, one line per run |
+| `runs/` | Written by the scheduled and manual runs: the latest `result.json`, its rows as `result.csv`, and `run-log.jsonl`, one line per run |
 | `snapshots/` | The committed snapshots, one file per page per live run. Real data, replayed by the tests with no browser |
 
-To add a judging rule: write the function in `src/judging/rules.ts`, put it in `JUDGING` (a rule that needs the whole batch, like `mergeDuplicates`, goes in `RULES` before the rules it feeds), and add a case under `cases/<name>/` (`input.json` and `expected.json`).
+To add a judging rule: write the function in `src/judging/rules.ts`, put it in the judging list in `judgingRules` (a rule that needs the whole batch, like `mergeDuplicates`, goes before the rules it feeds), and add a case under `cases/<name>/` (`input.json` and `expected.json`).
 
 To add a source trust level: add a row to `TRUST_LEVELS` in `src/judging/source-trust.ts`, above the catch-all, and a case. To add a press outlet: one entry in `KNOWN_PRESS` in `src/config/press.ts`.
 
@@ -88,7 +116,7 @@ The required wrapper (`built_for`, `items`, `skipped`, `run`) plus these fields 
 | `what_changed`, `before`, `after` | The change as stated; `before` and `after` only when the signal states both and it is not a promotion or a possible one |
 | `link` | The competitor's own pricing page |
 | `notes` | Where the signal came from, and any promotion markers found |
-| `brightloop_comparison` | Whether the competitor is still cheaper than Brightloop on that tier, or why that can't be said yet |
+| `brightloop_comparison` | Whether the competitor is still cheaper than Brightloop on that tier, from the own-pricing tab (the Brightloop tier is named, its price never written), or why that can't be said |
 | `week` | The ISO week (`2026-W43`) the change was seen in, counted in the input's `timezone`; `null` when the signal has no readable time |
 | `tiers` | Baseline items only: every plan on the pricing page, `{ name, price, period, struck_price, billing, limits }`, in the page's words; `billing` is null when the page does not say |
 

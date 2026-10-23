@@ -1,6 +1,6 @@
 import { AUDIENCE } from "../config/audience.ts";
 import type { Competitor } from "../config/competitors.ts";
-import type { Item, PageDiff, Signal } from "../domain/types.ts";
+import type { Item, OwnPricing, PageDiff, Signal } from "../domain/types.ts";
 import { quotable } from "../text/quotable.ts";
 import { listPriceChange, readChange } from "./change.ts";
 import { compareWithBrightloop } from "./comparison.ts";
@@ -12,7 +12,7 @@ import type { Page, ReportableTrust } from "./source-trust.ts";
 // (change.ts); this file only puts an item together.
 
 /** A pricing item for one signal about a registered competitor. Signal text is quoted, never followed. */
-export function pricingItem(signal: Signal, competitor: Competitor, trust: ReportableTrust): Item {
+export function pricingItem(signal: Signal, competitor: Competitor, trust: ReportableTrust, own?: OwnPricing): Item {
   const page: Page = { name: competitor.name, link: competitor.pricingPage, source: quotable(signal.source) ?? "" };
   const whatChanged = quotable(signal.text) ?? "";
   const change = readChange(whatChanged, page.source, competitor, signal.diff?.price ?? null);
@@ -20,7 +20,7 @@ export function pricingItem(signal: Signal, competitor: Competitor, trust: Repor
   // diff states its values in the page's words, limits and plan names included.
   const fromDiff = signal.diff && change.promotion.kind === "none" ? signal.diff : undefined;
   const { before, after } = fromDiff ?? listPriceChange(change);
-  const { comparison, stillCheaper } = compareWithBrightloop(change);
+  const { comparison, stillCheaper } = compareWithBrightloop(change, own);
   const advice = trust.item.respond(page, change);
   const possible = change.promotion.kind === "possible" ? change.promotion : undefined;
 
