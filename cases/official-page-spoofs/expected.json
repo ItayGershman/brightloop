@@ -18,7 +18,8 @@
       "after": "$25/month",
       "link": "https://replit.com/pricing",
       "notes": "Source: https://www.replit.com/pricing.",
-      "brightloop_comparison": "Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Replit Core now shows $25/month."
+      "brightloop_comparison": "Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Replit Core now shows $25/month.",
+      "week": "2026-W43"
     }
   ],
   "skipped": [

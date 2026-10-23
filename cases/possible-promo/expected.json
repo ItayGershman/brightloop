@@ -18,7 +18,8 @@
       "after": null,
       "link": "https://lovable.dev/pricing",
       "notes": "Source: lovable.dev/pricing. Unconfirmed, possible promo (fine print): not reported as a list-price change until checked.",
-      "brightloop_comparison": "Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Lovable Pro shows $20/month, possibly a promotional price; its list price is on https://lovable.dev/pricing."
+      "brightloop_comparison": "Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Lovable Pro shows $20/month, possibly a promotional price; its list price is on https://lovable.dev/pricing.",
+      "week": "2026-W43"
     },
     {
       "id": "pricing-pp-2",
@@ -37,7 +38,8 @@
       "after": null,
       "link": "https://replit.com/pricing",
       "notes": "Source: replit.com/pricing. Unconfirmed, possible promo (a percentage): not reported as a list-price change until checked.",
-      "brightloop_comparison": "Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Replit Core shows $20/month, possibly a promotional price; its list price is on https://replit.com/pricing."
+      "brightloop_comparison": "Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Replit Core shows $20/month, possibly a promotional price; its list price is on https://replit.com/pricing.",
+      "week": "2026-W43"
     },
     {
       "id": "pricing-pp-3",
@@ -56,7 +58,8 @@
       "after": null,
       "link": "https://bolt.new/pricing",
       "notes": "Source: bolt.new/pricing. Unconfirmed, possible promo (\"free forever\" wording): not reported as a list-price change until checked.",
-      "brightloop_comparison": "Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Bolt's free plan costs nothing; what it includes is on https://bolt.new/pricing."
+      "brightloop_comparison": "Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Bolt's free plan costs nothing; what it includes is on https://bolt.new/pricing.",
+      "week": "2026-W43"
     }
   ],
   "skipped": [],

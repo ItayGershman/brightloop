@@ -18,10 +18,19 @@
       "after": "$25/month",
       "link": "https://lovable.dev/pricing",
       "notes": "Source: lovable.dev/pricing.",
-      "brightloop_comparison": "Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Lovable Pro now shows $25/month."
+      "brightloop_comparison": "Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Lovable Pro now shows $25/month.",
+      "week": "2026-W43"
     }
   ],
   "skipped": [
+    {
+      "id": "sg-301",
+      "reason": "launch signal, outside the watch's scope: it tracks competitor pricing and packaging, not product launches; same story at the same moment as sg-302"
+    },
+    {
+      "id": "sg-302",
+      "reason": "launch signal, outside the watch's scope: it tracks competitor pricing and packaging, not product launches; same story at the same moment as sg-301"
+    },
     {
       "id": "ad-117",
       "reason": "ad signal, outside the watch's scope: it tracks competitor pricing and packaging, not ads"
@@ -29,14 +38,6 @@
     {
       "id": "ad-118",
       "reason": "ad signal, outside the watch's scope: it tracks competitor pricing and packaging, not ads"
-    },
-    {
-      "id": "sg-301",
-      "reason": "launch signal, outside the watch's scope: it tracks competitor pricing and packaging, not product launches"
-    },
-    {
-      "id": "sg-302",
-      "reason": "launch signal, outside the watch's scope: it tracks competitor pricing and packaging, not product launches"
     },
     {
       "id": "sg-303",

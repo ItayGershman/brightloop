@@ -18,7 +18,8 @@
       "after": "$20",
       "link": "https://lovable.dev/pricing",
       "notes": "Source: lovable.dev/pricing.",
-      "brightloop_comparison": "Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Lovable Pro now shows $20."
+      "brightloop_comparison": "Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Lovable Pro now shows $20.",
+      "week": "2026-W43"
     },
     {
       "id": "pricing-rd-2",
@@ -37,7 +38,8 @@
       "after": "$30/month",
       "link": "https://bolt.new/pricing",
       "notes": "Source: bolt.new/pricing.",
-      "brightloop_comparison": "Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Bolt Pro now shows $30/month."
+      "brightloop_comparison": "Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Bolt Pro now shows $30/month.",
+      "week": "2026-W43"
     },
     {
       "id": "pricing-rd-3",
@@ -56,7 +58,8 @@
       "after": null,
       "link": "https://lovable.dev/pricing",
       "notes": "Source: lovable.dev/pricing.",
-      "brightloop_comparison": "Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Lovable Pro shows $200 per year; it is not compared with the earlier $25, which is for a different period."
+      "brightloop_comparison": "Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Lovable Pro shows $200 per year; it is not compared with the earlier $25, which is for a different period.",
+      "week": "2026-W43"
     },
     {
       "id": "pricing-rd-4",
@@ -75,7 +78,8 @@
       "after": null,
       "link": "https://replit.com/pricing",
       "notes": "Source: replit.com/pricing.",
-      "brightloop_comparison": "Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Replit Core shows $180 billed annually; it is not compared with the earlier $20/month, which is for a different period."
+      "brightloop_comparison": "Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Replit Core shows $180 billed annually; it is not compared with the earlier $20/month, which is for a different period.",
+      "week": "2026-W43"
     },
     {
       "id": "pricing-rd-5",
@@ -94,7 +98,8 @@
       "after": null,
       "link": "https://bolt.new/pricing",
       "notes": "Source: bolt.new/pricing.",
-      "brightloop_comparison": "Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Bolt Pro's current price is on https://bolt.new/pricing."
+      "brightloop_comparison": "Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Bolt Pro's current price is on https://bolt.new/pricing.",
+      "week": "2026-W43"
     },
     {
       "id": "pricing-rd-6",
@@ -113,7 +118,8 @@
       "after": "$25/month",
       "link": "https://lovable.dev/pricing",
       "notes": "Source: lovable.dev/pricing.",
-      "brightloop_comparison": "Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Lovable Pro now shows $25/month."
+      "brightloop_comparison": "Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Lovable Pro now shows $25/month.",
+      "week": "2026-W43"
     },
     {
       "id": "pricing-rd-7",
@@ -132,7 +138,8 @@
       "after": "$30/month",
       "link": "https://replit.com/pricing",
       "notes": "Source: replit.com/pricing.",
-      "brightloop_comparison": "Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Replit Core now shows $30/month."
+      "brightloop_comparison": "Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Replit Core now shows $30/month.",
+      "week": "2026-W43"
     }
   ],
   "skipped": [],

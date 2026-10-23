@@ -18,7 +18,8 @@
       "after": "$30/month",
       "link": "https://bolt.new/pricing",
       "notes": "Source: bolt.new/pricing.",
-      "brightloop_comparison": "Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Bolt Pro now shows $30/month."
+      "brightloop_comparison": "Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Bolt Pro now shows $30/month.",
+      "week": "2026-W43"
     },
     {
       "id": "pricing-np-2",
@@ -37,7 +38,8 @@
       "after": null,
       "link": "https://replit.com/pricing",
       "notes": "Source: replit.com/pricing.",
-      "brightloop_comparison": "Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Replit Core shows $25/month."
+      "brightloop_comparison": "Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Replit Core shows $25/month.",
+      "week": "2026-W43"
     },
     {
       "id": "pricing-np-3",
@@ -56,7 +58,8 @@
       "after": null,
       "link": "https://lovable.dev/pricing",
       "notes": "Source: lovable.dev/pricing.",
-      "brightloop_comparison": "Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Lovable Business's current price is on https://lovable.dev/pricing."
+      "brightloop_comparison": "Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Lovable Business's current price is on https://lovable.dev/pricing.",
+      "week": "2026-W43"
     }
   ],
   "skipped": [],

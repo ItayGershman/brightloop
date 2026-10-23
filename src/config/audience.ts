@@ -8,6 +8,8 @@ export const AUDIENCE = {
   reportsTo: "leadership",
   /** The deadline a call to action points at. */
   deadline: "the 11:00 leadership meeting",
+  /** The time zone the audience's weeks are counted in, for a live run (a cases file names its own). */
+  timezone: "Asia/Jerusalem",
   /** What the watch covers, as said in a skip reason. */
   scope: "it tracks competitor pricing and packaging",
 } as const;

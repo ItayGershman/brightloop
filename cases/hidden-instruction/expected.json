@@ -18,7 +18,8 @@
       "after": "$25/month",
       "link": "https://lovable.dev/pricing",
       "notes": "Source: lovable.dev/pricing.",
-      "brightloop_comparison": "Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Lovable Pro now shows $25/month."
+      "brightloop_comparison": "Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Lovable Pro now shows $25/month.",
+      "week": "2026-W43"
     },
     {
       "id": "pricing-hi-4",
@@ -37,7 +38,8 @@
       "after": "$20/month",
       "link": "https://replit.com/pricing",
       "notes": "Source: replit.com/pricing.",
-      "brightloop_comparison": "Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Replit Core now shows $20/month."
+      "brightloop_comparison": "Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Replit Core now shows $20/month.",
+      "week": "2026-W43"
     }
   ],
   "skipped": [

@@ -1,0 +1,64 @@
+{
+  "built_for": "maya",
+  "items": [
+    {
+      "id": "pricing-ml-1",
+      "source_ids": [
+        "ml-1"
+      ],
+      "confidence": 0.9,
+      "confidence_label": "confirmed: seen on Lovable's own pricing page",
+      "action": "respond now",
+      "why": "Still cheaper than us on Lovable Pro? Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Lovable Pro now shows $25/month. Should we respond? Yes, respond now: Pro is Lovable's lowest paid tier, the one most of our trials compare against.",
+      "cta": "Open https://lovable.dev/pricing and check the Lovable price before the 11:00 leadership meeting.",
+      "competitor": "Lovable",
+      "page": "pricing",
+      "what_changed": "Pro plan shown at $25/month (was $20 last week).",
+      "before": "$20",
+      "after": "$25/month",
+      "link": "https://lovable.dev/pricing",
+      "notes": "Source: lovable.dev/pricing.",
+      "brightloop_comparison": "Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Lovable Pro now shows $25/month.",
+      "week": null
+    },
+    {
+      "id": "pricing-ml-2",
+      "source_ids": [
+        "ml-2"
+      ],
+      "confidence": 0.9,
+      "confidence_label": "confirmed: seen on Bolt's own pricing page",
+      "action": "respond now",
+      "why": "Still cheaper than us on Bolt Pro? Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Bolt Pro now shows $25/month. Should we respond? Yes, respond now: Pro is Bolt's lowest paid tier, the one most of our trials compare against.",
+      "cta": "Open https://bolt.new/pricing and check the Bolt price before the 11:00 leadership meeting.",
+      "competitor": "Bolt",
+      "page": "pricing",
+      "what_changed": "Pro plan shown at $25/month (was $20 last week).",
+      "before": "$20",
+      "after": "$25/month",
+      "link": "https://bolt.new/pricing",
+      "notes": "Source: bolt.new/pricing.",
+      "brightloop_comparison": "Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Bolt Pro now shows $25/month.",
+      "week": null
+    }
+  ],
+  "skipped": [
+    {
+      "id": "ml-3",
+      "reason": "signal has no type, so it was not judged"
+    }
+  ],
+  "run": {
+    "started_at": "2026-10-26T06:30:00.000Z",
+    "cost_usd": 0,
+    "errors": [
+      "input timezone is not a known time zone; weeks are counted in UTC",
+      "signal 1 has no id and was not read",
+      "signal 2 has no id and was not read",
+      "signal 3 has a time (ts) that cannot be read; it was judged without one",
+      "signal 4 has a time (ts) that cannot be read; it was judged without one",
+      "signal 5 has a time (ts) that cannot be read; it was judged without one",
+      "input brand.banned_words is not a list; no brand words were checked"
+    ]
+  }
+}

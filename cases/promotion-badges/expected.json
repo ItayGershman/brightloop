@@ -18,7 +18,8 @@
       "after": null,
       "link": "https://lovable.dev/pricing",
       "notes": "Source: lovable.dev/pricing. Promotion (\"limited time\" wording, discount wording): not a list-price change.",
-      "brightloop_comparison": "Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Lovable Pro shows $17.50/month as a promotional price; its list price is on https://lovable.dev/pricing."
+      "brightloop_comparison": "Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Lovable Pro shows $17.50/month as a promotional price; its list price is on https://lovable.dev/pricing.",
+      "week": "2026-W43"
     },
     {
       "id": "pricing-pb-2",
@@ -37,7 +38,8 @@
       "after": null,
       "link": "https://replit.com/pricing",
       "notes": "Source: https://replit.com/pricing?promo=fall. Promotion (a promo link): not a list-price change.",
-      "brightloop_comparison": "Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Replit Core shows $15/month as a promotional price; its list price is on https://replit.com/pricing."
+      "brightloop_comparison": "Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Replit Core shows $15/month as a promotional price; its list price is on https://replit.com/pricing.",
+      "week": "2026-W43"
     },
     {
       "id": "pricing-pb-3",
@@ -56,7 +58,8 @@
       "after": null,
       "link": "https://bolt.new/pricing",
       "notes": "Source: bolt.new/pricing. Promotion (an expiry date): not a list-price change.",
-      "brightloop_comparison": "Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Bolt Pro shows $15/month as a promotional price; its list price is on https://bolt.new/pricing."
+      "brightloop_comparison": "Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Bolt Pro shows $15/month as a promotional price; its list price is on https://bolt.new/pricing.",
+      "week": "2026-W43"
     },
     {
       "id": "pricing-pb-4",
@@ -75,7 +78,8 @@
       "after": null,
       "link": "https://lovable.dev/pricing",
       "notes": "Source: lovable.dev/pricing. Promotion (an introductory price): not a list-price change.",
-      "brightloop_comparison": "Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Lovable Pro shows $12.50/month as a promotional price; its list price is on https://lovable.dev/pricing."
+      "brightloop_comparison": "Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Lovable Pro shows $12.50/month as a promotional price; its list price is on https://lovable.dev/pricing.",
+      "week": "2026-W43"
     }
   ],
   "skipped": [
