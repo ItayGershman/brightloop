@@ -30,8 +30,27 @@ export function isPaidPrice(price: string): boolean {
   return PAID_PRICE.test(price);
 }
 
+/** A plan and the lines it spans: from its name line up to, not including, the next plan's. */
+export interface PlanSpan {
+  tier: Tier;
+  start: number;
+  end: number;
+}
+
 /** Every plan on the page, in page order, each name once. Empty if the page shows none. */
 export function pricingTiers(lines: string[]): Tier[] {
+  return planSpans(lines).map((span) => span.tier);
+}
+
+/** A plan's price in one phrase: "$18/month, billed annually (struck-out $20)". */
+export function shownPrice(tier: Tier): string {
+  const billing = tier.billing ? `, ${tier.billing}` : "";
+  const struck = tier.struck_price ? ` (struck-out ${tier.struck_price})` : "";
+  return `${tier.price}${tier.period ?? ""}${billing}${struck}`;
+}
+
+/** Every plan on the page with the lines it spans; the last plan runs to the end of the page. */
+export function planSpans(lines: string[]): PlanSpan[] {
   const starts: { name: string; at: number; price: Price }[] = [];
   lines.forEach((line, priceAt) => {
     if (!PRICE_LINE.test(line) && !CUSTOM_PRICE_LINE.test(line)) return;
@@ -47,7 +66,7 @@ export function pricingTiers(lines: string[]): Tier[] {
   return starts.map((start, index) => {
     const end = starts[index + 1]?.at ?? lines.length;
     const limits = lines.slice(start.at + 1, end).filter((line) => PLAN_LIMIT_LINE.test(line));
-    return { name: start.name, ...start.price, limits: [...new Set(limits)] };
+    return { tier: { name: start.name, ...start.price, limits: [...new Set(limits)] }, start: start.at, end };
   });
 }
 

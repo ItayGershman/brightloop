@@ -1,0 +1,12 @@
+{
+  "derived": "Derived test fixture, not a real capture: each page's later snapshot is an edited copy of the real snapshot it names, made only for the replay tests. The real snapshot history is under snapshots/.",
+  "what": "All 6 watched pages captured again a few days later, with no change at all.",
+  "pages": [
+    { "from": "snapshots/lovable/pricing/2026-10-23T08-24-20.861Z.json", "captured_at": "2026-10-26T05:30:00.000Z", "edits": [] },
+    { "from": "snapshots/lovable/homepage/2026-10-23T08-24-31.495Z.json", "captured_at": "2026-10-26T05:30:00.000Z", "edits": [] },
+    { "from": "snapshots/replit/pricing/2026-10-23T08-24-34.382Z.json", "captured_at": "2026-10-26T05:30:00.000Z", "edits": [] },
+    { "from": "snapshots/replit/homepage/2026-10-23T08-24-36.610Z.json", "captured_at": "2026-10-26T05:30:00.000Z", "edits": [] },
+    { "from": "snapshots/bolt/pricing/2026-10-23T08-24-47.555Z.json", "captured_at": "2026-10-26T05:30:00.000Z", "edits": [] },
+    { "from": "snapshots/bolt/homepage/2026-10-23T08-24-58.575Z.json", "captured_at": "2026-10-26T05:30:00.000Z", "edits": [] }
+  ]
+}

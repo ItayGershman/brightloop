@@ -16,7 +16,15 @@ Needs Node 18 or later. On first use the script installs the pinned dev dependen
 ./run --live --output result.json
 ```
 
-A manual run on a machine with Google Chrome installed. It opens the pricing page and homepage of every competitor in `src/config/competitors.ts`, keeps each page's visible text (text hidden on the page is dropped), stores one snapshot per page under `snapshots/<competitor>/<page>/<captured at>.json`, and runs the same judging and in-run checks as a cases file. A page with no earlier snapshot gives a baseline: one item per competitor with its plans, prices and limits, action "no action, baseline recorded"; homepages are recorded as skipped signals. Chrome opens a visible window, because some sites answer a headless browser with a bot check; `--headless` tries without one. `--snapshots <dir>` stores the snapshots elsewhere. Commit the new snapshots after a run. A blocked page, a bot-check page, or a pricing page with no readable plans ("page structure changed, check by hand") is reported in `run.errors` and not stored. Comparing a page with its earlier snapshot is not built yet: such a page is reported in `run.errors` too.
+A manual run on a machine with Google Chrome installed. It opens the pricing page and homepage of every competitor in `src/config/competitors.ts`, keeps each page's visible text (text hidden on the page is dropped), stores one snapshot per page under `snapshots/<competitor>/<page>/<captured at>.json`, and runs the same judging and in-run checks as a cases file. A page with no earlier snapshot gives a baseline: one item per competitor with its plans, prices and limits, action "no action, baseline recorded"; homepages are recorded as skipped signals. Chrome opens a visible window, because some sites answer a headless browser with a bot check; `--headless` tries without one. `--snapshots <dir>` stores the snapshots elsewhere. Commit the new snapshots after a run. A blocked page, a bot-check page, or a pricing page with no readable plans ("page structure changed, check by hand") is reported in `run.errors` and not stored. A page that has an earlier snapshot is compared with the latest one, line by line. Each changed line is classified as price, limit, free plan, plan name, promotion marker or copy only, and only the changed lines are judged: one pricing item per plan that changed, with `before` and `after` in the page's words and `notes` naming the snapshot it was compared with and the kinds of lines that changed. Homepage changes, and pricing-page lines that are copy only, are skipped signals ("homepage copy, no action"); a page with no change at all is skipped as "nothing moved". A pricing page whose changes cannot be placed on a plan is reported as "page structure changed, check by hand" in `run.errors`, its snapshot is not stored, and no number is reported for it.
+
+## Replay the stored snapshots
+
+```sh
+./run --replay --output result.json [--snapshots <dir>]
+```
+
+No browser, no network, no keys. For every watched page, the latest stored snapshot is compared with the one before it, exactly as a live run would; a page with one snapshot replays as its baseline. The tests replay pairs made of a real committed snapshot and an edited copy of it, described in `tests/fixtures/derived-snapshot-pairs/`; those copies are test fixtures, never written to `snapshots/`.
 
 ## Proof
 
@@ -30,10 +38,10 @@ Typechecks, runs the repo check for the brief's hidden markers, then the case su
 
 | Folder or file | What it owns |
 |---|---|
-| `src/cli.ts` | Parses the command line, reads the cases file or starts a live capture, writes `result.json`. Nothing else |
+| `src/cli.ts` | Parses the command line, reads the cases file, starts a live capture or a replay, writes `result.json`. Nothing else |
 | `src/run.ts` | One run: input in, rules, in-run checks, result out. Orchestration only |
-| `src/input/` | The two ways into a run. `parseCasesFile`: a cases file text into the run input (signals, banned words, secret-like config values, problems). `liveInput`: captured snapshots into the run input, one baseline signal per page seen for the first time |
-| `src/capture/` | The live capture: Chrome opens each watched page and keeps its visible text; snapshots are stored and read back from `snapshots/`. `capture/index.ts` (`captureLiveInput`) is the only import point |
+| `src/input/` | The two ways into a run. `parseCasesFile`: a cases file text into the run input (signals, banned words, secret-like config values, problems). `liveInput`: captured snapshots into the run input, one baseline signal per page seen for the first time, and the snapshot diff's signals (`snapshot-diff.ts`) for a page seen before |
+| `src/capture/` | The live capture: Chrome opens each watched page and keeps its visible text; snapshots are stored and read back from `snapshots/`. `capture/index.ts` (`captureLiveInput`, `replayInput`) is the only import point |
 | `src/judging/` | The rule engine (`runRules`), the rules (`RULES`), the source trust levels (`source-trust.ts`), reading a source as a URL (`source-url.ts`), the pricing item builder and the baseline rule; for a pricing item, its promotion markers (`promotion.ts`), the plan it is on (`plan.ts`), the action (`advice.ts`) and the Brightloop comparison (`comparison.ts`) |
 | `src/checks/` | The in-run checks; `checks/index.ts` is the only import point |
 | `src/config/` | The audience, the competitor registry and the known press outlets |

@@ -1,0 +1,23 @@
+{
+  "derived": "Derived test fixture, not a real capture: each page's later snapshot is an edited copy of the real snapshot it names, made only for the replay tests. The real snapshot history is under snapshots/.",
+  "what": "Lovable's Pro price drops from $25 to $20 and a 'Limited time: 20% off' badge appears on the Pro card at the same time.",
+  "pages": [
+    {
+      "from": "snapshots/lovable/pricing/2026-10-23T08-24-20.861Z.json",
+      "captured_at": "2026-10-26T05:30:00.000Z",
+      "edits": [
+        {
+          "line": "$25",
+          "becomes": "$20"
+        },
+        {
+          "after": "/ month",
+          "nth": 1,
+          "insert": [
+            "Limited time: 20% off"
+          ]
+        }
+      ]
+    }
+  ]
+}

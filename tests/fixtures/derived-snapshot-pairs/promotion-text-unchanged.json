@@ -1,0 +1,21 @@
+{
+  "derived": "Derived test fixture, not a real capture: each page's later snapshot is an edited copy of the real snapshot it names, made only for the replay tests. The real snapshot history is under snapshots/.",
+  "what": "One plain change on each pricing page, while the promotion wording already on those pages stays as it was: Lovable's student 'up to 50% off', Replit's 'Up to 10% off', Bolt's 'Free forever, no card required' and its '*' footnote.",
+  "pages": [
+    {
+      "from": "snapshots/lovable/pricing/2026-10-23T08-24-20.861Z.json",
+      "captured_at": "2026-10-26T05:30:00.000Z",
+      "edits": [{ "line": "$25", "becomes": "$20" }]
+    },
+    {
+      "from": "snapshots/replit/pricing/2026-10-23T08-24-34.382Z.json",
+      "captured_at": "2026-10-26T05:30:00.000Z",
+      "edits": [{ "line": "$20 $18 / month, billed annually", "becomes": "$22 $20 / month, billed annually" }]
+    },
+    {
+      "from": "snapshots/bolt/pricing/2026-10-23T08-24-47.555Z.json",
+      "captured_at": "2026-10-26T05:30:00.000Z",
+      "edits": [{ "line": "1M tokens/month to try Bolt", "becomes": "2M tokens/month to try Bolt" }]
+    }
+  ]
+}

@@ -166,3 +166,6 @@ export function planNamePattern(name: string): RegExp {
 
 /** "free plan", "free tier", "free mode" (Replit's name for its free plan). */
 export const FREE_PLAN = /\bfree (?:plan|tier|mode)\b/i;
+
+/** A dollar amount anywhere in a line: "$27", "Total of $216 $300 / year", "$20 towards more powerful models". */
+export const DOLLAR_AMOUNT = /\$\d/;

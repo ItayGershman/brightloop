@@ -1,6 +1,6 @@
 import { AUDIENCE } from "../config/audience.ts";
 import type { Competitor } from "../config/competitors.ts";
-import type { Item, Signal } from "../domain/types.ts";
+import type { Item, PageDiff, Signal } from "../domain/types.ts";
 import { quotable } from "../text/quotable.ts";
 import { listPriceChange, readChange } from "./change.ts";
 import { compareWithBrightloop } from "./comparison.ts";
@@ -16,8 +16,10 @@ export function pricingItem(signal: Signal, competitor: Competitor, trust: Repor
   const page: Page = { name: competitor.name, link: competitor.pricingPage, source: quotable(signal.source) ?? "" };
   const whatChanged = quotable(signal.text) ?? "";
   const change = readChange(whatChanged, page.source, competitor);
-  // A promotion, or a possible one, is never reported as a list-price change.
-  const { before, after } = listPriceChange(change);
+  // A promotion, or a possible one, is never reported as a list-price change. A snapshot
+  // diff states its values in the page's words, limits and plan names included.
+  const fromDiff = signal.diff && change.promotion.kind === "none" ? signal.diff : undefined;
+  const { before, after } = fromDiff ?? listPriceChange(change);
   const { comparison, stillCheaper } = compareWithBrightloop(change);
   const advice = trust.item.respond(page, change);
   const possible = change.promotion.kind === "possible" ? change.promotion : undefined;
@@ -38,9 +40,14 @@ export function pricingItem(signal: Signal, competitor: Competitor, trust: Repor
     before,
     after,
     link: page.link,
-    notes: [trust.item.notes(page), promotionNote(change.promotion)].filter(Boolean).join(" "),
+    notes: [trust.item.notes(page), diffNote(signal.diff), promotionNote(change.promotion)].filter(Boolean).join(" "),
     brightloop_comparison: comparison,
   };
+}
+
+/** What the notes say about a snapshot diff: what it was compared with, and how the changed lines were classified. */
+function diffNote(diff: PageDiff | undefined): string {
+  return diff ? `Compared with the snapshot of ${diff.since}. Changed lines: ${diff.kinds.join(", ")}.` : "";
 }
 
 /** What the notes say about promotion markers; empty when there are none. */

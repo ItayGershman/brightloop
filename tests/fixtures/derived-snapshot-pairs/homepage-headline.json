@@ -1,0 +1,11 @@
+{
+  "derived": "Derived test fixture, not a real capture: each page's later snapshot is an edited copy of the real snapshot it names, made only for the replay tests. The real snapshot history is under snapshots/.",
+  "what": "Bolt's homepage headline changes; nothing else does.",
+  "pages": [
+    {
+      "from": "snapshots/bolt/homepage/2026-10-23T08-24-58.575Z.json",
+      "captured_at": "2026-10-26T05:30:00.000Z",
+      "edits": [{ "line": "What will you build today?", "becomes": "What will you ship today?" }]
+    }
+  ]
+}
