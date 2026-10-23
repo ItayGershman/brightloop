@@ -1,4 +1,4 @@
-import isPlainObject from "lodash/isPlainObject.js";
+import _ from "lodash";
 
 // The shape every requirement table shares: a named rule per field, so adding a requirement
 // is adding a row.
@@ -17,7 +17,7 @@ export function brokenRules(record: Record<string, unknown>, rules: FieldRule[])
 }
 
 export function isRecord(value: unknown): value is Record<string, unknown> {
-  return isPlainObject(value);
+  return _.isPlainObject(value);
 }
 
 export function isNonEmptyString(value: unknown): value is string {

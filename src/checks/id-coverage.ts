@@ -1,5 +1,4 @@
-import countBy from "lodash/countBy.js";
-import difference from "lodash/difference.js";
+import _ from "lodash";
 import { isRecord } from "./rules.ts";
 
 /**
@@ -11,7 +10,7 @@ export function idCoverage(items: unknown[], skipped: unknown[], inputIds: strin
     ...items.flatMap((item) => (isRecord(item) && Array.isArray(item.source_ids) ? item.source_ids : [])),
     ...skipped.map((entry) => (isRecord(entry) ? entry.id : undefined)),
   ].filter((id): id is string => typeof id === "string");
-  const counts = countBy(landed);
+  const counts = _.countBy(landed);
 
   const problems = inputIds.flatMap((id, index) => {
     const count = Object.hasOwn(counts, id) ? counts[id] : 0;
@@ -19,7 +18,7 @@ export function idCoverage(items: unknown[], skipped: unknown[], inputIds: strin
     if (count > 1) return [`input signal ${index + 1} lands ${count} times instead of once`];
     return [];
   });
-  const unknown = difference(Object.keys(counts), inputIds).length;
+  const unknown = _.difference(Object.keys(counts), inputIds).length;
   if (unknown > 0) problems.push(`${unknown} id(s) in the output are not in the input`);
   return problems;
 }
