@@ -3,7 +3,7 @@ import { AUDIENCE } from "./config/audience.ts";
 import type { Item, Result, RunInput, SkippedSignal } from "./domain/types.ts";
 import { RULES } from "./judging/rules.ts";
 import { runRules, type Rule } from "./judging/run-rules.ts";
-import { isoWeek } from "./text/zoned-time.ts";
+import { itemWeeks } from "./judging/week.ts";
 
 /**
  * One run: judges every signal in the input, puts each input id in exactly one place,
@@ -15,7 +15,7 @@ export function run(input: RunInput, options: { startedAt?: Date; rules?: Rule[]
   const skipped: SkippedSignal[] = [];
   const inputIds = input.signals.map((signal) => signal.id);
   const context = { inputIds, bannedWords: input.bannedWords, secrets: input.secrets };
-  const moments = new Map(input.signals.map((signal) => [signal.id, signal.utc]));
+  const weekOf = itemWeeks(input);
 
   let judgedItems = 0;
   for (const judgement of runRules(input.signals, options.rules ?? RULES)) {
@@ -25,8 +25,7 @@ export function run(input: RunInput, options: { startedAt?: Date; rules?: Rule[]
     }
     // An item that fails a check never reaches the audience: its signals are skipped with the reason.
     judgedItems += 1;
-    const moment = judgement.item.source_ids.map((id) => moments.get(id)).find((utc) => utc !== undefined);
-    judgement.item.week = moment ? isoWeek(moment, input.timezone) : null;
+    judgement.item.week = weekOf(judgement.item);
     const problems = checkItem(judgement.item, context);
     if (problems.length > 0) {
       errors.push(`item ${judgedItems} held back: ${problems.join("; ")}`);

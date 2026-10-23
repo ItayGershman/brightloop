@@ -29,8 +29,8 @@ describe("AC1: the sg-301 / sg-302 pair is one event, and each id lands exactly 
   test("both are skipped together as launches, each naming the other", () => {
     const pair = result.skipped.filter((entry) => entry.id === "sg-301" || entry.id === "sg-302");
     assert.deepEqual(pair.map((entry) => entry.id).sort(), ["sg-301", "sg-302"]);
-    assert.match(pair.find((entry) => entry.id === "sg-301")!.reason, /^launch signal, outside .*; same event at the same moment as sg-302$/);
-    assert.match(pair.find((entry) => entry.id === "sg-302")!.reason, /^launch signal, outside .*; same event at the same moment as sg-301$/);
+    assert.match(pair.find((entry) => entry.id === "sg-301")!.reason, /^launch signal, outside .*; same story at the same moment as sg-302$/);
+    assert.match(pair.find((entry) => entry.id === "sg-302")!.reason, /^launch signal, outside .*; same story at the same moment as sg-301$/);
   });
 
   test("every id of the brief's example still lands exactly once", () => {
@@ -114,7 +114,7 @@ describe("AC1: the sg-301 / sg-302 pair is one event, and each id lands exactly 
   test("two launches with no competitor are never merged", () => {
     const launch = (id: string, source: string, text: string) => ({ id, type: "launch", source, ts: "2026-10-23T08:00:00Z", text });
     const result = runCases({ ...JERUSALEM, signals: [launch("la-1", "x.example", "Tool A ships"), launch("la-2", "y.example", "Tool B ships")] });
-    assert.ok(result.skipped.every((entry) => !entry.reason.includes("same event")));
+    assert.ok(result.skipped.every((entry) => !entry.reason.includes("same story")));
   });
 
   test("5,000 signals at one moment are grouped in under 3 seconds", () => {
@@ -124,7 +124,30 @@ describe("AC1: the sg-301 / sg-302 pair is one event, and each id lands exactly 
     const started = performance.now();
     const result = runCases({ ...JERUSALEM, signals });
     assert.ok(performance.now() - started < 3000, "the duplicate rule is not quadratic");
-    assert.equal(result.items.length, 100, "50 sources, 100 signals each: 100 groups of 50");
+    assert.deepEqual(result.items.map((item) => item.source_ids.length), [5000], "one change, so one item with every id");
+  });
+
+  test("the same pricing change from the same source at the same moment is one item", () => {
+    const signals = [
+      pricingSignal({ id: "pr-1", ts: "2026-10-23T08:00:00Z" }),
+      pricingSignal({ id: "pr-2", ts: "2026-10-23T11:00:00+03:00" }),
+    ];
+    assert.deepEqual(runCases({ ...JERUSALEM, signals }).items.map((item) => item.source_ids), [["pr-1", "pr-2"]]);
+  });
+
+  test("a claim stating only the new price merges with the official change to that price", () => {
+    const signals = [
+      pricingSignal({ id: "pr-1", source: "press.example", text: "Lovable Pro is now $25/month." }),
+      pricingSignal({ id: "pr-2" }),
+    ];
+    const result = runCases({ ...JERUSALEM, signals });
+    assert.deepEqual(result.items.map((item) => [item.source_ids, item.confidence]), [[["pr-1", "pr-2"], 0.9]]);
+  });
+
+  test("two launches from the same source at the same moment stay apart", () => {
+    const launch = (id: string, text: string) => ({ id, type: "launch", competitor: "Bolt", source: "x.com/@bolt", ts: "2026-10-23T08:00:00Z", text });
+    const result = runCases({ ...JERUSALEM, signals: [launch("la-1", "Agent mode ships"), launch("la-2", "Mobile app ships")] });
+    assert.ok(result.skipped.every((entry) => !entry.reason.includes("same story")));
   });
 
   const notDuplicates: [string, Record<string, unknown>][] = [
@@ -236,10 +259,11 @@ describe("AC4: malformed input yields a valid wrapper with the problem in run.er
 });
 
 describe("AC5: each rule has its own case in the case suite", () => {
-  // The case suite (cases.test.ts) runs every directory; these pin what each one shows.
-  const expected = (name: string): Result => JSON.parse(readFileSync(`cases/${name}/expected.json`, "utf8"));
+  // cases.test.ts checks each case's output against its expected.json; these run each case's
+  // input and check that the output shows the rule the case is for.
+  const runCase = (name: string): Result => runCases(readFileSync(`cases/${name}/input.json`, "utf8"));
   const cases: [string, (result: Result) => boolean][] = [
-    ["duplicates", (r) => r.items.some((item) => item.source_ids.length > 1) && r.skipped.some((s) => s.reason.includes("same event"))],
+    ["duplicates", (r) => r.items.some((item) => item.source_ids.length > 1) && r.skipped.some((s) => s.reason.includes("same story"))],
     ["week-boundary", (r) => r.items.some((item) => item.week === "2026-W43") && r.items.some((item) => item.week === "2026-W44")],
     ["empty-input", (r) => r.items.length === 0 && r.run.errors.length === 0],
     ["empty-file", (r) => r.items.length === 0 && r.run.errors.includes("input is empty")],
@@ -247,9 +271,9 @@ describe("AC5: each rule has its own case in the case suite", () => {
     ["malformed-json", (r) => r.items.length === 0 && r.run.errors.includes("input is not valid JSON")],
   ];
   for (const [name, shows] of cases) {
-    test(`cases/${name} exists and shows its rule`, () => {
-      assert.ok(existsSync(`cases/${name}/input.json`));
-      assert.ok(shows(expected(name)));
+    test(`cases/${name} shows its rule`, () => {
+      assert.ok(existsSync(`cases/${name}/expected.json`), "the case has an expected result");
+      assert.ok(shows(runCase(name)));
     });
   }
 });

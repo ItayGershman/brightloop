@@ -45,11 +45,11 @@
   "skipped": [
     {
       "id": "sg-301",
-      "reason": "launch signal, outside the watch's scope: it tracks competitor pricing and packaging, not product launches; same event at the same moment as sg-302"
+      "reason": "launch signal, outside the watch's scope: it tracks competitor pricing and packaging, not product launches; same story at the same moment as sg-302"
     },
     {
       "id": "sg-302",
-      "reason": "launch signal, outside the watch's scope: it tracks competitor pricing and packaging, not product launches; same event at the same moment as sg-301"
+      "reason": "launch signal, outside the watch's scope: it tracks competitor pricing and packaging, not product launches; same story at the same moment as sg-301"
     },
     {
       "id": "ad-117",

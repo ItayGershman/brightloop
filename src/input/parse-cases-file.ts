@@ -20,7 +20,7 @@ export function parseCasesFile(text: string): RunInput {
 
   const errors: string[] = [];
   const secrets = secretValues(parsed.config);
-  const timezone = timeZone(parsed.timezone, errors);
+  const timezone = readTimeZone(parsed.timezone, errors);
   const signals: Signal[] = [];
   const seen = new Set<string>();
   if (!Array.isArray(parsed.signals)) {
@@ -57,7 +57,7 @@ export function parseCasesFile(text: string): RunInput {
 }
 
 /** The input's time zone; UTC when it names none (missing or null), and when it names one Intl does not know. */
-function timeZone(value: unknown, errors: string[]): string {
+function readTimeZone(value: unknown, errors: string[]): string {
   if (value === undefined || value === null) return "UTC";
   if (typeof value === "string" && isTimeZone(value)) return value;
   errors.push("input timezone is not a known time zone; weeks are counted in UTC");
