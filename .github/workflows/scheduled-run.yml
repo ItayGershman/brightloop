@@ -8,6 +8,9 @@ name: scheduled-run
 # Sheet; without them it writes the CSV only. They are given to that one step, nothing else.
 # With the Slack secret set, the live step also posts the run's one line to #leadership;
 # without it the line is only stored with the result.
+# With the Base44 secret and variable set, the publish step uploads the live page (this run's
+# items, skipped signals, run history and Slack line) to the Base44 app as a static site;
+# without them it only writes runs/result.html. The secret is given to that one step.
 
 on:
   schedule:
@@ -86,8 +89,23 @@ jobs:
           DETAILS_URL: ${{ vars.DETAILS_URL }}
         # The last run's committed result goes first, so a crash cannot pass it off as this run's.
         run: |
-          rm -f runs/result.json runs/result.csv
+          rm -f runs/result.json runs/result.csv runs/result.html
           xvfb-run --auto-servernum ./run --live --output runs/result.json $HEADLESS
+      # The page goes public, so the outputs are checked first; the page is published only if they pass.
+      - id: precheck
+        name: No forbidden marker in the snapshots or the result before the page goes up
+        if: ${{ !cancelled() }}
+        run: npm run repo-check
+      # Before the run log, so a failed publish is in result.json's errors and in this run's log line.
+      - id: page
+        name: Publish the live page
+        if: ${{ !cancelled() && steps.precheck.outcome == 'success' }}
+        continue-on-error: true
+        env:
+          STARTED_AT: ${{ steps.start.outputs.at }}
+          BASE44_API_KEY: ${{ secrets.BASE44_API_KEY }}
+          BASE44_APP_ID: ${{ vars.BASE44_APP_ID }}
+        run: npx tsx scripts/publish-page.ts "$STARTED_AT" runs/result.json snapshots runs/run-log.jsonl runs/result.html
       - id: log
         name: Append to the run log
         if: ${{ !cancelled() }}
@@ -97,7 +115,7 @@ jobs:
       # A forbidden marker in a page fails the job and nothing is committed, the run log line included.
       - name: No forbidden marker in anything about to be committed
         run: npm run repo-check
-      - name: Commit the snapshots, the result, its CSV and the run log
+      - name: Commit the snapshots, the result, its CSV, the page and the run log
         env:
           MESSAGE: "${{ github.event_name }} run at ${{ steps.start.outputs.at }}: ${{ steps.log.outputs.summary }}"
         run: |

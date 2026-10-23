@@ -3,3 +3,6 @@ node_modules/
 .env
 .env.*
 /result.json
+
+# The one file of local keys that may be committed: names only, never values.
+!.env.example
