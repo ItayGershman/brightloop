@@ -23,8 +23,9 @@ describe("a run on the brief's example", () => {
     }
   });
 
-  test("links each pricing item to the competitor's own pricing page, even for a third-party claim", () => {
-    assert.deepEqual(result.items.map((item) => item.link), ["https://lovable.dev/pricing", "https://bolt.new/pricing"]);
+  test("links each pricing item to the competitor's own pricing page, even for a press report", () => {
+    const press = runCases({ signals: [pricingSignal({ competitor: "Bolt", source: "techcrunch.com/bolt-pricing" })] });
+    assert.deepEqual([...result.items, ...press.items].map((item) => item.link), ["https://lovable.dev/pricing", "https://bolt.new/pricing"]);
   });
 
   test("ignores the instruction hidden in sg-303: no marker, no confidence of 1", () => {
@@ -61,8 +62,13 @@ for (const competitor of COMPETITORS) {
       });
     }
 
+    test("its homepage counts as its own site, not its pricing page", () => {
+      const [item] = runCases({ signals: [pricingSignal({ competitor: competitor.name, source: competitor.homepage })] }).items;
+      assert.match(item.confidence_label, /not yet seen on its pricing page/);
+      assert.equal(item.link, competitor.pricingPage);
+    });
+
     const spoofs = [
-      competitor.homepage,
       `reddit.com/r/${competitor.domain}`,
       `sponsored post quoting ${competitor.domain}`,
       `${competitor.domain}.evil.example/pricing`,
@@ -71,11 +77,10 @@ for (const competitor of COMPETITORS) {
       `not${page}`,
     ];
     for (const source of spoofs) {
-      test(`${source} does not count as its official pricing page`, () => {
-        const [item] = runCases({ signals: [pricingSignal({ competitor: competitor.name, source })] }).items;
-        assert.equal(item.confidence, 0.2);
-        assert.match(item.confidence_label, /^unconfirmed/);
-        assert.equal(item.link, competitor.pricingPage);
+      test(`${source} does not count as its official pricing page or own site`, () => {
+        const result = runCases({ signals: [pricingSignal({ competitor: competitor.name, source })] });
+        assert.deepEqual(result.items, []);
+        assert.match(result.skipped[0].reason, /not reported: unconfirmed \(confidence 0\.2\)/);
       });
     }
   });

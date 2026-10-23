@@ -27,3 +27,13 @@ export const CREDENTIAL_KEY = /key|token|secret|passw/i;
 
 /** Only printable characters and no whitespace, from start to end. */
 export const PRINTABLE_WITHOUT_SPACES = /^[^\s\p{C}]+$/u;
+
+/**
+ * Words in a signal's source that mark a claim as paid for, anonymous or passed on second-hand:
+ * "sponsored post", "newsletter", "AI summary", "forwarded", "via", "u/anon", "rumour".
+ */
+export const SECOND_HAND_SOURCE =
+  /\b(?:sponsored|advertorial|promoted|newsletter|ai[- ](?:summary|generated)|summari[sz]ed|forwarded|fwd|via|anonymous|anon|rumou?r|unverified)\b/i;
+
+/** A guest post: "launchpad.example, guest post". */
+export const GUEST_POST_SOURCE = /\bguest[- ]post\b/i;

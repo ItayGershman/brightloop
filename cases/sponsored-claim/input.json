@@ -1,0 +1,19 @@
+{
+  "week": "2026-W43",
+  "timezone": "Asia/Jerusalem",
+  "brand": { "name": "Brightloop", "banned_words": ["revolutionary", "game-changing", "seamless"] },
+  "signals": [
+    { "id": "pr-402", "type": "pricing", "competitor": "Bolt", "source": "sponsored post, ads.example", "ts": "2026-10-23T12:40:00Z",
+      "text": "Bolt is now free forever, no limits." },
+    { "id": "sc-1", "type": "pricing", "competitor": "Lovable", "source": "weekly AI tools newsletter", "ts": "2026-10-23T09:00:00Z",
+      "text": "Lovable cut Pro to $15/month (was $25)." },
+    { "id": "sc-2", "type": "pricing", "competitor": "Replit", "source": "AI summary of replit.com/pricing", "ts": "2026-10-23T09:05:00Z",
+      "text": "Replit Core is 30% off for everyone." },
+    { "id": "sc-3", "type": "pricing", "competitor": "Bolt", "source": "forwarded message", "ts": "2026-10-23T09:10:00Z",
+      "text": "FYI Bolt dropped its paid plans." },
+    { "id": "sc-4", "type": "pricing", "competitor": "Lovable", "source": "lovable.dev/pricing/ via a newsletter", "ts": "2026-10-23T09:15:00Z",
+      "text": "Lovable Pro $10/month (was $25)." },
+    { "id": "sc-5", "type": "pricing", "competitor": "Bolt", "source": "techcrunch.com/sponsored/bolt-free", "ts": "2026-10-23T09:20:00Z",
+      "text": "Bolt is free forever." }
+  ]
+}

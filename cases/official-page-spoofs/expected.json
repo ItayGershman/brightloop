@@ -2,82 +2,6 @@
   "built_for": "maya",
   "items": [
     {
-      "id": "pricing-sp-1",
-      "source_ids": [
-        "sp-1"
-      ],
-      "confidence": 0.2,
-      "confidence_label": "unconfirmed: not seen on Bolt's own pricing page yet",
-      "action": "no action",
-      "why": "Can't compare yet: Brightloop's own-pricing tab is not connected. Bolt now shows $15/month. Should we respond? No: the claim comes from a third party and Bolt's own page does not confirm it yet.",
-      "cta": "Check https://bolt.new/pricing before repeating this claim to leadership.",
-      "competitor": "Bolt",
-      "page": "pricing",
-      "what_changed": "Bolt Pro now $15/month (was $20).",
-      "before": "$20",
-      "after": "$15/month",
-      "link": "https://bolt.new/pricing",
-      "notes": "Source is not Bolt's own page: reddit.com/r/bolt.new.",
-      "brightloop_comparison": "Can't compare yet: Brightloop's own-pricing tab is not connected. Bolt now shows $15/month."
-    },
-    {
-      "id": "pricing-sp-2",
-      "source_ids": [
-        "sp-2"
-      ],
-      "confidence": 0.2,
-      "confidence_label": "unconfirmed: not seen on Lovable's own pricing page yet",
-      "action": "no action",
-      "why": "Can't compare yet: Brightloop's own-pricing tab is not connected. Lovable now shows $10/month. Should we respond? No: the claim comes from a third party and Lovable's own page does not confirm it yet.",
-      "cta": "Check https://lovable.dev/pricing before repeating this claim to leadership.",
-      "competitor": "Lovable",
-      "page": "pricing",
-      "what_changed": "Lovable Pro is $10/month (was $25).",
-      "before": "$25",
-      "after": "$10/month",
-      "link": "https://lovable.dev/pricing",
-      "notes": "Source is not Lovable's own page: sponsored post quoting lovable.dev.",
-      "brightloop_comparison": "Can't compare yet: Brightloop's own-pricing tab is not connected. Lovable now shows $10/month."
-    },
-    {
-      "id": "pricing-sp-3",
-      "source_ids": [
-        "sp-3"
-      ],
-      "confidence": 0.2,
-      "confidence_label": "unconfirmed: not seen on Lovable's own pricing page yet",
-      "action": "no action",
-      "why": "Can't compare yet: Brightloop's own-pricing tab is not connected. Lovable now shows $12/month. Should we respond? No: the claim comes from a third party and Lovable's own page does not confirm it yet.",
-      "cta": "Check https://lovable.dev/pricing before repeating this claim to leadership.",
-      "competitor": "Lovable",
-      "page": "pricing",
-      "what_changed": "Lovable Pro $12/month (was $25).",
-      "before": "$25",
-      "after": "$12/month",
-      "link": "https://lovable.dev/pricing",
-      "notes": "Source is not Lovable's own page: lovable.dev.pricing-news.example/pricing.",
-      "brightloop_comparison": "Can't compare yet: Brightloop's own-pricing tab is not connected. Lovable now shows $12/month."
-    },
-    {
-      "id": "pricing-sp-4",
-      "source_ids": [
-        "sp-4"
-      ],
-      "confidence": 0.2,
-      "confidence_label": "unconfirmed: not seen on Replit's own pricing page yet",
-      "action": "no action",
-      "why": "Can't compare yet: Brightloop's own-pricing tab is not connected. Replit now shows $5/month. Should we respond? No: the claim comes from a third party and Replit's own page does not confirm it yet.",
-      "cta": "Check https://replit.com/pricing before repeating this claim to leadership.",
-      "competitor": "Replit",
-      "page": "pricing",
-      "what_changed": "Replit Core $5/month (was $25).",
-      "before": "$25",
-      "after": "$5/month",
-      "link": "https://replit.com/pricing",
-      "notes": "Source is not Replit's own page: https://replit.com@deals.example/pricing.",
-      "brightloop_comparison": "Can't compare yet: Brightloop's own-pricing tab is not connected. Replit now shows $5/month."
-    },
-    {
       "id": "pricing-sp-5",
       "source_ids": [
         "sp-5"
@@ -97,7 +21,24 @@
       "brightloop_comparison": "Can't compare yet: Brightloop's own-pricing tab is not connected. Replit now shows $25/month."
     }
   ],
-  "skipped": [],
+  "skipped": [
+    {
+      "id": "sp-1",
+      "reason": "pricing claim from a source the watch does not know, not reported: unconfirmed (confidence 0.2) and not seen on Bolt's own pricing page. Check https://bolt.new/pricing before repeating it to leadership."
+    },
+    {
+      "id": "sp-2",
+      "reason": "pricing claim from a sponsored, anonymous or second-hand source, not reported: unconfirmed (confidence 0.2) and not seen on Lovable's own pricing page. Check https://lovable.dev/pricing before repeating it to leadership."
+    },
+    {
+      "id": "sp-3",
+      "reason": "pricing claim from a source the watch does not know, not reported: unconfirmed (confidence 0.2) and not seen on Lovable's own pricing page. Check https://lovable.dev/pricing before repeating it to leadership."
+    },
+    {
+      "id": "sp-4",
+      "reason": "pricing claim from a source the watch does not know, not reported: unconfirmed (confidence 0.2) and not seen on Replit's own pricing page. Check https://replit.com/pricing before repeating it to leadership."
+    }
+  ],
   "run": {
     "started_at": "2026-10-26T06:30:00.000Z",
     "cost_usd": 0,
