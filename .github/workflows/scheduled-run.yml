@@ -55,7 +55,11 @@ jobs:
     permissions:
       contents: write
     steps:
+      # The branch by name, not the commit that triggered the run: a run that waited in the
+      # concurrency group must start from what the run before it committed.
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
       - uses: actions/setup-node@v4
         with:
           node-version: 20

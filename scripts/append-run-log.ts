@@ -12,3 +12,5 @@ if (!resultPath || !snapshotsDir || !logPath || Number.isNaN(start.getTime())) {
 const entry = runLogEntry({ startedAt: start, resultPath, snapshotsDir });
 appendRunLog(logPath, entry);
 console.log(`Run log: ${entry.pages_fetched} of ${entry.pages_watched} pages fetched, ${entry.errors.length} errors.`);
+// The errors are the run's own sentences, never page text, so the job log can show them.
+for (const error of entry.errors) console.log(`  ${error}`);
