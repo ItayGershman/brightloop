@@ -1,5 +1,6 @@
 import { chromium, errors as playwrightErrors, type Browser, type Page } from "playwright-core";
-import type { Snapshot, WatchedPage } from "../domain/types.ts";
+import { PAGE_NAMES, type Snapshot, type WatchedPage } from "../domain/types.ts";
+import { BOT_CHECK_LINE } from "../text/patterns.ts";
 import { visibleLines } from "./visible-lines.ts";
 
 // The network adapter: a real Chrome opens each watched page and keeps its visible text.
@@ -18,8 +19,9 @@ export interface Captured {
 }
 
 /**
- * One snapshot per page that answered. A page that is blocked, errors or times out gets an
- * error line instead, never a snapshot of the block page. Never throws.
+ * One snapshot per page that answered. A page that is blocked (by its status, or by a bot
+ * check that answers 200), errors or times out gets an error line instead, never a snapshot
+ * of the block page. Never throws.
  */
 export async function capturePages(pages: WatchedPage[], options: { headless: boolean }): Promise<Captured> {
   let browser: Browser;
@@ -33,7 +35,7 @@ export async function capturePages(pages: WatchedPage[], options: { headless: bo
   try {
     const context = await browser.newContext();
     for (const watched of pages) {
-      const name = `${watched.competitor} ${watched.page === "pricing" ? "pricing page" : "homepage"}`;
+      const name = `${watched.competitor} ${PAGE_NAMES[watched.page]}`;
       let tab: Page | undefined;
       try {
         tab = await context.newPage();
@@ -45,6 +47,10 @@ export async function capturePages(pages: WatchedPage[], options: { headless: bo
         }
         await tab.waitForLoadState("networkidle", { timeout: SETTLE_TIMEOUT_MS }).catch(() => undefined);
         const lines = await tab.evaluate(visibleLines);
+        if (lines.some((line) => BOT_CHECK_LINE.test(line))) {
+          captured.errors.push(`${name}: the site answered with a bot check, so it was not captured`);
+          continue;
+        }
         captured.snapshots.push({ ...watched, captured_at: new Date().toISOString(), lines });
       } catch (error) {
         captured.errors.push(

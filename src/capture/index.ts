@@ -1,8 +1,11 @@
 import { watchedPages } from "../config/competitors.ts";
 import type { RunInput, Snapshot, WatchedPage } from "../domain/types.ts";
 import { liveInput } from "../input/live-input.ts";
+import { pricingTiers } from "../text/pricing-tiers.ts";
 import { capturePages } from "./capture-pages.ts";
 import { latestSnapshot, writeSnapshot } from "./snapshot-store.ts";
+
+export { storedSnapshots } from "./snapshot-store.ts";
 
 // A live capture: every watched page is opened, its snapshot stored, and the run input built
 // from the new snapshots and the latest earlier ones. This file is the only import point;
@@ -30,7 +33,15 @@ export async function captureLiveInput(options: CaptureOptions): Promise<RunInpu
     }
   }
 
-  const { snapshots, errors } = await capturePages(pages, { headless: options.headless });
+  const captured = await capturePages(pages, { headless: options.headless });
+  const errors = [...captured.errors];
+  // A pricing page with no plans the run can read has probably been redesigned. Its snapshot
+  // is not stored, so the next run tries again instead of comparing against a page it cannot read.
+  const snapshots = captured.snapshots.filter((snapshot) => {
+    if (snapshot.page !== "pricing" || pricingTiers(snapshot.lines).length > 0) return true;
+    errors.push(`${snapshot.url}: page structure changed, check by hand; no plans could be read, so the snapshot was not stored`);
+    return false;
+  });
   for (const snapshot of snapshots) {
     try {
       writeSnapshot(options.snapshotsDir, snapshot);

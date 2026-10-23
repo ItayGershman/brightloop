@@ -3,6 +3,7 @@ import {
   BILLING_TEXT,
   CUSTOM_PRICE_LINE,
   FOOTNOTE_MARK_LINE,
+  PAID_PRICE,
   PLAN_LIMIT_LINE,
   PLAN_NAME_LINE,
   PRICE_LINE,
@@ -23,6 +24,11 @@ const MAX_LINES_TO_NAME = 2;
 const MAX_LINES_TO_BILLING = 3;
 
 type Price = Omit<Tier, "name" | "limits">;
+
+/** True for a price above zero, as a plan's `price` holds it. */
+export function isPaidPrice(price: string): boolean {
+  return PAID_PRICE.test(price);
+}
 
 /** Every plan on the page, in page order, each name once. Empty if the page shows none. */
 export function pricingTiers(lines: string[]): Tier[] {

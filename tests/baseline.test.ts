@@ -1,8 +1,7 @@
 import assert from "node:assert/strict";
-import { readdirSync, readFileSync } from "node:fs";
-import { join } from "node:path";
 import { describe, test } from "node:test";
-import { COMPETITORS, watchedPages } from "../src/config/competitors.ts";
+import { storedSnapshots } from "../src/capture/index.ts";
+import { COMPETITORS, competitorSlug, watchedPages } from "../src/config/competitors.ts";
 import type { Snapshot } from "../src/domain/types.ts";
 import { liveInput } from "../src/input/live-input.ts";
 import { run } from "../src/run.ts";
@@ -12,11 +11,7 @@ import { landedIds, STARTED_AT } from "./helpers.ts";
 // browser, no network. Each watched page's earliest snapshot is the one a baseline came from.
 
 function firstSnapshots(): Snapshot[] {
-  return watchedPages().map((page) => {
-    const dir = join("snapshots", page.competitor.toLowerCase(), page.page);
-    const [first] = readdirSync(dir).filter((name) => name.endsWith(".json")).sort();
-    return JSON.parse(readFileSync(join(dir, first), "utf8")) as Snapshot;
-  });
+  return watchedPages().flatMap((page) => storedSnapshots("snapshots", page).slice(0, 1));
 }
 
 describe("a live run with no earlier snapshot, from the committed snapshots", () => {
@@ -30,7 +25,7 @@ describe("a live run with no earlier snapshot, from the committed snapshots", ()
 
   test("passes the in-run checks, and every page lands exactly once", () => {
     assert.deepEqual(result.run.errors, []);
-    assert.deepEqual(landedIds(result), snapshots.map((s) => `baseline-${s.competitor.toLowerCase()}-${s.page}`).sort());
+    assert.deepEqual(landedIds(result), snapshots.map((s) => `baseline-${competitorSlug(s.competitor)}-${s.page}`).sort());
   });
 
   test("records each homepage as a skipped signal: copy, no action", () => {

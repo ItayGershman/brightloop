@@ -38,6 +38,11 @@ export const COMPETITORS: Competitor[] = [
   },
 ];
 
+/** The competitor's name as used in ids and snapshot folders: "lovable". */
+export function competitorSlug(name: string): string {
+  return name.toLowerCase();
+}
+
 /** The registered competitor a signal names, by name or alias. */
 export function findCompetitor(name: string | undefined): Competitor | undefined {
   if (!name) return undefined;

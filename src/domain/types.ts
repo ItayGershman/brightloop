@@ -23,8 +23,14 @@ export interface RunInput {
   errors: string[];
 }
 
+/** Signal type of a page a live run sees for the first time; the baseline rule judges it. */
+export const BASELINE = "baseline";
+
 /** Which of a competitor's pages a snapshot is of. */
 export type PageKind = "pricing" | "homepage";
+
+/** How each page kind is named in a message. */
+export const PAGE_NAMES: Record<PageKind, string> = { pricing: "pricing page", homepage: "homepage" };
 
 /** A competitor page the live run captures, from the competitor registry. */
 export interface WatchedPage {

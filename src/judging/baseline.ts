@@ -1,8 +1,7 @@
 import { AUDIENCE } from "../config/audience.ts";
-import { findCompetitor, type Competitor } from "../config/competitors.ts";
-import type { Item, Signal, Tier } from "../domain/types.ts";
-import { BASELINE } from "../input/live-input.ts";
-import { pricingTiers } from "../text/pricing-tiers.ts";
+import { competitorSlug, findCompetitor, type Competitor } from "../config/competitors.ts";
+import { BASELINE, type Item, type Signal, type Tier } from "../domain/types.ts";
+import { isPaidPrice, pricingTiers } from "../text/pricing-tiers.ts";
 import { quotable } from "../text/quotable.ts";
 import { eachSignal, skip, type Rule } from "./run-rules.ts";
 
@@ -32,11 +31,11 @@ function baselineItem(signal: Signal, competitor: Competitor, tiers: Tier[]): It
   const name = competitor.name;
   const link = competitor.pricingPage;
   const capturedOn = (quotable(signal.ts) ?? "").slice(0, 10) || "this run";
-  const lowestPaid = tiers.find((tier) => !tier.price.startsWith("$0") && tier.price.startsWith("$")) ?? tiers[0];
+  const lowestPaid = tiers.find((tier) => isPaidPrice(tier.price)) ?? tiers[0];
   const comparison = `Can't compare yet: Brightloop's own-pricing tab is not connected. ${name}'s lowest paid plan, ${lowestPaid.name}, shows ${shownPrice(lowestPaid)}.`;
 
   return {
-    id: `baseline-${name.toLowerCase()}`,
+    id: `${BASELINE}-${competitorSlug(name)}`,
     source_ids: [signal.id],
     confidence: CONFIDENCE,
     confidence_label: `confirmed: read from ${name}'s own pricing page on ${capturedOn}`,

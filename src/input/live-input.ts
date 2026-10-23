@@ -1,4 +1,5 @@
-import type { RunInput, Signal, Snapshot } from "../domain/types.ts";
+import { competitorSlug } from "../config/competitors.ts";
+import { BASELINE, type RunInput, type Signal, type Snapshot } from "../domain/types.ts";
 
 // The second way into a run, beside the cases file: freshly captured snapshots, each with
 // the latest earlier snapshot of the same page if there is one. It yields the same run input,
@@ -8,9 +9,6 @@ export interface CapturedPage {
   current: Snapshot;
   earlier?: Snapshot;
 }
-
-/** Signal type of a page seen for the first time; the baseline rule judges it. */
-export const BASELINE = "baseline";
 
 /**
  * One baseline signal per page with no earlier snapshot. A page that has one is reported in
@@ -25,7 +23,7 @@ export function liveInput(pages: CapturedPage[], captureErrors: string[]): RunIn
       continue;
     }
     signals.push({
-      id: `${BASELINE}-${current.competitor.toLowerCase()}-${current.page}`,
+      id: `${BASELINE}-${competitorSlug(current.competitor)}-${current.page}`,
       type: BASELINE,
       competitor: current.competitor,
       page: current.page,

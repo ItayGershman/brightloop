@@ -1,5 +1,7 @@
 // Every regular expression used to read outside text, in one place. Outside text is data
 // (ADR-0001): these patterns only find and strip things, they never decide what to do.
+// One exception: src/capture/visible-lines.ts runs inside the captured page, which cannot
+// import, so its few patterns are named constants in that function.
 
 /** A dollar price with an optional period: "$25", "$12.50", "$25/month", "$25 / mo". */
 const PRICE_SOURCE = String.raw`\$\d+(?:\.\d{1,2})?(?:\s*\/\s*[a-z]+)?`;
@@ -50,6 +52,17 @@ export const PRICE_PERIOD_LINE = /^\/\s*[a-z]+$/i;
 
 /** A line holding only a footnote mark, between a price and its period: "*". */
 export const FOOTNOTE_MARK_LINE = /^\*+$/;
+
+/**
+ * A line only a bot-check or block page shows, not the site itself: Cloudflare's "Just a
+ * moment...", "Performing security verification", "Sorry, you have been blocked",
+ * "Verify you are human".
+ */
+export const BOT_CHECK_LINE =
+  /^(?:just a moment\.*|performing security verification|sorry, you have been blocked|verify you are human.*|checking your browser.*)$/i;
+
+/** A price above zero: "$18", "$0.50"; not "$0" or "$0.00". */
+export const PAID_PRICE = /^\$(?:0*[1-9]|0*\.\d*[1-9])/;
 
 /** A plan name: one to three capitalised words, no digits or symbols ("Free", "Pro", "Teams"). */
 export const PLAN_NAME_LINE = /^[A-Z][a-z]+(?: [A-Z][a-z]+){0,2}$/;

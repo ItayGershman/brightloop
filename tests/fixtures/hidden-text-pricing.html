@@ -38,9 +38,11 @@
   <p style="position: absolute; top: 3000px">Shown below the fold</p>
 
   <script>
-    // The Pro plan arrives after load, as prices do on pages built by JavaScript.
-    setTimeout(() => {
-      document.getElementById("pro").innerHTML = "<h2>Pro</h2><p>$25</p><p>/ month</p><p>100 monthly credits</p>";
+    // The Pro plan is fetched after load, as prices are on pages built by JavaScript.
+    setTimeout(async () => {
+      const pro = await (await fetch("/prices.json")).json();
+      document.getElementById("pro").innerHTML =
+        `<h2>${pro.name}</h2><p>${pro.price}</p><p>${pro.period}</p><p>${pro.limit}</p>`;
     }, 300);
   </script>
 </body>
