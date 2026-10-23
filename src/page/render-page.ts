@@ -1,6 +1,6 @@
 import { AUDIENCE } from "../config/audience.ts";
 import { COMPETITORS } from "../config/competitors.ts";
-import { PAGE_NAMES, type Item, type PageKind, type Result } from "../domain/types.ts";
+import { PAGE_NAMES, type Item, type PageKind, type Result, type SlackDelivery } from "../domain/types.ts";
 import type { RunLogEntry } from "../schedule/run-log.ts";
 
 // The live page: one static HTML file made from a result and the run log, in Maya's words.
@@ -55,9 +55,8 @@ ${historySection(history, when)}
 function slackSection(result: Result): string {
   if (!result.slack) return "";
   const { line, status } = result.slack;
-  const heading = status === "posted" ? "Posted to #leadership" : `The Slack line (${esc(status)})`;
   return `<section>
-<h2>${heading}</h2>
+<h2>${esc(SLACK_WORDS[status] ?? status)}</h2>
 <blockquote>${esc(line)}</blockquote>
 </section>`;
 }
@@ -161,8 +160,17 @@ function errorList(errors: string[]): string {
 
 function slackCell(entry: RunLogEntry): string {
   if (entry.slack_line === null) return "no line written";
-  return `${esc(entry.slack_status ?? "")}<br><q>${esc(entry.slack_line)}</q>`;
+  const status = entry.slack_status;
+  return `${esc(status ? (SLACK_WORDS[status] ?? status) : "")}<br><q>${esc(entry.slack_line)}</q>`;
 }
+
+/** What happened to the Slack line, in the audience's words: no setting names on the page. */
+const SLACK_WORDS: Record<SlackDelivery["status"], string> = {
+  posted: "Posted to #leadership",
+  "not posted: only a live run posts": "Not posted to #leadership: this was a test run, not a check of the live pages",
+  "not posted: no SLACK_WEBHOOK_URL": "Not posted to #leadership: this run had no Slack connection",
+  "not posted: the post failed": "Not posted to #leadership: Slack did not accept it",
+};
 
 function link(url: string): string {
   return isWebLink(url) ? `<a href="${esc(url)}" rel="noopener noreferrer">${esc(url)}</a>` : esc(url);

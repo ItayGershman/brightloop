@@ -156,7 +156,11 @@ describe("the live page renderer", () => {
     assert.match(posted, /Posted to #leadership/);
     assert.match(posted, /one pricing change flagged \(Lovable\)/);
     const notPosted = text(renderPage({ result: result({ slack: { line, status: "not posted: the post failed" } }), timeZone: ZONE }));
-    assert.match(notPosted, /not posted: the post failed/);
+    assert.match(notPosted, /Not posted to #leadership: Slack did not accept it/);
+    // Maya's words, never a setting's name.
+    const noKey = renderPage({ result: result({ slack: { line, status: "not posted: no SLACK_WEBHOOK_URL" } }), timeZone: ZONE });
+    assert.match(text(noKey), /Not posted to #leadership: this run had no Slack connection/);
+    assert.doesNotMatch(noKey, /SLACK_WEBHOOK_URL/);
   });
 
   test("shows the run history newest first, with pages checked, problems and the Slack line", () => {
@@ -171,7 +175,8 @@ describe("the live page renderer", () => {
     assert.ok(newer > 0 && older > newer, "newest first");
     assert.match(visible, /5 of 6 pages/);
     assert.match(visible, /1 problem/);
-    assert.match(visible, /not posted: no SLACK_WEBHOOK_URL/);
+    assert.match(visible, /this run had no Slack connection/);
+    assert.doesNotMatch(visible, /SLACK_WEBHOOK_URL/);
   });
 
   test("without a run history, says where the history is kept instead of an empty table", () => {
