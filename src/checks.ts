@@ -20,7 +20,7 @@ export interface CheckContext {
   secrets: string[];
 }
 
-/** Problems with one item; an empty list means the item may be shown to Maya. */
+/** Problems with one item; an empty list means the item may be shown to the audience. */
 export function checkItem(item: unknown, context: Omit<CheckContext, "inputIds">): string[] {
   if (!isRecord(item)) return ["item is not an object"];
   const { id: _id, source_ids: _sourceIds, ...text } = item;

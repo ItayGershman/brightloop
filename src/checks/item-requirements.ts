@@ -3,7 +3,7 @@ import { brokenRules, isNonEmptyString, type FieldRule } from "./rules.ts";
 /** An http(s) URL with no whitespace in it. */
 const HTTP_LINK = /^https?:\/\/\S+$/;
 
-/** What every item needs before Maya sees it. */
+/** What every item needs before the audience sees it. */
 const ITEM_RULES: FieldRule[] = [
   { field: "id", test: isNonEmptyString, problem: "no id" },
   { field: "source_ids", test: isListOfIds, problem: "no source ids" },
