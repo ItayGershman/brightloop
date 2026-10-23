@@ -5,7 +5,7 @@ import { pricingTiers } from "../text/pricing-tiers.ts";
 import { capturePages } from "./capture-pages.ts";
 import { latestSnapshot, writeSnapshot } from "./snapshot-store.ts";
 
-export { storedSnapshots } from "./snapshot-store.ts";
+export { storedSnapshots, writeSnapshot } from "./snapshot-store.ts";
 
 // A live capture: every watched page is opened, its snapshot stored, and the run input built
 // from the new snapshots and the latest earlier ones. This file is the only import point;

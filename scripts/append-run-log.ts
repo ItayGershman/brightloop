@@ -1,6 +1,8 @@
+import { appendFileSync } from "node:fs";
 import { appendRunLog, runLogEntry } from "../src/schedule/run-log.ts";
 
-// Appends this run's line to the run log, whether or not the run finished.
+// Appends this run's line to the run log, whether or not the run finished, and writes a
+// one-line summary to the step's outputs for the commit message.
 // Usage: tsx scripts/append-run-log.ts <started at, ISO> <result.json> <snapshots dir> <run log>
 
 const [startedAt, resultPath, snapshotsDir, logPath] = process.argv.slice(2);
@@ -11,6 +13,8 @@ if (!resultPath || !snapshotsDir || !logPath || Number.isNaN(start.getTime())) {
 }
 const entry = runLogEntry({ startedAt: start, resultPath, snapshotsDir });
 appendRunLog(logPath, entry);
-console.log(`Run log: ${entry.pages_fetched} of ${entry.pages_watched} pages fetched, ${entry.errors.length} errors.`);
+const summary = `${entry.pages_fetched} of ${entry.pages_watched} pages fetched, ${entry.errors.length} errors`;
+console.log(`Run log: ${summary}.`);
 // The errors are the run's own sentences, never page text, so the job log can show them.
 for (const error of entry.errors) console.log(`  ${error}`);
+if (process.env.GITHUB_OUTPUT) appendFileSync(process.env.GITHUB_OUTPUT, `summary=${summary}\n`);
