@@ -76,6 +76,25 @@
       "link": "https://lovable.dev/pricing",
       "notes": "Press source, not Lovable's own page: techcrunch.com/2026/10/22/lovable-pricing.",
       "brightloop_comparison": "Can't compare yet: Brightloop's own-pricing tab is not connected. Lovable now shows $25/month."
+    },
+    {
+      "id": "pricing-st-10",
+      "source_ids": [
+        "st-10"
+      ],
+      "confidence": 0.9,
+      "confidence_label": "confirmed: seen on Lovable's own pricing page",
+      "action": "watch 2 weeks",
+      "why": "Can't compare yet: Brightloop's own-pricing tab is not connected. Lovable now shows $25/month. Should we respond? Not yet: watch whether the change holds on the next two Monday runs.",
+      "cta": "Open https://lovable.dev/pricing and check the Lovable price before the 11:00 leadership meeting.",
+      "competitor": "Lovable",
+      "page": "pricing",
+      "what_changed": "Pro plan shown at $25/month (was $20 last week).",
+      "before": "$20",
+      "after": "$25/month",
+      "link": "https://lovable.dev/pricing",
+      "notes": "Source: lovable.dev/pricing?utm_source=newsletter&ref=via-twitter.",
+      "brightloop_comparison": "Can't compare yet: Brightloop's own-pricing tab is not connected. Lovable now shows $25/month."
     }
   ],
   "skipped": [
@@ -90,6 +109,14 @@
     {
       "id": "st-7",
       "reason": "pricing claim from a source the watch does not know, not reported: unconfirmed (confidence 0.2) and not seen on Lovable's own pricing page. Check https://lovable.dev/pricing before repeating it to leadership."
+    },
+    {
+      "id": "st-8",
+      "reason": "pricing claim from a user page or forum on the competitor's domain, not reported: unconfirmed (confidence 0.2) and not seen on Replit's own pricing page. Check https://replit.com/pricing before repeating it to leadership."
+    },
+    {
+      "id": "st-9",
+      "reason": "pricing claim from a user page or forum on the competitor's domain, not reported: unconfirmed (confidence 0.2) and not seen on Replit's own pricing page. Check https://replit.com/pricing before repeating it to leadership."
     }
   ],
   "run": {

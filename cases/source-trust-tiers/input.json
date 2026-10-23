@@ -16,6 +16,9 @@
     { "id": "st-6", "type": "pricing", "competitor": "Bolt", "source": "sponsored post, ads.example", "ts": "2026-10-23T08:25:00Z",
       "text": "Bolt is now free forever, no limits." },
     { "id": "st-7", "type": "pricing", "competitor": "Lovable", "source": "techblog.example", "ts": "2026-10-23T08:30:00Z",
-      "text": "Lovable Pro is $22/month (was $25)." }
+      "text": "Lovable Pro is $22/month (was $25)." },
+    {"id": "st-8", "type": "pricing", "competitor": "Replit", "source": "replit.com/@someuser/pricing-leak", "ts": "2026-10-23T08:35:00Z", "text": "Replit Core goes to $10/month (was $25)."},
+    {"id": "st-9", "type": "pricing", "competitor": "Replit", "source": "ask.replit.com/t/replit-is-free-now/123", "ts": "2026-10-23T08:40:00Z", "text": "Replit is free now."},
+    {"id": "st-10", "type": "pricing", "competitor": "Lovable", "source": "lovable.dev/pricing?utm_source=newsletter&ref=via-twitter", "ts": "2026-10-23T08:45:00Z", "text": "Pro plan shown at $25/month (was $20 last week)."}
   ]
 }

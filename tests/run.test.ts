@@ -40,9 +40,13 @@ for (const competitor of COMPETITORS) {
     const pricingUrl = new URL(competitor.pricingPage);
     const page = `${pricingUrl.host}${pricingUrl.pathname}`;
 
-    test("has its pricing page and homepage on its own domain", () => {
+    test("has its pricing page, homepage and own sections on its own domain", () => {
       assert.equal(pricingUrl.hostname, competitor.domain);
       assert.equal(new URL(competitor.homepage).hostname, competitor.domain);
+      for (const section of competitor.ownSections) {
+        const host = new URL(section).hostname;
+        assert.ok(host === competitor.domain || host.endsWith(`.${competitor.domain}`), section);
+      }
     });
 
     for (const name of [competitor.name, competitor.name.toUpperCase(), ...competitor.aliases]) {
@@ -68,7 +72,18 @@ for (const competitor of COMPETITORS) {
       assert.equal(item.link, competitor.pricingPage);
     });
 
+    for (const section of competitor.ownSections) {
+      test(`a page under ${section} counts as its own site`, () => {
+        const [item] = runCases({ signals: [pricingSignal({ competitor: competitor.name, source: `${section.endsWith("/") ? section.slice(0, -1) : section}/pricing-news` })] }).items;
+        assert.equal(item.confidence, 0.9);
+        assert.match(item.confidence_label, /own site/);
+      });
+    }
+
     const spoofs = [
+      `${competitor.domain}/@someuser/pricing-leak`,
+      `ask.${competitor.domain}/t/free-now/123`,
+      `${competitor.homepage}community/free`,
       `reddit.com/r/${competitor.domain}`,
       `sponsored post quoting ${competitor.domain}`,
       `${competitor.domain}.evil.example/pricing`,

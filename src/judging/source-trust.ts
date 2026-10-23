@@ -3,7 +3,7 @@ import type { Competitor } from "../config/competitors.ts";
 import { KNOWN_PRESS } from "../config/press.ts";
 import { GUEST_POST_SOURCE, SECOND_HAND_SOURCE } from "../text/patterns.ts";
 import { quotable } from "../text/quotable.ts";
-import { isOfficialPricingPage, sourceUrl } from "./official-page.ts";
+import { isOfficialPricingPage, isOnDomain, isOwnPage, sourceUrl } from "./official-page.ts";
 
 // How far a signal's source can be trusted: TRUST_LEVELS, one row per level, checked in
 // order, and sourceTrust, the one place a source is classified. Confidence starts from the
@@ -29,7 +29,7 @@ interface ItemWording {
   notes: (page: Page) => string;
 }
 
-export interface TrustLevel {
+interface TrustLevel {
   /** Which sources this level is for, in words. */
   name: string;
   /** Whether a source earns this level. The last row matches everything. */
@@ -45,16 +45,17 @@ export type ReportableTrust = TrustLevel & { item: ItemWording };
 
 const TRUST_LEVELS: TrustLevel[] = [
   // Second-hand wording comes first, so "lovable.dev/pricing, via a newsletter" or a sponsored
-  // post on a press site is never read as the page or the outlet it mentions.
+  // section of a press site is never read as the page or the outlet it mentions. For a URL
+  // only its path is read, so "?utm_source=newsletter" on the official page changes nothing.
   {
     name: "a sponsored, anonymous or second-hand source",
-    matches: (source) => SECOND_HAND_SOURCE.test(source),
+    matches: (source) => SECOND_HAND_SOURCE.test(wordingOf(source)),
     confidence: 0.2,
     label: () => "unconfirmed",
   },
   {
     name: "a guest post",
-    matches: (source) => GUEST_POST_SOURCE.test(source),
+    matches: (source) => GUEST_POST_SOURCE.test(wordingOf(source)),
     confidence: 0.4,
     label: () => "weak",
   },
@@ -72,7 +73,7 @@ const TRUST_LEVELS: TrustLevel[] = [
   },
   {
     name: "another page of the competitor's own site",
-    matches: (source, competitor) => isOnOwnSite(source, competitor),
+    matches: isOwnPage,
     confidence: 0.9,
     label: ({ name }) => `confirmed by ${name}'s own site, not yet seen on its pricing page`,
     item: {
@@ -81,6 +82,13 @@ const TRUST_LEVELS: TrustLevel[] = [
       cta: ({ name, link }) => `Open ${link} and check whether the ${name} price matches before ${AUDIENCE.deadline}.`,
       notes: ({ name, source }) => `Source: ${source}, ${name}'s own site but not its pricing page.`,
     },
+  },
+  {
+    // A user's page or a forum thread on the competitor's domain is someone else talking.
+    name: "a user page or forum on the competitor's domain",
+    matches: isOnDomain,
+    confidence: 0.2,
+    label: () => "unconfirmed",
   },
   {
     name: "known press",
@@ -123,10 +131,9 @@ export function unreportedClaim(level: TrustLevel, competitor: Competitor): stri
   );
 }
 
-/** A URL on the competitor's own domain or one of its subdomains ("blog.replit.com"). */
-function isOnOwnSite(source: string, competitor: Competitor): boolean {
-  const host = sourceUrl(source)?.hostname.toLowerCase();
-  return host !== undefined && (host === competitor.domain || host.endsWith(`.${competitor.domain}`));
+/** The words to look at in a source: a URL's path only, otherwise the whole text. */
+function wordingOf(source: string): string {
+  return sourceUrl(source)?.pathname ?? source;
 }
 
 /** A URL on a known outlet's host or one of its subdomains. */

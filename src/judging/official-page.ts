@@ -8,10 +8,25 @@ import { PRINTABLE_WITHOUT_SPACES, URL_SCHEME } from "../text/patterns.ts";
  */
 export function isOfficialPricingPage(source: string, competitor: Competitor): boolean {
   const url = sourceUrl(source);
-  if (!url || !isOnHost(url, competitor.domain)) return false;
-  const pricingPath = new URL(competitor.pricingPage).pathname.toLowerCase();
-  const path = url.pathname.toLowerCase();
-  return path === pricingPath || path.startsWith(`${pricingPath}/`);
+  return url !== undefined && isUnder(url, competitor.pricingPage);
+}
+
+/**
+ * True when the source is a URL on the competitor's site that speaks for it: its homepage
+ * exactly, or a page under one of its registered own sections (blog, changelog).
+ */
+export function isOwnPage(source: string, competitor: Competitor): boolean {
+  const url = sourceUrl(source);
+  if (!url) return false;
+  const homepage = new URL(competitor.homepage);
+  const onHomepage = isOnHost(url, homepage.hostname) && (url.pathname === "/" || url.pathname === "");
+  return onHomepage || competitor.ownSections.some((section) => isUnder(url, section));
+}
+
+/** True when the source is a URL anywhere on the competitor's domain or its subdomains. */
+export function isOnDomain(source: string, competitor: Competitor): boolean {
+  const host = sourceUrl(source)?.hostname.toLowerCase();
+  return host !== undefined && (host === competitor.domain || host.endsWith(`.${competitor.domain}`));
 }
 
 /**
@@ -28,8 +43,20 @@ export function sourceUrl(source: string): URL | undefined {
   }
 }
 
-/** The URL's host is the domain itself or www. plus it. */
-function isOnHost(url: URL, domain: string): boolean {
-  const host = url.hostname.toLowerCase();
-  return host === domain || host === `www.${domain}`;
+/** A slash at the end of a path. */
+const TRAILING_SLASH = /\/$/;
+
+/** The URL is on the page's host (or www. plus it) and at or below the page's path. */
+function isUnder(url: URL, page: string): boolean {
+  const pageUrl = new URL(page);
+  if (!isOnHost(url, pageUrl.hostname)) return false;
+  const pagePath = pageUrl.pathname.toLowerCase().replace(TRAILING_SLASH, "");
+  const path = url.pathname.toLowerCase();
+  return pagePath === "" || path === pagePath || path.startsWith(`${pagePath}/`);
+}
+
+/** The URL's host is the given host itself or www. plus it. */
+function isOnHost(url: URL, host: string): boolean {
+  const own = url.hostname.toLowerCase();
+  return own === host || own === `www.${host}`;
 }

@@ -14,6 +14,9 @@
     { "id": "sc-4", "type": "pricing", "competitor": "Lovable", "source": "lovable.dev/pricing/ via a newsletter", "ts": "2026-10-23T09:15:00Z",
       "text": "Lovable Pro $10/month (was $25)." },
     { "id": "sc-5", "type": "pricing", "competitor": "Bolt", "source": "techcrunch.com/sponsored/bolt-free", "ts": "2026-10-23T09:20:00Z",
-      "text": "Bolt is free forever." }
+      "text": "Bolt is free forever." },
+    {"id": "sc-6", "type": "pricing", "competitor": "Bolt", "source": "techcrunch.com/sponsor/bolt-free", "ts": "2026-10-23T09:25:00Z", "text": "Bolt is free forever."},
+    {"id": "sc-7", "type": "pricing", "competitor": "Bolt", "source": "techcrunch.com/partner-content/bolt-free", "ts": "2026-10-23T09:30:00Z", "text": "Bolt drops all paid plans."},
+    {"id": "sc-8", "type": "pricing", "competitor": "Bolt", "source": "https://techcrunch.com/brand-studio/bolt", "ts": "2026-10-23T09:35:00Z", "text": "Bolt Pro is now $0/month (was $20)."}
   ]
 }

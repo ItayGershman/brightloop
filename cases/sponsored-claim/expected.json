@@ -25,6 +25,18 @@
     {
       "id": "sc-5",
       "reason": "pricing claim from a sponsored, anonymous or second-hand source, not reported: unconfirmed (confidence 0.2) and not seen on Bolt's own pricing page. Check https://bolt.new/pricing before repeating it to leadership."
+    },
+    {
+      "id": "sc-6",
+      "reason": "pricing claim from a sponsored, anonymous or second-hand source, not reported: unconfirmed (confidence 0.2) and not seen on Bolt's own pricing page. Check https://bolt.new/pricing before repeating it to leadership."
+    },
+    {
+      "id": "sc-7",
+      "reason": "pricing claim from a sponsored, anonymous or second-hand source, not reported: unconfirmed (confidence 0.2) and not seen on Bolt's own pricing page. Check https://bolt.new/pricing before repeating it to leadership."
+    },
+    {
+      "id": "sc-8",
+      "reason": "pricing claim from a sponsored, anonymous or second-hand source, not reported: unconfirmed (confidence 0.2) and not seen on Bolt's own pricing page. Check https://bolt.new/pricing before repeating it to leadership."
     }
   ],
   "run": {

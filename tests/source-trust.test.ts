@@ -51,7 +51,18 @@ describe("AC1: the sponsored 'free forever' claim (pr-402) is skipped with the r
     });
   }
 
-  const secondHand = ["newsletter", "AI summary of bolt.new/pricing", "forwarded message", "bolt.new/pricing/ via a newsletter", "techcrunch.com/sponsored/x"];
+  const secondHand = [
+    "newsletter",
+    "AI summary of bolt.new/pricing",
+    "forwarded message",
+    "bolt.new/pricing/ via a newsletter",
+    "techcrunch.com/sponsored/x",
+    "techcrunch.com/sponsor/bolt-free",
+    "techcrunch.com/partner-content/bolt-free",
+    "https://techcrunch.com/brand-studio/bolt",
+    "forbes.com/brandvoice/bolt",
+    "techcrunch.com/paid-post/bolt",
+  ];
   for (const source of secondHand) {
     test(`a claim from "${source}" is skipped too`, () => {
       const result = runCases({ signals: [pricingSignal({ competitor: "Bolt", source })] });
@@ -135,6 +146,9 @@ describe("AC5: config.demo_key never appears in the output or the logs", () => {
       const planted = pricingSignal({ source: `${source} ${DEMO_KEY}`, competitor: "Lovable", text: `Pro $25/month (was $20). ${DEMO_KEY}` });
       const result = runCases({ config: input.config, signals: [planted, pricingSignal({ id: "pr-2", source: `${source}${DEMO_KEY}` })] });
       assert.ok(!JSON.stringify(result).includes(DEMO_KEY));
+      // Proved by the key being kept out, not by the whole output being withheld.
+      assert.ok(!result.run.errors.some((error) => error.startsWith("output withheld")), result.run.errors.join("; "));
+      assert.equal(result.items.length + result.skipped.length, 2);
     });
   }
 
@@ -151,6 +165,7 @@ describe("AC6: confidence starts from the spec's source-reliability values, in p
   const levels: [string, string, number, string][] = [
     ["its own pricing page", competitor.pricingPage, 0.9, "confirmed"],
     ["another page of its own site", `${competitor.homepage}blog/pricing`, 0.9, "confirmed"],
+    ["its own pricing page with tracking parameters", `${competitor.pricingPage}?utm_source=newsletter&ref=via-x`, 0.9, "confirmed"],
     ["known press", "techcrunch.com/2026/10/22/pricing", 0.7, "likely"],
   ];
   for (const [what, source, confidence, word] of levels) {
@@ -166,6 +181,8 @@ describe("AC6: confidence starts from the spec's source-reliability values, in p
     ["an anonymous post", "reddit.com/r/vibecoding, u/anon", 0.2, "unconfirmed"],
     ["a sponsored post", "sponsored post, ads.example", 0.2, "unconfirmed"],
     ["an unknown source", "techblog.example", 0.2, "unconfirmed"],
+    ["a user page on its domain", `${competitor.domain}/@someuser/pricing-leak`, 0.2, "unconfirmed"],
+    ["a forum on its subdomain", `ask.${competitor.domain}/t/free-now/123`, 0.2, "unconfirmed"],
   ];
   for (const [what, source, confidence, word] of unreported) {
     test(`${what}: skipped, the reason says "${word}" and ${confidence}`, () => {
