@@ -19,25 +19,6 @@
       "link": "https://lovable.dev/pricing",
       "notes": "Source: lovable.dev/pricing.",
       "brightloop_comparison": "Can't compare yet: Brightloop's own-pricing tab is not connected. Lovable now shows $25/month."
-    },
-    {
-      "id": "pricing-pr-402",
-      "source_ids": [
-        "pr-402"
-      ],
-      "confidence": 0.2,
-      "confidence_label": "unconfirmed: not seen on Bolt's own pricing page yet",
-      "action": "no action",
-      "why": "Can't compare yet: Brightloop's own-pricing tab is not connected. Bolt's current price is on its pricing page. Should we respond? No: the claim comes from a third party and Bolt's own page does not confirm it yet.",
-      "cta": "Check https://bolt.new/pricing before repeating this claim to leadership.",
-      "competitor": "Bolt",
-      "page": "pricing",
-      "what_changed": "Bolt is now free forever, no limits.",
-      "before": null,
-      "after": null,
-      "link": "https://bolt.new/pricing",
-      "notes": "Source is not Bolt's own page: sponsored post, ads.example.",
-      "brightloop_comparison": "Can't compare yet: Brightloop's own-pricing tab is not connected. Bolt's current price is on its pricing page."
     }
   ],
   "skipped": [
@@ -64,6 +45,10 @@
     {
       "id": "sg-304",
       "reason": "launch signal, outside the watch's scope: it tracks competitor pricing and packaging, not product launches"
+    },
+    {
+      "id": "pr-402",
+      "reason": "pricing claim from a sponsored, anonymous or second-hand source, not reported: unconfirmed (confidence 0.2) and not seen on Bolt's own pricing page. Check https://bolt.new/pricing before repeating it to leadership."
     }
   ],
   "run": {

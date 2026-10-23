@@ -20,6 +20,10 @@ _Avoid_: event, alert, news
 The public place a signal was observed, such as a pricing page, an ad library or a social post.
 _Avoid_: feed, channel (channel is reserved for an ad's platform)
 
+**Trust level**:
+How far a signal's source can be trusted (the competitor's own pricing page, its own site, known press, a guest post, a sponsored, anonymous or second-hand source, an unknown source); it sets an item's starting confidence, and whether a pricing claim can become an item at all.
+_Avoid_: credibility, reputation
+
 **Item**:
 A recommendation to the marketer built from one or more signals, or from a baseline, with a next action, a reason and a confidence.
 _Avoid_: alert, insight, card
