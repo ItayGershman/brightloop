@@ -51,9 +51,33 @@ describe("a live run with no earlier snapshot, from the committed snapshots", ()
       assert.ok(item.tiers && item.tiers.length >= 2, "at least two plans");
       for (const tier of item.tiers) assert.ok(tier.name && tier.price, `${tier.name} has a price`);
       assert.ok(item.tiers.some((tier) => tier.limits.length > 0), "limits are read");
-      assert.equal(item.after, item.tiers.map((tier) => `${tier.name} ${tier.price}`).join("; "));
     });
   }
+
+  // The plans as the pages showed them on 2026-10-23, read from the committed snapshots.
+  const expected: Record<string, string> = {
+    Lovable: "Free $0; Pro $25/month; Business $50/month; Enterprise Platform fee",
+    Replit:
+      "Core $18/month, billed annually (struck-out $20); Pro $90/month, billed annually (struck-out $100); Enterprise Custom",
+    Bolt: "Free $0/month; Pro $18/month, billed annually; Teams $27/month, per member, billed annually; Enterprise Custom",
+  };
+  for (const [name, after] of Object.entries(expected)) {
+    test(`keeps ${name}'s billing and any struck-out price apart from the price`, () => {
+      assert.equal(result.items.find((item) => item.competitor === name)?.after, after);
+    });
+  }
+
+  test("a yearly-billed price is never shown without its billing", () => {
+    const replitCore = result.items.find((item) => item.competitor === "Replit")?.tiers?.[0];
+    assert.deepEqual(replitCore && { ...replitCore, limits: [] }, {
+      name: "Core",
+      price: "$18",
+      period: "/month",
+      struck_price: "$20",
+      billing: "billed annually",
+      limits: [],
+    });
+  });
 });
 
 describe("a live run where a page cannot become a baseline", () => {

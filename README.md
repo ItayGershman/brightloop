@@ -58,4 +58,4 @@ The required wrapper (`built_for`, `items`, `skipped`, `run`) plus these fields 
 | `link` | The competitor's own pricing page |
 | `notes` | Where the signal came from |
 | `brightloop_comparison` | Whether the competitor is still cheaper than Brightloop on that tier, or why that can't be said yet |
-| `tiers` | Baseline items only: every plan on the pricing page, `{ name, price, limits }`, as the page shows it |
+| `tiers` | Baseline items only: every plan on the pricing page, `{ name, price, period, struck_price, billing, limits }`, in the page's words; `billing` is null when the page does not say |

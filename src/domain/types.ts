@@ -42,8 +42,14 @@ export interface Snapshot extends WatchedPage {
 /** One plan on a pricing page, as read from a snapshot. */
 export interface Tier {
   name: string;
-  /** As the page shows it: "$25 / month", or a stand-in such as "Custom" for a plan with no price. */
+  /** The price to pay now, as shown: "$25", or a stand-in such as "Custom" for a plan with no price. */
   price: string;
+  /** What the price is per, without spaces: "/month"; null when the page shows none. */
+  period: string | null;
+  /** An earlier price shown next to the current one, struck out on the page ("$20" beside "$18"); else null. */
+  struck_price: string | null;
+  /** How the plan is billed, in the page's words: "billed annually", "per member, billed annually"; null when the page does not say. */
+  billing: string | null;
   /** Usage limits shown with the plan, e.g. "100 monthly credits". */
   limits: string[];
 }

@@ -26,6 +26,16 @@
   <p style="color: transparent">hidden-by-transparent-colour $7</p>
   <div style="display: none"><p>hidden-inside-a-hidden-parent $8</p></div>
   <p>Shown with a <span style="display: none">hidden-inline-word $9</span>visible tail</p>
+  <p style="position: absolute; left: 99999px">hidden-off-the-page-right $10</p>
+  <p style="clip-path: inset(50%)">hidden-by-clip-path $11</p>
+  <p style="position: absolute; clip: rect(0, 0, 0, 0)">hidden-by-clip-on-a-full-size-box $12</p>
+  <p style="color: oklch(0.5 0.1 100 / 0)">hidden-by-oklch-alpha $13</p>
+  <p style="color: rgba(0, 0, 0, 0.01)">hidden-by-near-zero-alpha $14</p>
+  <p style="position: fixed; bottom: -500px">hidden-fixed-below-the-viewport $15</p>
+  <p style="filter: opacity(0)">hidden-by-filter-opacity $16</p>
+
+  <!-- Below the fold is not hidden: scrolling shows it. -->
+  <p style="position: absolute; top: 3000px">Shown below the fold</p>
 
   <script>
     // The Pro plan arrives after load, as prices do on pages built by JavaScript.

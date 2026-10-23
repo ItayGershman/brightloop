@@ -33,7 +33,7 @@ function baselineItem(signal: Signal, competitor: Competitor, tiers: Tier[]): It
   const link = competitor.pricingPage;
   const capturedOn = (quotable(signal.ts) ?? "").slice(0, 10) || "this run";
   const lowestPaid = tiers.find((tier) => !tier.price.startsWith("$0") && tier.price.startsWith("$")) ?? tiers[0];
-  const comparison = `Can't compare yet: Brightloop's own-pricing tab is not connected. ${name}'s lowest paid plan, ${lowestPaid.name}, shows ${lowestPaid.price}.`;
+  const comparison = `Can't compare yet: Brightloop's own-pricing tab is not connected. ${name}'s lowest paid plan, ${lowestPaid.name}, shows ${shownPrice(lowestPaid)}.`;
 
   return {
     id: `baseline-${name.toLowerCase()}`,
@@ -47,14 +47,21 @@ function baselineItem(signal: Signal, competitor: Competitor, tiers: Tier[]): It
     page: "pricing",
     what_changed: `Baseline recorded: first snapshot of ${name}'s pricing page, no change yet.`,
     before: null,
-    after: tiers.map((tier) => `${tier.name} ${tier.price}`).join("; "),
+    after: tiers.map((tier) => `${tier.name} ${shownPrice(tier)}`).join("; "),
     link,
-    notes: `Prices as the page shows them by default, captured ${quotable(signal.ts) ?? "this run"}. Limits: ${tiers
+    notes: `Prices as the page shows them by default, with the billing it states, captured ${quotable(signal.ts) ?? "this run"}. Limits: ${tiers
       .map((tier) => `${tier.name}: ${tier.limits.join(", ") || "none shown"}`)
       .join("; ")}.`,
     brightloop_comparison: comparison,
     tiers,
   };
+}
+
+/** A plan's price in one phrase: "$18/month, billed annually (struck-out $20)". */
+function shownPrice(tier: Tier): string {
+  const billing = tier.billing ? `, ${tier.billing}` : "";
+  const struck = tier.struck_price ? ` (struck-out ${tier.struck_price})` : "";
+  return `${tier.price}${tier.period ?? ""}${billing}${struck}`;
 }
 
 /** The page's lines, cleaned for quoting; anything that is not a list of strings gives none. */

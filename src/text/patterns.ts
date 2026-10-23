@@ -34,6 +34,17 @@ export const PRICE_LINE = /^\$\d/;
 /** A pricing-page line that stands in for a price on a plan without one: "Custom", "Platform fee". */
 export const CUSTOM_PRICE_LINE = /^(?:custom|platform fee)$/i;
 
+/**
+ * The parts of a price line: group 1 the first price, group 2 a second price after it (the
+ * first is then the struck-out one), group 3 the period, group 4 what follows a comma
+ * ("$20 $18 / month, billed annually").
+ */
+export const PRICE_LINE_PARTS =
+  /^(\$\d[\d,.]*)(?:\s+(\$\d[\d,.]*))?\s*(\/\s*[a-z]+)?\s*(?:,\s*(.+))?$/i;
+
+/** A line or phrase saying how a plan is billed: "Billed annually", "Per member, billed annually". */
+export const BILLING_TEXT = /\b(?:billed (?:annually|yearly|monthly)|per (?:member|user|seat))\b/i;
+
 /** A line holding only the period of the price above it: "/month", "/ month". */
 export const PRICE_PERIOD_LINE = /^\/\s*[a-z]+$/i;
 

@@ -1,4 +1,4 @@
-import { chromium, type Browser } from "playwright-core";
+import { chromium, errors as playwrightErrors, type Browser, type Page } from "playwright-core";
 import type { Snapshot, WatchedPage } from "../domain/types.ts";
 import { visibleLines } from "./visible-lines.ts";
 
@@ -34,8 +34,9 @@ export async function capturePages(pages: WatchedPage[], options: { headless: bo
     const context = await browser.newContext();
     for (const watched of pages) {
       const name = `${watched.competitor} ${watched.page === "pricing" ? "pricing page" : "homepage"}`;
-      const tab = await context.newPage();
+      let tab: Page | undefined;
       try {
+        tab = await context.newPage();
         const response = await tab.goto(watched.url, { waitUntil: "load", timeout: LOAD_TIMEOUT_MS });
         const status = response?.status() ?? 0;
         if (status < 200 || status >= 400) {
@@ -45,10 +46,14 @@ export async function capturePages(pages: WatchedPage[], options: { headless: bo
         await tab.waitForLoadState("networkidle", { timeout: SETTLE_TIMEOUT_MS }).catch(() => undefined);
         const lines = await tab.evaluate(visibleLines);
         captured.snapshots.push({ ...watched, captured_at: new Date().toISOString(), lines });
-      } catch {
-        captured.errors.push(`${name}: could not be opened, so it was not captured`);
+      } catch (error) {
+        captured.errors.push(
+          error instanceof playwrightErrors.TimeoutError
+            ? `${name}: did not load within ${LOAD_TIMEOUT_MS / 1000} seconds, so it was not captured`
+            : `${name}: could not be opened, so it was not captured`,
+        );
       } finally {
-        await tab.close();
+        await tab?.close().catch(() => undefined);
       }
     }
   } finally {
