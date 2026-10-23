@@ -73,7 +73,7 @@ The line is built from counts, actions and registered competitor names only: no 
 
 ## The live page
 
-https://brightloop-pricing-watch-11e53ec8.base44.app (public, no login). Not verified yet: no run has published it so far.
+**https://brightloop-pricing-watch-11e53ec8.base44.app** (public, no login).
 
 One static page, in Maya's words: the latest run's items (what changed, before and after, the action, why, how sure in words with the score after it, the next step and the link to the competitor's page), the problems the run hit, the skipped signals with their reasons, the run history from `runs/run-log.jsonl` (newest first: pages checked, problems, the Slack line and whether it was posted) and the Slack line as posted.
 
