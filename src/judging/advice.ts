@@ -8,6 +8,9 @@ import { planName } from "./plan.ts";
 // Only the competitor's own pricing page row of TRUST_LEVELS (source-trust.ts) asks for this
 // advice; every other reportable level gives its own "watch" until the page shows the change.
 
+/** The question every item's `why` answers second, after "still cheaper than us?"; the live page splits `why` on it. */
+export const RESPOND_QUESTION = "Should we respond?";
+
 /** The action for a change that needs a response before the meeting. */
 export const RESPOND_NOW = "respond now";
 
