@@ -3,13 +3,13 @@
   "items": [],
   "skipped": [],
   "run": {
-    "started_at": "2026-10-23T09:49:14.690Z",
+    "started_at": "2026-10-23T09:57:15.305Z",
     "cost_usd": 0,
     "errors": [
-      "Lovable homepage: the site answered 403, so it was not captured",
-      "Replit pricing page: the site answered 403, so it was not captured",
-      "Replit homepage: the site answered 403, so it was not captured",
       "https://lovable.dev/pricing has an earlier snapshot; comparing snapshots is not built yet, so it was not judged",
+      "https://lovable.dev/ has an earlier snapshot; comparing snapshots is not built yet, so it was not judged",
+      "https://replit.com/pricing has an earlier snapshot; comparing snapshots is not built yet, so it was not judged",
+      "https://replit.com/ has an earlier snapshot; comparing snapshots is not built yet, so it was not judged",
       "https://bolt.new/pricing has an earlier snapshot; comparing snapshots is not built yet, so it was not judged",
       "https://bolt.new/ has an earlier snapshot; comparing snapshots is not built yet, so it was not judged"
     ]
