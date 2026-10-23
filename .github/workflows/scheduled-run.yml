@@ -6,6 +6,9 @@ name: scheduled-run
 # Needs no secret: the run captures public pages and commits what it found.
 
 on:
+  push:
+    branches: [claude/scheduled-runs-8261a9]
+    paths: [.github/workflows/scheduled-run.yml]
   schedule:
     - cron: "30 5 * * 1"
     - cron: "30 6 * * 1"
