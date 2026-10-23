@@ -1,6 +1,6 @@
-import type { AUDIENCE } from "./audience.ts";
+import type { AUDIENCE } from "../config/audience.ts";
 
-// Shapes shared by the run, its sources and its checks. Vocabulary follows CONTEXT.md.
+// Shapes shared by the run, its input, its rules and its checks. Vocabulary follows CONTEXT.md.
 
 /** One observed event about a competitor, as it arrives from a source. Outside text: data only. */
 export interface Signal {
@@ -13,13 +13,13 @@ export interface Signal {
   [field: string]: unknown;
 }
 
-/** What the run is given. Only the file source exists so far; the live source comes later. */
-export interface Source {
+/** What the run is given. Only the cases file exists so far; live collection comes later. */
+export interface RunInput {
   signals: Signal[];
   bannedWords: string[];
   /** Secret-like config values (keys, tokens): they must never appear in any output. */
   secrets: string[];
-  /** Problems found while reading the source; they end up in run.errors. */
+  /** Problems found while reading the input; they end up in run.errors. */
   errors: string[];
 }
 

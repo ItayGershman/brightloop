@@ -1,21 +1,22 @@
-import { AUDIENCE } from "./audience.ts";
-import { checkItem, checkResult, forbiddenValues } from "./checks.ts";
-import { judge, RULES, type Rule } from "./judge.ts";
-import type { Item, Result, SkippedSignal, Source } from "./types.ts";
+import { checkItem, checkResult, forbiddenValues } from "./checks/index.ts";
+import { AUDIENCE } from "./config/audience.ts";
+import type { Item, Result, RunInput, SkippedSignal } from "./domain/types.ts";
+import { RULES } from "./judging/rules.ts";
+import { runRules, type Rule } from "./judging/run-rules.ts";
 
 /**
- * One run: judges every signal from the source, puts each input id in exactly one place,
+ * One run: judges every signal in the input, puts each input id in exactly one place,
  * and applies the in-run checks before anything is returned. Never throws on bad input.
  */
-export function run(source: Source, options: { startedAt?: Date; rules?: Rule[] } = {}): Result {
-  const errors = [...source.errors];
+export function run(input: RunInput, options: { startedAt?: Date; rules?: Rule[] } = {}): Result {
+  const errors = [...input.errors];
   const items: Item[] = [];
   const skipped: SkippedSignal[] = [];
-  const inputIds = source.signals.map((signal) => signal.id);
-  const context = { inputIds, bannedWords: source.bannedWords, secrets: source.secrets };
+  const inputIds = input.signals.map((signal) => signal.id);
+  const context = { inputIds, bannedWords: input.bannedWords, secrets: input.secrets };
 
   let judgedItems = 0;
-  for (const judgement of judge(source.signals, options.rules ?? RULES)) {
+  for (const judgement of runRules(input.signals, options.rules ?? RULES)) {
     if (judgement.kind === "skipped") {
       skipped.push(judgement.skipped);
       continue;
@@ -42,7 +43,7 @@ export function run(source: Source, options: { startedAt?: Date; rules?: Rule[] 
   errors.push(...checkResult(result, context));
 
   // Last line of defence: a forbidden value that got past every check above is never written.
-  if (forbiddenValues({ items, skipped }, source.secrets).length > 0) {
+  if (forbiddenValues({ items, skipped }, input.secrets).length > 0) {
     result.items = [];
     result.skipped = [];
     errors.push("output withheld: it would have contained a forbidden value");

@@ -1,14 +1,14 @@
-import { containsBannedWord } from "./checks/banned-words.ts";
-import { forbiddenValues } from "./checks/forbidden-values.ts";
-import { idCoverage } from "./checks/id-coverage.ts";
-import { itemRequirements } from "./checks/item-requirements.ts";
-import { isRecord } from "./checks/rules.ts";
-import { skippedEntryRequirements, wrapperRequirements } from "./checks/wrapper-requirements.ts";
+import { containsBannedWord } from "./banned-words.ts";
+import { isRecord } from "./field-rules.ts";
+import { forbiddenValues } from "./forbidden-values.ts";
+import { idCoverage } from "./id-coverage.ts";
+import { itemRequirements } from "./item-requirements.ts";
+import { skippedEntryRequirements, wrapperRequirements } from "./wrapper-requirements.ts";
 
 // The in-run checks (ADR-0001): code, not judgement, decides whether an output may be written.
 // Messages name the problem and a position, never the offending text or a raw id, so an
 // error cannot carry forbidden text into the output. This file is the only import point;
-// the parts in checks/ are internal.
+// the other files in checks/ are internal.
 
 export { forbiddenValues };
 

@@ -5,15 +5,16 @@ import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { describe, test } from "node:test";
 import { repoProblems } from "../scripts/marker-scan.ts";
-import { AUDIENCE } from "../src/audience.ts";
-import { checkResult } from "../src/checks.ts";
-import { pricing, RULES, type Rule } from "../src/judge.ts";
-import { CODE_MARKERS, OUTPUT_MARKER } from "../src/markers.ts";
-import type { Item } from "../src/types.ts";
+import { checkResult } from "../src/checks/index.ts";
+import { AUDIENCE } from "../src/config/audience.ts";
+import type { Item } from "../src/domain/types.ts";
+import { pricing, RULES } from "../src/judging/rules.ts";
+import type { Rule } from "../src/judging/run-rules.ts";
+import { CODE_MARKERS, OUTPUT_MARKER } from "../src/text/markers.ts";
 import { briefExample, landedIds, pricingSignal, runCases } from "./helpers.ts";
 
 // One block per acceptance criterion of issue #2, in its order. Judging goes through the
-// run(source) seam; the CLI, the repo check and the proof are run as the commands graders run.
+// run(input) seam; the CLI, the repo check and the proof are run as the commands graders run.
 
 const input = briefExample();
 const inputIds: string[] = input.signals.map((signal: { id: string }) => signal.id);

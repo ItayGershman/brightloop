@@ -1,5 +1,5 @@
 import _ from "lodash";
-import { isRecord } from "./rules.ts";
+import { isRecord } from "./field-rules.ts";
 
 /**
  * Every input id lands exactly once, in an item's source ids or in skipped, and no id is

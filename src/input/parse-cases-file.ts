@@ -1,20 +1,20 @@
-import { CODE_MARKERS } from "./markers.ts";
-import { CREDENTIAL_KEY, PRINTABLE_WITHOUT_SPACES } from "./patterns.ts";
-import type { Signal, Source } from "./types.ts";
+import type { RunInput, Signal } from "../domain/types.ts";
+import { CODE_MARKERS } from "../text/markers.ts";
+import { CREDENTIAL_KEY, PRINTABLE_WITHOUT_SPACES } from "../text/patterns.ts";
 
 /**
- * The file source: reads a cases.json text into a Source. Never throws; anything it
+ * Reads a cases.json text into the run input. Never throws; anything it
  * cannot use becomes an error, so a bad file still yields a result.json. Errors point at
  * a signal by its position, never by its raw id: an id is outside text too.
  */
-export function fileSource(text: string): Source {
+export function parseCasesFile(text: string): RunInput {
   let parsed: unknown;
   try {
     parsed = JSON.parse(text);
   } catch {
-    return empty("input is not valid JSON");
+    return inputWithError("input is not valid JSON");
   }
-  if (!isObject(parsed)) return empty("input must be a JSON object");
+  if (!isObject(parsed)) return inputWithError("input must be a JSON object");
 
   const errors: string[] = [];
   const secrets = secretValues(parsed.config);
@@ -65,7 +65,8 @@ function secretValues(config: unknown): string[] {
     .map(([, value]) => value as string);
 }
 
-function empty(error: string): Source {
+/** A run input with no signals and one problem, for input that could not be read at all. */
+export function inputWithError(error: string): RunInput {
   return { signals: [], bannedWords: [], secrets: [], errors: [error] };
 }
 

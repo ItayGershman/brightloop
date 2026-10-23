@@ -1,4 +1,4 @@
-import { brokenRules, isNonEmptyString, type FieldRule } from "./rules.ts";
+import { brokenRules, isNonEmptyString, type FieldRule } from "./field-rules.ts";
 
 /** An http(s) URL with no whitespace in it. */
 const HTTP_LINK = /^https?:\/\/\S+$/;

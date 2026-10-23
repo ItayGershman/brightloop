@@ -1,5 +1,5 @@
 import _ from "lodash";
-import { isRecord } from "./rules.ts";
+import { isRecord } from "./field-rules.ts";
 
 /** True if any string anywhere in the value contains a banned word as a whole word, any case. */
 export function containsBannedWord(value: unknown, bannedWords: string[]): boolean {

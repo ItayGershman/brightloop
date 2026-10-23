@@ -1,11 +1,11 @@
 import assert from "node:assert/strict";
 import { describe, test } from "node:test";
-import { AUDIENCE } from "../src/audience.ts";
-import { COMPETITORS } from "../src/competitors.ts";
-import { OUTPUT_MARKER } from "../src/markers.ts";
+import { AUDIENCE } from "../src/config/audience.ts";
+import { COMPETITORS } from "../src/config/competitors.ts";
+import { OUTPUT_MARKER } from "../src/text/markers.ts";
 import { briefExample, landedIds, pricingSignal, runCases } from "./helpers.ts";
 
-// Behaviour beyond issue #2's acceptance criteria, through the same run(source) seam.
+// Behaviour beyond issue #2's acceptance criteria, through the same run(input) seam.
 
 describe("a run on the brief's example", () => {
   const input = briefExample();
