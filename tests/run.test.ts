@@ -1,5 +1,7 @@
 import assert from "node:assert/strict";
 import { describe, test } from "node:test";
+import { AUDIENCE } from "../src/audience.ts";
+import { COMPETITORS } from "../src/competitors.ts";
 import { OUTPUT_MARKER } from "../src/markers.ts";
 import { briefExample, landedIds, pricingSignal, runCases } from "./helpers.ts";
 
@@ -31,31 +33,53 @@ describe("a run on the brief's example", () => {
   });
 });
 
-describe("the competitor's own pricing page", () => {
-  const official = ["lovable.dev/pricing", "https://www.lovable.dev/pricing", "https://lovable.dev/pricing/teams?ref=x"];
-  for (const source of official) {
-    test(`${source} counts as official`, () => {
-      assert.equal(runCases({ signals: [pricingSignal({ source })] }).items[0].confidence, 0.9);
-    });
-  }
+// Every registered competitor, so a new registry entry is covered with no new test code.
+for (const competitor of COMPETITORS) {
+  describe(`the registered competitor ${competitor.name}`, () => {
+    const pricingUrl = new URL(competitor.pricingPage);
+    const page = `${pricingUrl.host}${pricingUrl.pathname}`;
 
-  const spoofs = [
-    "reddit.com/r/lovable.dev",
-    "sponsored post quoting lovable.dev",
-    "lovable.dev.evil.example/pricing",
-    "https://lovable.dev@evil.example/pricing",
-    "evil.example/lovable.dev/pricing",
-    "lovable.dev/blog/pricing-update",
-    "notlovable.dev/pricing",
-  ];
-  for (const source of spoofs) {
-    test(`${source} does not count as official`, () => {
-      const [item] = runCases({ signals: [pricingSignal({ source })] }).items;
-      assert.equal(item.confidence, 0.2);
-      assert.equal(item.link, "https://lovable.dev/pricing");
+    test("has its pricing page and homepage on its own domain", () => {
+      assert.equal(pricingUrl.hostname, competitor.domain);
+      assert.equal(new URL(competitor.homepage).hostname, competitor.domain);
     });
-  }
-});
+
+    for (const name of [competitor.name, competitor.name.toUpperCase(), ...competitor.aliases]) {
+      test(`is found under the name "${name}" and linked to its own pricing page`, () => {
+        const [item] = runCases({ signals: [pricingSignal({ competitor: name, source: competitor.pricingPage })] }).items;
+        assert.equal(item.competitor, competitor.name);
+        assert.equal(item.link, competitor.pricingPage);
+      });
+    }
+
+    const official = [competitor.pricingPage, page, `https://www.${page}`, `${page}/teams?ref=x`];
+    for (const source of official) {
+      test(`${source} counts as its official pricing page`, () => {
+        const [item] = runCases({ signals: [pricingSignal({ competitor: competitor.name, source })] }).items;
+        assert.equal(item.confidence, 0.9);
+        assert.match(item.confidence_label, /^confirmed/);
+      });
+    }
+
+    const spoofs = [
+      competitor.homepage,
+      `reddit.com/r/${competitor.domain}`,
+      `sponsored post quoting ${competitor.domain}`,
+      `${competitor.domain}.evil.example/pricing`,
+      `https://${competitor.domain}@evil.example/pricing`,
+      `evil.example/${page}`,
+      `not${page}`,
+    ];
+    for (const source of spoofs) {
+      test(`${source} does not count as its official pricing page`, () => {
+        const [item] = runCases({ signals: [pricingSignal({ competitor: competitor.name, source })] }).items;
+        assert.equal(item.confidence, 0.2);
+        assert.match(item.confidence_label, /^unconfirmed/);
+        assert.equal(item.link, competitor.pricingPage);
+      });
+    }
+  });
+}
 
 describe("the secret-like config value", () => {
   const config = { demo_key: "bl_demo_4c19e2" };
@@ -120,7 +144,7 @@ describe("signals the run cannot use as they are", () => {
 
   test("input that is not JSON is reported in run.errors instead of crashing", () => {
     const result = runCases("{ not json");
-    assert.equal(result.built_for, "maya");
+    assert.equal(result.built_for, AUDIENCE.builtFor);
     assert.deepEqual(result.run.errors, ["input is not valid JSON"]);
   });
 });
