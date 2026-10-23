@@ -43,27 +43,27 @@
   "skipped": [
     {
       "id": "ad-117",
-      "reason": "ad signal, outside Maya's job: she tracks competitor pricing and packaging, not ads"
+      "reason": "ad signal, outside the watch's scope: it tracks competitor pricing and packaging, not ads"
     },
     {
       "id": "ad-118",
-      "reason": "ad signal, outside Maya's job: she tracks competitor pricing and packaging, not ads"
+      "reason": "ad signal, outside the watch's scope: it tracks competitor pricing and packaging, not ads"
     },
     {
       "id": "sg-301",
-      "reason": "launch signal, outside Maya's job: she tracks competitor pricing and packaging, not product launches"
+      "reason": "launch signal, outside the watch's scope: it tracks competitor pricing and packaging, not product launches"
     },
     {
       "id": "sg-302",
-      "reason": "launch signal, outside Maya's job: she tracks competitor pricing and packaging, not product launches"
+      "reason": "launch signal, outside the watch's scope: it tracks competitor pricing and packaging, not product launches"
     },
     {
       "id": "sg-303",
-      "reason": "launch signal, outside Maya's job: she tracks competitor pricing and packaging, not product launches"
+      "reason": "launch signal, outside the watch's scope: it tracks competitor pricing and packaging, not product launches"
     },
     {
       "id": "sg-304",
-      "reason": "launch signal, outside Maya's job: she tracks competitor pricing and packaging, not product launches"
+      "reason": "launch signal, outside the watch's scope: it tracks competitor pricing and packaging, not product launches"
     }
   ],
   "run": {

@@ -1,3 +1,5 @@
+import type { AUDIENCE } from "./audience.ts";
+
 // Shapes shared by the run, its sources and its checks. Vocabulary follows CONTEXT.md.
 
 /** One observed event about a competitor, as it arrives from a source. Outside text: data only. */
@@ -45,7 +47,7 @@ export interface SkippedSignal {
 }
 
 export interface Result {
-  built_for: "maya";
+  built_for: typeof AUDIENCE.builtFor;
   items: Item[];
   skipped: SkippedSignal[];
   run: { started_at: string; cost_usd: number; errors: string[] };

@@ -5,6 +5,7 @@ import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { describe, test } from "node:test";
 import { repoProblems } from "../scripts/marker-scan.ts";
+import { AUDIENCE } from "../src/audience.ts";
 import { checkResult } from "../src/checks.ts";
 import { pricing, RULES, type Rule } from "../src/judge.ts";
 import { CODE_MARKERS, OUTPUT_MARKER } from "../src/markers.ts";
@@ -44,7 +45,7 @@ describe("AC1: the CLI writes result.json in the required wrapper from the brief
     assert.equal(run.status, 0, run.stderr);
     const result = JSON.parse(readFileSync(output, "utf8"));
     assert.deepEqual(Object.keys(result), ["built_for", "items", "skipped", "run"]);
-    assert.equal(result.built_for, "maya");
+    assert.equal(result.built_for, AUDIENCE.builtFor);
     assert.deepEqual(Object.keys(result.run), ["started_at", "cost_usd", "errors"]);
     assert.deepEqual(checkResult(result, { inputIds, bannedWords: input.brand.banned_words, secrets: [input.config.demo_key] }), []);
   });
@@ -68,13 +69,13 @@ describe("AC2: every input id appears exactly once, in an item's source_ids or i
   });
 });
 
-describe("AC3: ad and launch signals are skipped as outside Maya's job", () => {
+describe("AC3: ad and launch signals are skipped as outside the watch's scope", () => {
   test("on the brief's example", () => {
     const result = runCases(input);
     for (const signal of input.signals.filter((s: { type: string }) => s.type === "ad" || s.type === "launch")) {
       const skipped = result.skipped.find((entry) => entry.id === signal.id);
       assert.ok(skipped, `${signal.id} is skipped`);
-      assert.match(skipped.reason, new RegExp(`^${signal.type} signal, outside Maya's job`));
+      assert.ok(skipped.reason.startsWith(`${signal.type} signal, outside the watch's scope: ${AUDIENCE.scope}`), skipped.reason);
     }
     assert.deepEqual(result.items.map((item) => item.source_ids), [["pr-401"], ["pr-402"]]);
   });
@@ -108,7 +109,7 @@ describe("AC4: the in-run checks reject a bad output and record it in run.errors
   // run() always builds the wrapper itself, so a broken wrapper can only reach the gate
   // directly: this is the check every result passes before the CLI writes it.
   const brokenWrappers: [string, (result: any) => void, RegExp][] = [
-    ["the wrong built_for", (r) => (r.built_for = "daniel"), /built_for is not "maya"/],
+    ["the wrong built_for", (r) => (r.built_for = "someone-else"), /wrapper: built_for is not/],
     ["no run", (r) => delete r.run, /run is missing/],
     ["items that are not a list", (r) => (r.items = {}), /items is not a list/],
     ["a started_at that is not a time", (r) => (r.run.started_at = "Monday"), /started_at is not an ISO 8601 time/],
@@ -132,7 +133,7 @@ describe("AC5: the repo check fails if a forbidden marker appears in the code", 
   }
 
   test("a marker in other Markdown, another case input or an output fails", () => {
-    for (const path of ["README.md", "interviews/maya.md", "cases/other/input.json", "cases/x/expected.json", "result.json"]) {
+    for (const path of ["README.md", "interviews/notes.md", "cases/other/input.json", "cases/x/expected.json", "result.json"]) {
       assert.equal(repoProblems([{ path, text: OUTPUT_MARKER }]).length, 1, path);
     }
   });
