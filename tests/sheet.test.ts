@@ -80,7 +80,7 @@ describe("rendering a result as rows", () => {
       "$30/month",
       "https://bolt.new/pricing",
       `${item.notes} Next: ${item.cta}`,
-      "respond now",
+      "can't tell yet: compare with our own pricing before 11:00",
       item.why,
       `${item.confidence_label} (${item.confidence})`,
     ]);

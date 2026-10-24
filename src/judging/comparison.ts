@@ -22,6 +22,8 @@ export interface Comparison {
   comparison: string;
   /** The question and its answer, for the item's why. */
   stillCheaper: string;
+  /** Whether the competitor's plan was set against a Brightloop tier; without it the call can't be made. */
+  compared: boolean;
 }
 
 const NOT_CONNECTED: OwnPricing = { state: "not connected" };
@@ -39,7 +41,7 @@ const NO_TAB: Record<Exclude<OwnPricing["state"], "read">, string> = {
 export function compareWithBrightloop(change: PricingChange, own: OwnPricing = NOT_CONNECTED): Comparison {
   const shown = competitorPrice(change);
   const onTier = change.plan.place === "unknown" ? `the ${change.competitor} plan that changed` : planName(change.competitor, change.plan);
-  const answer = (text: string) => ({ comparison: text, stillCheaper: `Still cheaper than us on ${onTier}? ${text}` });
+  const answer = (text: string) => ({ comparison: text, stillCheaper: `Still cheaper than us on ${onTier}? ${text}`, compared: false });
 
   if (own.state !== "read") return answer(`Can't compare: ${NO_TAB[own.state]}, so no Brightloop price is used. ${shown}`);
   const cantCompare = (reason: string) => answer(`Can't compare with Brightloop: ${reason}. ${shown}`);
@@ -48,7 +50,7 @@ export function compareWithBrightloop(change: PricingChange, own: OwnPricing = N
   const name = planName(change.competitor, plan);
   if (plan.place === "free") {
     const free = freePlan(name, change.link, own.tiers, shown);
-    return { comparison: free.comparison, stillCheaper: `Still cheaper than us on ${onTier}? ${free.answer}` };
+    return { comparison: free.comparison, stillCheaper: `Still cheaper than us on ${onTier}? ${free.answer}`, compared: true };
   }
 
   const tier = brightloopTier(own.tiers, plan);
@@ -56,7 +58,7 @@ export function compareWithBrightloop(change: PricingChange, own: OwnPricing = N
   const price = comparablePrice(change, name);
   if ("reason" in price) return cantCompare(price.reason);
   const { comparison, answer: yesOrNo } = verdict(price.shows, price.amount, tier);
-  return { comparison, stillCheaper: `Still cheaper than us on ${onTier}? ${yesOrNo}` };
+  return { comparison, stillCheaper: `Still cheaper than us on ${onTier}? ${yesOrNo}`, compared: true };
 }
 
 /** The baseline's comparison: the competitor's lowest paid plan against Brightloop's cheapest paid tier. */

@@ -1,7 +1,7 @@
 import { AUDIENCE } from "../config/audience.ts";
 import { COMPETITORS, competitorSlug, findCompetitor, type Competitor } from "../config/competitors.ts";
 import { PAGE_COPY, PAGE_NAMES, UNCHANGED, type Item, type PageKind, type Result, type SlackDelivery, type Tier } from "../domain/types.ts";
-import { RESPOND_NOW, RESPOND_QUESTION } from "../judging/advice.ts";
+import { isTheirCall, RESPOND_QUESTION, YOUR_CALL } from "../judging/advice.ts";
 import { BASELINE_ACTION } from "../judging/baseline.ts";
 import type { RunLogEntry } from "../schedule/run-log.ts";
 import { shownPrice } from "../text/pricing-tiers.ts";
@@ -82,7 +82,7 @@ ${historySection(history, short)}
 type Tone = "green" | "red" | "amber" | "grey";
 
 function heroSection(result: Result, changes: Item[], baselines: Item[], anchors: Map<Item, string>): string {
-  const respond = changes.filter(isRespondNow);
+  const respond = changes.filter((item) => isTheirCall(item.action));
   const problems = result.run.errors.length;
   const meeting = AUDIENCE.meetingTime;
   const alsoProblems = problems > 0 ? ` The run also hit ${plural(problems, "problem")}, so it may not be everything.` : "";
@@ -93,12 +93,12 @@ function heroSection(result: Result, changes: Item[], baselines: Item[], anchors
   if (respond.length > 0) {
     const others = changes.length - respond.length;
     tone = "red";
-    title = `${respond.length === 1 ? "1 change needs" : `${respond.length} changes need`} a response before ${meeting}`;
-    sub = `${plural(changes.length, "pricing change")} this week.${others > 0 ? ` ${others === 1 ? "The other one is" : `The other ${others} are`} worth watching, no response yet.` : ""}${alsoProblems}`;
+    title = `${respond.length === 1 ? "1 change" : `${respond.length} changes`} for ${YOUR_CALL}`;
+    sub = `${plural(changes.length, "pricing change")} this week, with before, after and the link.${others > 0 ? ` ${others === 1 ? "The other one is" : `The other ${others} are`} worth watching, no response yet.` : ""}${alsoProblems}`;
     jump = { item: respond[0], text: respond.length === 1 ? `See the ${respond[0].competitor} change` : "See the changes" };
   } else if (changes.length > 0) {
     tone = "amber";
-    title = `${plural(changes.length, "pricing change")} to watch, none needs a response yet`;
+    title = `${plural(changes.length, "pricing change")} to watch, none is your call yet`;
     sub = `Each one says what would change that.${alsoProblems}`;
     jump = { item: changes[0], text: "See the changes" };
   } else if (problems > 0) {
@@ -390,6 +390,7 @@ function slackCell(entry: RunLogEntry): string {
 /** What happened to the Slack line, in the audience's words: no setting names on the page. */
 const SLACK_WORDS: Record<SlackDelivery["status"], string> = {
   posted: `Posted to ${AUDIENCE.slackChannel}`,
+  "not posted: nothing moved": `Not posted to ${AUDIENCE.slackChannel}: nothing moved, so there was nothing to tell leadership`,
   "not posted: only a live run posts": `Not posted to ${AUDIENCE.slackChannel}: this was a test run, not a check of the live pages`,
   "not posted: no SLACK_WEBHOOK_URL": `Not posted to ${AUDIENCE.slackChannel}: this run had no Slack connection`,
   "not posted: the post failed": `Not posted to ${AUDIENCE.slackChannel}: Slack did not accept it`,
@@ -398,18 +399,14 @@ const SLACK_WORDS: Record<SlackDelivery["status"], string> = {
 // ---------------------------------------------------------------------------------------------
 // Small helpers
 
-/** Respond-now first, then the watches, then the rest; the order within each kept. */
+/** The audience's calls first, then the watches, then the rest; the order within each kept. */
 function ordered(items: Item[]): Item[] {
-  const rank = (item: Item) => (isRespondNow(item) ? 0 : item.action.startsWith("watch") ? 1 : 2);
+  const rank = (item: Item) => (isTheirCall(item.action) ? 0 : item.action.startsWith("watch") ? 1 : 2);
   return [...items].sort((a, b) => rank(a) - rank(b));
 }
 
-function isRespondNow(item: Item): boolean {
-  return item.action.startsWith(RESPOND_NOW);
-}
-
 function actionTone(action: string): Tone {
-  if (action.startsWith(RESPOND_NOW)) return "red";
+  if (isTheirCall(action)) return "red";
   if (action.startsWith("watch")) return "amber";
   return "grey";
 }

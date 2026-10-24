@@ -31,6 +31,10 @@ test(".env.example names every key the workflow gives the run, with no secret va
   }
 });
 
+test(".env.example leaves DETAILS_URL empty, so the Slack line links to Maya's own Sheet (#13)", () => {
+  assert.equal(exampleKeys().get("DETAILS_URL"), "");
+});
+
 test("the local run refuses --commit off main, before opening any page", () => {
   // The same lookup as the script's: on main the script would start a real live run, so the test stops.
   const branch = spawnSync("git", ["symbolic-ref", "--short", "HEAD"], { encoding: "utf8" }).stdout.trim();

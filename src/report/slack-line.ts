@@ -1,7 +1,7 @@
 import { AUDIENCE } from "../config/audience.ts";
 import { findCompetitor } from "../config/competitors.ts";
 import type { Item, Result } from "../domain/types.ts";
-import { RESPOND_NOW } from "../judging/advice.ts";
+import { CANT_TELL, isTheirCall, YOUR_CALL } from "../judging/advice.ts";
 import { BASELINE_ACTION } from "../judging/baseline.ts";
 
 // The one line the audience's meeting sees in Slack, in the audience's own style ("deck for
@@ -30,18 +30,21 @@ export function slackLine(result: Result, detailsUrl: string): string {
 function changesPart(changes: Item[]): string {
   const who = names(changes);
   const unconfirmed = changes.filter((item) => item.confidence_label.startsWith(UNCONFIRMED)).length;
-  const respondNow = changes.filter((item) => item.action.startsWith(RESPOND_NOW)).length;
+  const theirCall = changes.filter((item) => isTheirCall(item.action));
+  const cantTell = theirCall.filter((item) => item.action.startsWith(CANT_TELL)).length;
   return [
     `${changes.length === 1 ? "one pricing change" : `${changes.length} pricing changes`} flagged${who ? ` (${who})` : ""}`,
     ...(unconfirmed > 0 ? [changes.length === 1 ? "still unconfirmed" : `${unconfirmed} still unconfirmed`] : []),
-    responsePart(respondNow, changes.length),
+    callPart(theirCall.length, changes.length),
+    ...(cantTell > 0 ? [cantTell === theirCall.length ? "can't tell yet without our own pricing" : `${cantTell} of them can't tell yet without our own pricing`] : []),
   ].join(", ");
 }
 
-function responsePart(respondNow: number, changes: number): string {
-  if (respondNow === 0) return "no response needed yet";
-  if (changes === 1) return "it needs a response now";
-  return `${respondNow === 1 ? "one needs" : `${respondNow} need`} a response now`;
+/** The call is always the audience's: the line says which changes are theirs to decide before the meeting, once each. */
+function callPart(theirCall: number, changes: number): string {
+  if (theirCall === 0) return "no response needed yet";
+  if (changes === 1) return YOUR_CALL;
+  return `${theirCall === 1 ? "one" : theirCall} for ${YOUR_CALL}`;
 }
 
 /** A run with errors never reads as an all-clear: a page may not have been read, or an item held back. */

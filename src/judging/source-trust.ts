@@ -26,7 +26,7 @@ export interface Page {
 /** How an item from a trust level reads. */
 interface ItemWording {
   /** The action and the answer to "should we respond?", given what the signal says changed. */
-  respond: (page: Page, change: PricingChange) => Advice;
+  respond: (page: Page, change: PricingChange, compared: boolean) => Advice;
   cta: (page: Page) => string;
   notes: (page: Page) => string;
 }
@@ -57,7 +57,7 @@ const TRUST_LEVELS: TrustLevel[] = [
     label: ({ name }) => `confirmed: seen on ${name}'s own pricing page`,
     item: {
       // Only the pricing page itself shows a change worth acting on: the action follows the change.
-      respond: (_page, change) => advise(change),
+      respond: (_page, change, compared) => advise(change, compared),
       cta: ({ name, link }) => `Open ${link} and check the ${name} price before ${AUDIENCE.deadline}.`,
       notes: ({ source }) => `Source: ${source}.`,
     },

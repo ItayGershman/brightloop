@@ -67,13 +67,15 @@ Every run, from any command, renders one line for leadership in Maya's own style
 
 | Run | Line |
 |---|---|
-| Nothing moved | `pricing watch for 11:00: nothing moved since the last check. details: <link>` |
-| One change to respond to | `pricing watch for 11:00: one pricing change flagged (Lovable), it needs a response now. details: <link>` |
+| Nothing moved | `pricing watch for 11:00: nothing moved since the last check. details: <link>`, stored but never posted (status `not posted: nothing moved`): Maya asked for no quiet-week ping |
+| One change for Maya's call | `pricing watch for 11:00: one pricing change flagged (Lovable), your call before 11:00. details: <link>` |
+| The same, with no own-pricing tab | `pricing watch for 11:00: one pricing change flagged (Lovable), your call before 11:00, can't tell yet without our own pricing. details: <link>` |
+| Three changes, one without the comparison | `pricing watch for 11:00: 3 pricing changes flagged (Lovable, Replit and Bolt), 3 for your call before 11:00, 1 of them can't tell yet without our own pricing. details: <link>` |
 | Several, none to respond to | `pricing watch for 11:00: 3 pricing changes flagged (Replit, Bolt and Lovable), 2 still unconfirmed, no response needed yet. details: <link>` |
 | First run | `pricing watch for 11:00: first look recorded for Lovable, Replit and Bolt, nothing to compare yet. details: <link>` |
 | A page not read, or an item held back by the in-run checks | `pricing watch for 11:00: nothing to report, but the run hit one problem, so this is not the all-clear. details: <link>` |
 
-The line is built from counts, actions and registered competitor names only: no quoted text, no confidence score, no price. The link is `DETAILS_URL` when it is set to an https link, otherwise Maya's sheet (`AUDIENCE.sheetUrl`). Only a live run (`--live`) with `SLACK_WEBHOOK_URL` set posts the line, to the channel the webhook belongs to, after `result.json` is first written; a cases file or a replay never posts, and without the key no poster is made and no network call happens. A failed post is added to `run.errors` with the reason ("Slack answered 404", "no answer from Slack"), never the webhook, and never stops the run.
+The line is built from counts, actions and registered competitor names only: no quoted text, no confidence score, no price. The link is `DETAILS_URL` when it is set to an https link, otherwise Maya's sheet (`AUDIENCE.sheetUrl`). Only a live run (`--live`) with `SLACK_WEBHOOK_URL` set posts the line, and never on a quiet week (no item and no run error), to the channel the webhook belongs to, after `result.json` is first written; a cases file or a replay never posts, and without the key no poster is made and no network call happens. A failed post is added to `run.errors` with the reason ("Slack answered 404", "no answer from Slack"), never the webhook, and never stops the run.
 
 ## The live page
 
@@ -126,7 +128,7 @@ The required wrapper (`built_for`, `items`, `skipped`, `run`) plus these fields 
 | `confidence_label` | The confidence in plain words, e.g. "confirmed: seen on Lovable's own pricing page", or "unconfirmed, possible promo: ..." when the rules cannot tell a promotion from a list-price change |
 | `cta` | What Maya should do next |
 | `competitor`, `page` | Which competitor and which of its pages |
-| `what_changed`, `before`, `after` | The change as stated; `before` and `after` only when the signal states both and it is not a promotion or a possible one |
+| `what_changed`, `before`, `after` | The change as stated; `before` and `after` are the values the page or signal showed, filled in whenever stated, with a promotional price labelled "(promotional)" and a possible one "(possible promo, unconfirmed)" |
 | `link` | The competitor's own pricing page |
 | `notes` | Where the signal came from, and any promotion markers found |
 | `brightloop_comparison` | Whether the competitor is still cheaper than Brightloop on that tier, from the own-pricing tab (the Brightloop tier is named, its price never written), or why that can't be said |
@@ -137,4 +139,4 @@ And one field next to the wrapper:
 
 | Field | Meaning |
 |---|---|
-| `slack` | `{ line, status }`: the run's one Slack line (above) and what happened to it: `posted`, `not posted: only a live run posts`, `not posted: no SLACK_WEBHOOK_URL` or `not posted: the post failed`. The run log (`runs/run-log.jsonl`) copies both as `slack_line` and `slack_status`, so the run history and the live page show the line as posted |
+| `slack` | `{ line, status }`: the run's one Slack line (above) and what happened to it: `posted`, `not posted: only a live run posts`, `not posted: no SLACK_WEBHOOK_URL`, `not posted: nothing moved` or `not posted: the post failed`. The run log (`runs/run-log.jsonl`) copies both as `slack_line` and `slack_status`, so the run history and the live page show the line as posted |
