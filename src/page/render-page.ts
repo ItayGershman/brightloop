@@ -1,7 +1,7 @@
 import { AUDIENCE } from "../config/audience.ts";
 import { COMPETITORS, competitorSlug, findCompetitor, type Competitor } from "../config/competitors.ts";
 import { PAGE_COPY, PAGE_NAMES, UNCHANGED, type Item, type PageKind, type Result, type SlackDelivery, type Tier } from "../domain/types.ts";
-import { isTheirCall, RESPOND_QUESTION } from "../judging/advice.ts";
+import { isTheirCall, RESPOND_QUESTION, YOUR_CALL } from "../judging/advice.ts";
 import { BASELINE_ACTION } from "../judging/baseline.ts";
 import type { RunLogEntry } from "../schedule/run-log.ts";
 import { shownPrice } from "../text/pricing-tiers.ts";
@@ -93,12 +93,12 @@ function heroSection(result: Result, changes: Item[], baselines: Item[], anchors
   if (respond.length > 0) {
     const others = changes.length - respond.length;
     tone = "red";
-    title = `${respond.length === 1 ? "1 change" : `${respond.length} changes`} for your call before ${meeting}`;
+    title = `${respond.length === 1 ? "1 change" : `${respond.length} changes`} for ${YOUR_CALL}`;
     sub = `${plural(changes.length, "pricing change")} this week, with before, after and the link.${others > 0 ? ` ${others === 1 ? "The other one is" : `The other ${others} are`} worth watching, no response yet.` : ""}${alsoProblems}`;
     jump = { item: respond[0], text: respond.length === 1 ? `See the ${respond[0].competitor} change` : "See the changes" };
   } else if (changes.length > 0) {
     tone = "amber";
-    title = `${plural(changes.length, "pricing change")} to watch, none needs a response yet`;
+    title = `${plural(changes.length, "pricing change")} to watch, none is your call yet`;
     sub = `Each one says what would change that.${alsoProblems}`;
     jump = { item: changes[0], text: "See the changes" };
   } else if (problems > 0) {

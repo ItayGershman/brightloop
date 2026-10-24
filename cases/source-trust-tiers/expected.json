@@ -115,7 +115,7 @@
       "page": "pricing",
       "what_changed": "Partner plan launches at $50/month.",
       "before": null,
-      "after": null,
+      "after": "$50/month",
       "link": "https://lovable.dev/pricing",
       "notes": "Source: https://lovable.dev/blog/new-partner-program, Lovable's own site but not its pricing page.",
       "brightloop_comparison": "Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Lovable shows $50/month.",

@@ -36,7 +36,7 @@ const IF_ON_LOWER_TIERS = (competitor: string) =>
   `What would change the answer: ${competitor} making the same change on its lowest paid tier or its free plan.`;
 
 /** Advice for a change confirmed on the competitor's own pricing page; `compared` says whether Brightloop's tier was set against it. */
-export function advise({ competitor, link, promotion, plan: changed, reading, limits }: PricingChange, compared: boolean): Advice {
+export function advise({ competitor, link, promotion, plan: changed, reading, limit }: PricingChange, compared: boolean): Advice {
   const plan = planName(competitor, changed);
   if (promotion.kind === "promotion") {
     return {
@@ -63,7 +63,7 @@ export function advise({ competitor, link, promotion, plan: changed, reading, li
         `What would change the answer: ${link} showing ${plan}'s price for the same period as before.`,
     };
   }
-  if ((changed.place === "lowestPaid" || changed.place === "free") && limits === "more") {
+  if ((changed.place === "lowestPaid" || changed.place === "free") && limit?.move === "more") {
     return {
       action: "watch 2 weeks",
       shouldWeRespond:

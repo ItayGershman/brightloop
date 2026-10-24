@@ -134,7 +134,7 @@ describe("the Slack line", () => {
   test("the brief's example through the real run: one line, no score, no Brightloop price", () => {
     const line = slackLine(runCases(briefExample()), URL);
     // No own-pricing tab in a cases run, so the call can't be made yet (#13).
-    assert.equal(line, `pricing watch for 11:00: one pricing change flagged (Lovable), can't tell yet without our own pricing, your call before 11:00. details: ${URL}`);
+    assert.equal(line, `pricing watch for 11:00: one pricing change flagged (Lovable), your call before 11:00, can't tell yet without our own pricing. details: ${URL}`);
     assert.doesNotMatch(line, /\n/);
     assert.doesNotMatch(line, /0\.\d|\$/);
   });

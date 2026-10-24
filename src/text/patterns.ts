@@ -169,3 +169,16 @@ export const FREE_PLAN = /\bfree (?:plan|tier|mode)\b/i;
 
 /** A dollar amount anywhere in a line: "$27", "Total of $216 $300 / year", "$20 towards more powerful models". */
 export const DOLLAR_AMOUNT = /\$\d/;
+
+/** '"100 monthly credits" is now "150 monthly credits"': groups 1 and 2 are the earlier and later limit. */
+export const QUOTED_LIMIT_PAIR = /"([^"]*)" is now "([^"]*)"/;
+
+/**
+ * "10 apps, up from 3", "3 apps, down from 10": group 1 is the later number, 2 the words
+ * between, 3 "up" or "down", 4 the earlier number. No number may sit between the two, so a
+ * number earlier in the sentence ("Pro (25 users) now 3 apps, down from 10") is never the limit.
+ */
+export const LIMIT_UP_DOWN_FROM = /(\d+(?:\.\d+)?\s*[km]?)\b([^\d.]*?)\b(up|down)\s+from\s+(\d+(?:\.\d+)?\s*[km]?)\b/i;
+
+/** The first number in a limit, with its k or M suffix: "150 monthly credits", "500k tokens". */
+export const LIMIT_QUANTITY = /(\d+(?:\.\d+)?)\s*([km])?\b/i;

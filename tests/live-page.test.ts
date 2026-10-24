@@ -110,7 +110,7 @@ describe("the live page renderer", () => {
 
   test("the headline for a week with only changes to watch, none to answer", () => {
     const visible = text(renderPage({ result: result({ items: [watch] }), timeZone: ZONE }));
-    assert.match(visible, /1 pricing change to watch, none needs a response yet/);
+    assert.match(visible, /1 pricing change to watch, none is your call yet/);
   });
 
   test("the headline is built from counts and actions, never from outside text", () => {

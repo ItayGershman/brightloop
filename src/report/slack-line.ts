@@ -1,7 +1,7 @@
 import { AUDIENCE } from "../config/audience.ts";
 import { findCompetitor } from "../config/competitors.ts";
 import type { Item, Result } from "../domain/types.ts";
-import { CANT_TELL, isTheirCall } from "../judging/advice.ts";
+import { CANT_TELL, isTheirCall, YOUR_CALL } from "../judging/advice.ts";
 import { BASELINE_ACTION } from "../judging/baseline.ts";
 
 // The one line the audience's meeting sees in Slack, in the audience's own style ("deck for
@@ -35,16 +35,16 @@ function changesPart(changes: Item[]): string {
   return [
     `${changes.length === 1 ? "one pricing change" : `${changes.length} pricing changes`} flagged${who ? ` (${who})` : ""}`,
     ...(unconfirmed > 0 ? [changes.length === 1 ? "still unconfirmed" : `${unconfirmed} still unconfirmed`] : []),
-    ...(cantTell > 0 ? [cantTell === 1 && theirCall.length === 1 ? "can't tell yet without our own pricing" : `${cantTell} can't tell yet without our own pricing`] : []),
     callPart(theirCall.length, changes.length),
+    ...(cantTell > 0 ? [cantTell === theirCall.length ? "can't tell yet without our own pricing" : `${cantTell} of them can't tell yet without our own pricing`] : []),
   ].join(", ");
 }
 
-/** The call is always the audience's: the line says which changes are theirs to decide before the meeting. */
+/** The call is always the audience's: the line says which changes are theirs to decide before the meeting, once each. */
 function callPart(theirCall: number, changes: number): string {
   if (theirCall === 0) return "no response needed yet";
-  if (changes === 1) return `your call before ${AUDIENCE.meetingTime}`;
-  return `${theirCall === 1 ? "one" : theirCall} for your call before ${AUDIENCE.meetingTime}`;
+  if (changes === 1) return YOUR_CALL;
+  return `${theirCall === 1 ? "one" : theirCall} for ${YOUR_CALL}`;
 }
 
 /** A run with errors never reads as an all-clear: a page may not have been read, or an item held back. */

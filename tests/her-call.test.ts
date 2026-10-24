@@ -7,6 +7,7 @@ import { liveInput } from "../src/input/live-input.ts";
 import { renderPage } from "../src/page/index.ts";
 import { slackLine } from "../src/report/index.ts";
 import { run } from "../src/run.ts";
+import { limitMove } from "../src/text/limit-change.ts";
 import { readOwnPricing } from "../src/sheet/own-pricing.ts";
 import { STARTED_AT } from "./helpers.ts";
 import { derivedPairs } from "./snapshot-pairs.ts";
@@ -118,7 +119,63 @@ describe("#13: \"respond now\" appears nowhere", () => {
   test("without the comparison the Slack line says it can't tell yet", () => {
     assert.equal(
       slackLine(runWith(undefined, lovablePro), "https://example.com"),
-      "pricing watch for 11:00: one pricing change flagged (Lovable), can't tell yet without our own pricing, your call before 11:00. details: https://example.com",
+      "pricing watch for 11:00: one pricing change flagged (Lovable), your call before 11:00, can't tell yet without our own pricing. details: https://example.com",
+    );
+  });
+});
+
+// Review of PR #32: a limit's direction is read from the number next to "up from" or "down
+// from", before and after are filled from a stated limit pair or a single promotional price,
+// and the Slack line names each change's call once.
+
+describe("#13 review: a limit's direction is read from the number it belongs to", () => {
+  test("a number earlier in the sentence is not the limit", () => {
+    assert.equal(limitMove("Pro (25 users) now 3 apps, down from 10"), "less");
+    assert.equal(limitMove("Pro (2 seats) now gives 10 apps, up from 3"), "more");
+  });
+
+  test("less on the lowest paid tier is never watched as more for the same price", () => {
+    const [item] = runWith(undefined, { ...lovablePro, text: "Pro (25 users) now 3 apps, down from 10." }).items;
+    assert.equal(item.action, CANT_TELL);
+  });
+});
+
+describe("#13 review: before and after are filled from what the signal states", () => {
+  test("a quoted limit pair", () => {
+    const [item] = runWith(tab(), { ...lovablePro, text: 'Pro plan "100 monthly credits" is now "150 monthly credits".' }).items;
+    assert.equal(item.before, "100 monthly credits");
+    assert.equal(item.after, "150 monthly credits");
+  });
+
+  test("a limit up from an earlier number, with its unit", () => {
+    const [item] = runWith(tab(), { ...replitFree, text: "Free plan now includes 10 apps, up from 3." }).items;
+    assert.equal(item.before, "3 apps");
+    assert.equal(item.after, "10 apps");
+  });
+
+  test("a promotion that states one price", () => {
+    const [item] = runWith(tab(), { ...lovablePro, text: "Pro now $20/month, limited time 20% off." }).items;
+    assert.equal(item.before, null);
+    assert.equal(item.after, "$20/month (promotional)");
+  });
+});
+
+describe("#13 review: the Slack line names each change's call once", () => {
+  const replitCore = { ...lovablePro, id: "s-3", competitor: "Replit", source: "replit.com/pricing", text: "Core plan now $25/month (was $20)." };
+  const boltYearly = { ...lovablePro, id: "s-4", competitor: "Bolt", source: "bolt.new/pricing", text: "Pro plan now $200 per year, was $180 per year." };
+  const boltPro = { ...boltYearly, text: "Pro plan now $25/month (was $20)." };
+
+  test("every change without the comparison", () => {
+    assert.equal(
+      slackLine(runWith(undefined, lovablePro, replitCore, boltPro), "https://example.com"),
+      "pricing watch for 11:00: 3 pricing changes flagged (Lovable, Replit and Bolt), 3 for your call before 11:00, can't tell yet without our own pricing. details: https://example.com",
+    );
+  });
+
+  test("one of three without the comparison", () => {
+    assert.equal(
+      slackLine(runWith(tab(), lovablePro, replitCore, boltYearly), "https://example.com"),
+      "pricing watch for 11:00: 3 pricing changes flagged (Lovable, Replit and Bolt), 3 for your call before 11:00, 1 of them can't tell yet without our own pricing. details: https://example.com",
     );
   });
 });

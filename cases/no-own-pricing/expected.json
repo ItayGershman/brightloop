@@ -35,7 +35,7 @@
       "page": "pricing",
       "what_changed": "Core plan listed at $25/month.",
       "before": null,
-      "after": null,
+      "after": "$25/month",
       "link": "https://replit.com/pricing",
       "notes": "Source: replit.com/pricing.",
       "brightloop_comparison": "Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Replit Core shows $25/month.",
