@@ -1,6 +1,6 @@
 # Interview: Maya
 
-Messages used: 18 of 20 (triage done; Maya chosen; deep phase done; validation 5). 2 left: 1 to show her the finished output, 1 in reserve (budget: about 4 for triage, about 10 deep if chosen, about 5 kept for validation)
+Messages used: 19 of 20 (triage done; Maya chosen; deep phase done; validation 6, closed). 1 left, in reserve (budget: about 4 for triage, about 10 deep if chosen, about 5 kept for validation)
 
 ## What we've learned
 
@@ -28,6 +28,7 @@ Messages used: 18 of 20 (triage done; Maya chosen; deep phase done; validation 5
 - Promotion row, message 16 (validation 3): on a made-up week (Lovable's real pricing page with Pro from $25 to $20 and a "Limited time: 20% off" line), "Closer." The `watch 2 weeks` call and the promo detection are right, but the empty `before` and `after` are "a problem": they should say "$25/month" and "$20/month (promotional)", because "Empty fields mean I can't trust the history next week when I come back to check if the promo is still running." "Fill those in every time." For the tool: `before` and `after` always carry the prices the page showed, with the promotional one labelled, so the row is never read as a list-price cut and still works for next week's comparison.
 - Slack line and link, message 17 (validation 4): the change line ("one pricing change flagged (Lovable), your call before 11:00") "yes — that's useful, I'd post it. Short, clear, tells leadership to look before 11:00." The "nothing moved" line: "I wouldn't post that every week. That's noise … Just skip it. If nothing moved, I'll say so myself in the meeting on Monday if they ask." The no-login link "is good — that matters", but "a link to some app I don't control makes me nervous. If that link goes down Monday at 10:45 and I'm standing in front of leadership with a dead URL, that's on me. If it could just post the row straight into a Google Sheet I own, I'd feel a lot better." For the tool: a quiet week is never posted; the Slack line should link to her own Sheet, not the live page. (She called it "a Friday ping"; the run is on Monday morning.)
 - What she actually wants, message 18 (validation 5): asked what would still be missing to skip the two hours of screenshots, she pushed back: "I need more signups. Honestly, anything that moves trial starts — that's what I care about. The Monday deck is just a thing I have to do, not the thing I want to solve. You're deep in the weeds on the competitor tracking, which is fine, but don't lose the plot on what actually matters to me." For the tool: no new scope two days before the deadline (the one job stays the Monday pricing watch, criterion 4), but every output should say why a change matters for trial starts, which the `why` already does ("the tier most of our trials compare against"). The deck itself is not worth more building.
+- Real output in her own Sheet, message 19 (validation 6, closing): her Sheet held 3 real first-look rows (Lovable, Replit and Bolt pricing pages, today's prices and links) from a full local run at 17:40 UTC, which also posted the first-look line to `#leadership` and published the live page. The chat cut the message off after about 1 000 characters, so she saw the Sheet link, the first-look note, the Monday check and the start of the example row, but not the list of what it does and doesn't do, the Slack paragraph or the closing question. Her reply: "The sheet looks good, the Slack line is right, and yeah, if it saves me those two hours on Monday I'll take that. But don't ask me to spec your product for you — that's your job. I just need it to work." She opened again with "I need more signups. Anything that moves trial starts is what I actually care about." For the tool: she accepts the Sheet rows and the Slack line as they are, and the value she names is the two hours back. No more questions about what to build. What's left is that Monday's run works. Her own-pricing tab is still empty, and she didn't see the line asking her to fill it.
 
 ## Transcript
 
@@ -184,7 +185,7 @@ Next: build a real draft output (one Monday's rows plus the Slack one-liner) and
 - 2026-10-22 · The tool delivers its output into Google Sheets and/or Slack, not into a separate app the marketer must sign in to · Maya, reply 7: "If it's not in Sheets or Slack, it doesn't exist for my team. We don't do new logins, we don't do new tools." Affects the architecture: a Base44 app can still run the job and hold the data, but Maya's view of it has to be a sheet row or a Slack message. Needs the coordinating session's call.
 - 2026-10-22 · Each item answers leadership's two questions, "are they still cheaper than us on that tier?" and "should we respond?", so Brightloop's own pricing per tier is an input to every run · Maya, reply 7: she couldn't answer those questions in the meeting without her tracking sheet.
 
-## Validation (messages 14 to about 18)
+## Validation (messages 14 to 19)
 
 Goal: show Maya real output (her sheet rows, the Slack line, the live page) and record her reaction. The real Friday run found nothing moved, so busier weeks are shown as text: Lovable's real pricing snapshot of 2026-10-23 with one line edited (the test fixtures in `tests/fixtures/derived-snapshot-pairs/`), run through the normal replay. Each message says the change is made up.
 
@@ -264,3 +265,18 @@ One question before I finish it: with a row in your sheet (before, after, link t
 ### 18 · Maya
 
 Look, I need more signups. Honestly, anything that moves trial starts — that's what I care about. The Monday deck is just a thing I have to do, not the thing I want to solve. You're deep in the weeds on the competitor tracking, which is fine, but don't lose the plot on what actually matters to me.
+
+### 19 · Itay
+
+As sent; the chat cut it off where it ends here:
+
+Fair point, and it's the reason this exists: your trials upgrade from the lowest paid tier, so when Lovable, Replit or Bolt move theirs, you should know first, and 8:30 to 10:30 on Monday should go to signups, not to cropping screenshots. Here's the whole thing, live, so you can tell me what's missing before Monday.
+
+Your sheet, filled by a real run this evening: https://docs.google.com/spreadsheets/d/1HXgiG-YdpvyPeCEomQ_hPWTGilRTM9jP4e01DB9M5Os/edit
+Three rows, one per competitor, with today's prices from their pricing pages and the link to each. It's the first look, so "before" is empty this once. From Monday on, every change row has before and after filled in.
+
+Every Monday morning, before 11:00, it checks the pricing pages and homepages of Lovable, Replit and Bolt against last week's copies and adds a row per change, in your columns plus the call, why, and how sure it is. Example of a change row, from a made-up week: Lovable · Pro · before "$25/month" · after "$20/month (promotiona
+
+### 19 · Maya
+
+Honestly — I need more signups. Anything that moves trial starts is what I actually care about. The sheet looks good, the Slack line is right, and yeah, if it saves me those two hours on Monday I'll take that. But don't ask me to spec your product for you — that's your job. I just need it to work.
