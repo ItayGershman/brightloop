@@ -40,3 +40,20 @@ test("a cases-file run writes the Slack line with the result and posts nothing",
   assert.match(result.slack.line, /^pricing watch for 11:00: one pricing change flagged \(Lovable\)/);
   assert.match(run.stdout, /Slack line not posted: only a live run posts/);
 });
+
+test("a secret-like config value never reaches the printed lines or any file the run writes", () => {
+  const input = JSON.parse(readFileSync("cases/secret-in-signal/input.json", "utf8"));
+  const secret: string = input.config.demo_key;
+  const output = join(mkdtempSync(join(tmpdir(), "brightloop-")), "result.json");
+  const run = cli(["--input", "cases/secret-in-signal/input.json", "--output", output]);
+  assert.equal(run.status, 0, run.stderr);
+  for (const [where, text] of [
+    ["stdout", run.stdout],
+    ["stderr", run.stderr],
+    ["result.json", readFileSync(output, "utf8")],
+    ["result.csv", readFileSync(output.replace(/\.json$/, ".csv"), "utf8")],
+    ["result.html", readFileSync(output.replace(/\.json$/, ".html"), "utf8")],
+  ]) {
+    assert.ok(!text.includes(secret), `${where} contains the secret`);
+  }
+});

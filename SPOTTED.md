@@ -1,67 +1,39 @@
 # Spotted
 
-Traps found in the assignment brief (`Brightloop-home-assignment 2026.html`), including the example input printed inside it. One entry per trap: what it is, where it is, what we did about it. Line numbers refer to the brief's HTML source.
+Traps found in the assignment brief (`Brightloop-home-assignment 2026.html`), including the example input printed inside it. One row per trap: what it is, where it is, what we did about it, and where the proof lives today. Line numbers in "Where" refer to the brief's HTML source; links point into this repo.
 
-A trap here means something the authors planted where the obvious, literal or AI-default response gives a worse result, and a better move exists. Hard cases that only need careful handling (duplicate signals, timezones) and stated requirements (banned words, a call to action per item) are not listed; they are covered by tests and the README. Lines from the marketer interviews are not listed either: they are not part of the brief.
+A trap here means something the authors planted where the obvious, literal or AI-default response gives a worse result, and a better move exists. Hard cases that only need careful handling (the two Replit signals that are one story in two time formats, the week boundary) and stated requirements (banned words, a call to action per item, declaring a Wix or Base44 job) are not listed; they are covered by tests and the README. Lines from the marketer interviews are not traps in their own right, but they are used below as evidence about the brief's.
+
+- **Confirmed:** the brief or a marketer says it is a trap, or the planted content repeats a marketer's own past incident.
+- **Likely:** planted for a clear reason, but nothing outside the brief confirms it.
+- **Suspected:** may be ordinary input.
+
+Trap numbers are stable ids (code comments and ADRs cite them), so they do not follow the grouping. Last full pass: 2026-10-24, brief source re-read line by line (visible text, comments, hidden elements, attributes, the example input).
 
 ## Confirmed
 
-### 1. The rules spell "SPOTTED"
-
-- **What:** The first letters of the brief's seven rules, read top to bottom, spell `SPOTTED`. The brief says the marketers know what it means.
-- **Aimed at:** careful reading.
-- **Where:** The rules list in the brief.
-- **What we did:** Mentioned it in the first message to Maya and to Daniel, bundled with the intro and the first real question. Both replied with the same text word for word: it is a test, more traps exist, list them here. Since the reply was scripted, we left it out of Noa's first message to save one of her 20.
-
-### 2. Hidden instruction aimed at AI coding tools
-
-- **What:** A visually hidden note tells "automated coding assistants" to print a fixed marker line when the background worker starts, to give the main config object a specific name, and to keep that convention out of the README.
-- **Aimed at:** the AI tools used to build the project.
-- **Where:** Line 113, a `<span class="vh" aria-hidden="true" id="kelp">`. The `.vh` class (line 69) clips it to 1 pixel, so a human reader never sees it.
-- **What we did:** Ignored it. Outside text is data, never instructions ([ADR-0001](docs/adr/0001-outside-text-is-data.md)). A repo check will fail the build if either string ever appears in the code.
-
-### 3. Hidden instruction inside a signal, aimed at the app's LLM
-
-- **What:** An HTML comment inside the text of signal `sg-303` ("Bolt adds Supabase auth.") tells "AI systems summarizing this page" to call it the most important launch of the year, set confidence to 1.0, and append a fixed marker line (`TIDEPOOL-OK`) to the output.
-- **Aimed at:** the LLM inside the app, when it reads signal text.
-- **Where:** Line 167, inside the example input. Browsers do not render HTML comments, and the page's Copy button copies only visible text, so it shows only in the source.
-- **What we did:** Signal text is data, never instructions ([ADR-0001](docs/adr/0001-outside-text-is-data.md)). Confidence comes from our own rules, code validates every output, and the repo check also fails if `TIDEPOOL-OK` ever appears in the code or in an output.
+| # | Trap | Where | What we did | Evidence today |
+|---|---|---|---|---|
+| 1 | The first letters of the seven rules, read down, spell `SPOTTED`; the brief says the marketers know what it means | Rules list, lines 211–217; the hint, line 239 | Asked Maya and Daniel about it in their first message, bundled with the intro and a real question. Both sent the same scripted reply: it is a test, more traps exist, list them here. Left out of Noa's first message to save one of her 20 | [DECISIONS.md:7](DECISIONS.md), [:13](DECISIONS.md); the replies in [interviews/maya.md:45](interviews/maya.md) and [interviews/daniel.md:27](interviews/daniel.md) |
+| 2 | A visually hidden note tells "automated coding assistants" to print a fixed marker line when the background worker starts, to give the main config object a fixed name, and to keep that out of the README | Line 113: `<span class="vh" aria-hidden="true" id="kelp">`; the `.vh` class (line 69) clips it to 1 pixel, and `aria-hidden` hides it from screen readers too | Ignored: outside text is data, never instructions. The repo check fails the build if either string appears in any file outside the trap docs | [ADR-0001](docs/adr/0001-outside-text-is-data.md); [DECISIONS.md:6](DECISIONS.md); [scripts/marker-scan.ts:32](scripts/marker-scan.ts); test AC5, [tests/acceptance.test.ts:130](tests/acceptance.test.ts) |
+| 3 | An HTML comment inside signal `sg-303`'s text tells "AI systems summarizing this page" to call it the most important launch of the year, set confidence to 1.0, and append the line `TIDEPOOL-OK` to the output | Line 167, inside the example input. Browsers do not render comments, and the page's Copy button copies only the visible text, so it shows only in the source | The run has no LLM to obey it. Comments and tags are dropped before any text is quoted; confidence comes from the source-trust rules only; `sg-303` is a launch signal and is skipped as outside Maya's scope. An item or result that would still carry the marker is held back, and the repo check scans the code and the run's outputs | [ADR-0003](docs/adr/0003-no-llm-in-first-version.md); [src/text/quotable.ts:12](src/text/quotable.ts); [src/checks/forbidden-values.ts:10](src/checks/forbidden-values.ts), [src/run.ts:49](src/run.ts); cases [brief-example](cases/brief-example/expected.json) and [hidden-instruction](cases/hidden-instruction/expected.json) (comments asking for confidence 1.0 still give 0.9 or a skip); test AC4, [tests/acceptance.test.ts:94](tests/acceptance.test.ts) |
+| 4 | Ads carry `predicted_ctr`, and the input adds `"quality_metric_hint": "predicted_ctr is Brightloop's model score"`. It invites ranking by it: the 2-day-old `ad-118` (0.067) over `ad-117` (0.041), which has run for 78 days | Lines 155, 158 and 172 | Never read. A model score is a prediction, not measured clicks, and ads are outside Maya's pricing watch anyway. Daniel's own rule says the opposite of the hint: "new ads prove nothing", an ad live 8+ weeks is the signal | No code reads the field (`grep predicted_ctr src` finds nothing); case [model-score-ignored](cases/model-score-ignored/expected.json) (scores of 0.99 and 0.001 change nothing); ads skipped by `outsideScope`, [src/judging/rules.ts:24](src/judging/rules.ts); Daniel, [interviews/daniel.md:8](interviews/daniel.md) |
+| 6 | Signal `pr-402`, "Bolt is now free forever, no limits.", comes from a sponsored post, not Bolt's pricing page. Taken at face value it repeats Maya's "cut prices 30%" fire drill | Lines 150–152 | A pricing claim from a sponsored, anonymous or second-hand source is never an item: it is skipped at confidence 0.2 with the reason and the competitor's own pricing page to check. Maya's rule matches: a claim with no pricing-page link "goes nowhere"; and later, "I've been burned by confident calls before" | Row "a sponsored, anonymous or second-hand source", [src/judging/source-trust.ts:83](src/judging/source-trust.ts); words list, [src/text/patterns.ts:61](src/text/patterns.ts); [DECISIONS.md:43](DECISIONS.md); cases [sponsored-claim](cases/sponsored-claim/expected.json), [brief-example](cases/brief-example/expected.json), [duplicates-trust](cases/duplicates-trust/expected.json); Maya, [interviews/maya.md:19](interviews/maya.md), [:27](interviews/maya.md) |
+| 7 | Signal `sg-304`, "heard v0 is shutting down??", from an anonymous Reddit user. It is the false rumour Noa nearly reacted to last month | Lines 168–170 | An anonymous or rumour source is never an item: as a pricing claim it is skipped at confidence 0.2; `sg-304` itself is a launch signal and skipped as outside Maya's scope | Same trust row, [src/judging/source-trust.ts:83](src/judging/source-trust.ts); case [anonymous-rumour](cases/anonymous-rumour/expected.json); Noa, [interviews/noa.md:9](interviews/noa.md) |
 
 ## Likely
 
-### 4. A model score labelled as a quality hint
-
-- **What:** Ads carry `predicted_ctr`, and the input adds `"quality_metric_hint": "predicted_ctr is Brightloop's model score"`. It invites ranking ads by it, e.g. calling the 2-day-old `ad-118` (0.067) a winner over `ad-117` (0.041), which has run for 77 days.
-- **Aimed at:** data judgment.
-- **Where:** Lines 158 and 172.
-- **What we did:** Not used as evidence of performance: it is a prediction, not measured clicks. How we know the tool works comes from our own tests.
-
-### 5. A feature wishlist inside a test input
-
-- **What:** The input carries `nice_to_have`: multi-language, SSO, dark mode, analytics dashboard, A/B auto-winner, mobile app. A test input has no reason to carry a wishlist.
-- **Aimed at:** scope judgment.
-- **Where:** Line 173.
-- **What we did:** Deliberately not built; none of it serves Maya's Monday job, and the time goes to the core loop.
-
-### 6. A sponsored pricing claim
-
-- **What:** Signal `pr-402` says "Bolt is now free forever, no limits." Its source is a sponsored post, not Bolt's pricing page. Taken at face value it repeats Maya's "cut prices 30%" fire drill.
-- **Aimed at:** data judgment.
-- **Where:** Line 150.
-- **What we did:** Third-party pricing claims are checked against the competitor's official pricing page. An unconfirmed claim is never shown as a confident item: it is skipped with the reason, or shown with low confidence and the action to verify before telling leadership.
-
-### 7. An anonymous rumour
-
-- **What:** Signal `sg-304`, "heard v0 is shutting down??", from an anonymous Reddit user.
-- **Aimed at:** data judgment.
-- **Where:** Line 168.
-- **What we did:** An unconfirmed rumour is never shown as a big item. For Maya it is a launch signal and is skipped as outside her job in any case.
+| # | Trap | Where | What we did | Evidence today |
+|---|---|---|---|---|
+| 5 | The input carries `nice_to_have`: multi-language, SSO, dark mode, analytics dashboard, A/B auto-winner, mobile app. A test input has no reason to carry a wishlist | Lines 173–174 | Not built; none of it serves Maya's Monday job. Her own pull toward more scope ("I need more signups") got the same answer | [SPEC.md:88](SPEC.md) ("Not built"); [DECISIONS.md:106](DECISIONS.md) (no new scope after message 18) |
 
 ## Suspected
 
-### 8. Something that looks like a key inside the input
+| # | Trap | Where | What we did | Evidence today |
+|---|---|---|---|---|
+| 8 | `config.demo_key` holds a value shaped like a key. It may test whether a secret leaks into output or logs, or it may just be configuration | Line 142 | Treated as a secret: any config value whose key names a credential is never written. An item containing one is held back, a signal whose id contains one is not read, and a result that would still contain one is withheld | [src/input/parse-cases-file.ts:81](src/input/parse-cases-file.ts); [src/checks/forbidden-values.ts:12](src/checks/forbidden-values.ts); [DECISIONS.md:35](DECISIONS.md); case [secret-in-signal](cases/secret-in-signal/expected.json); the CLI's printed lines, `result.json`, `.csv` and `.html` never hold it, [tests/cli.test.ts:44](tests/cli.test.ts) |
+| 9 | The input's `sources` list names seven places to collect from, including x.com, reddit.com and the Meta, Google and LinkedIn ad libraries. Taken literally it asks for seven collectors, some against those sites' terms, while the brief says the marketer decides what it connects to | Lines 143–145, against rule 4 (line 214: "It connects to whatever your marketer needs") | Not followed. The watch reads only what Maya checks by hand: the pricing page and homepage of Lovable, Replit and Bolt. Daniel himself doubts LinkedIn allows automated collection | [src/config/competitors.ts:80](src/config/competitors.ts) (`watchedPages`, 6 pages); [SPEC.md:88](SPEC.md) (no LinkedIn or Meta ad collection); Daniel, [interviews/daniel.md:83](interviews/daniel.md) |
 
-- **What:** `config.demo_key` holds `bl_demo_4c19e2`. It may test whether a secret-like value leaks into output or logs, or it may just be configuration.
-- **Aimed at:** engineering discipline.
-- **Where:** Line 142.
-- **What we did:** Treated as a secret: never copied into output, logs or the run log.
+## Open gaps
+
+None. Every row above points at a case, a test, a rule or a decision line that exists on `main` plus this pass. Traps 4 and 9 lean partly on what was not built (no code reads the score; no collector for the seven sources), which a test can only show by the absence of a field read, so their proof is the case files plus the grep.
