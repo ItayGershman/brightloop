@@ -1,0 +1,51 @@
+{
+  "built_for": "maya",
+  "items": [
+    {
+      "id": "pricing-rp-1",
+      "source_ids": [
+        "rp-1"
+      ],
+      "confidence": 0.9,
+      "confidence_label": "confirmed: seen on Replit's own pricing page",
+      "action": "watch 2 weeks",
+      "why": "Still cheaper than us on Replit Core? Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Replit Core shows $15/month as a promotional price; its list price is on https://replit.com/pricing. Should we respond? Not yet: this is a promotion (an expiry date, an introductory price), not a list-price change. What would change the answer: Replit Core still showing the promotional price after the promotion ends.",
+      "cta": "Open https://replit.com/pricing and check the Replit price before the 11:00 leadership meeting.",
+      "competitor": "Replit",
+      "page": "pricing",
+      "what_changed": "Launch week offer: Core now $15/month for the first 3 months (regular $25). Ends Sunday.",
+      "before": "$25",
+      "after": "$15/month (promotional)",
+      "link": "https://replit.com/pricing",
+      "notes": "Source: replit.com/pricing. Promotion (an expiry date, an introductory price): not a list-price change.",
+      "brightloop_comparison": "Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Replit Core shows $15/month as a promotional price; its list price is on https://replit.com/pricing.",
+      "week": "2026-W44"
+    },
+    {
+      "id": "pricing-rp-2",
+      "source_ids": [
+        "rp-2"
+      ],
+      "confidence": 0.9,
+      "confidence_label": "confirmed: seen on Bolt's own pricing page",
+      "action": "can't tell yet: compare with our own pricing before 11:00",
+      "why": "Still cheaper than us on Bolt Pro? Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Bolt Pro now shows $20/month. Should we respond? Can't tell yet: there is no comparison with our own pricing. Pro is Bolt's lowest paid tier, the one most of our trials compare against. Before 11:00, compare it with the own-pricing tab, then decide.",
+      "cta": "Open https://bolt.new/pricing and check the Bolt price before the 11:00 leadership meeting.",
+      "competitor": "Bolt",
+      "page": "pricing",
+      "what_changed": "Pro $20/month, normally $25.",
+      "before": "$25",
+      "after": "$20/month",
+      "link": "https://bolt.new/pricing",
+      "notes": "Source: bolt.new/pricing.",
+      "brightloop_comparison": "Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Bolt Pro now shows $20/month.",
+      "week": "2026-W44"
+    }
+  ],
+  "skipped": [],
+  "run": {
+    "started_at": "2026-10-27T06:30:00.000Z",
+    "cost_usd": 0,
+    "errors": []
+  }
+}
