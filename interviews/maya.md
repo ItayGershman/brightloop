@@ -1,6 +1,6 @@
 # Interview: Maya
 
-Messages used: 15 of 20 (triage done; Maya chosen; deep phase done; validation 2 of about 5). 5 left, about 3 more for validation and 2 in reserve (budget: about 4 for triage, about 10 deep if chosen, about 5 kept for validation)
+Messages used: 16 of 20 (triage done; Maya chosen; deep phase done; validation 3 of about 5). 4 left, about 2 more for validation and 2 in reserve (budget: about 4 for triage, about 10 deep if chosen, about 5 kept for validation)
 
 ## What we've learned
 
@@ -25,6 +25,7 @@ Messages used: 15 of 20 (triage done; Maya chosen; deep phase done; validation 2
 - Reaction to "SPOTTED": she confirmed it is a test. She says the brief holds more than one trap and asks us to list every trap we find in a `SPOTTED.md` file at the repo root (what it is, where, what we did), and not to mention that file in our messages. Done: SPOTTED.md created at the repo root, logged in DECISIONS.md. We no longer mention "SPOTTED" in messages, because the reply was scripted and identical for Maya and Daniel.
 - Reaction to a real output, message 14 (validation 1): she rejected "respond now" on a made-up week (Lovable's real pricing page with Pro edited from 100 to 150 monthly credits). Two reasons. (1) Without the comparison against Brightloop's own pricing, the answer is "I can't tell yet," not "respond now": "That's exactly the kind of call that gets me burned." (2) A limits increase is "them giving more for the same price — it's competitive but it's not urgent": flag it, note it in the sheet, watch for two weeks "to see if it sticks or if it's a promo". Closing line: "The tool should not be making that call for me." For the tool: never say "respond now" when the own-pricing comparison can't be made; a limits increase is watch 2 weeks, not respond now. Open: whether the tool should ever suggest "respond now", even with the comparison in hand.
 - Who makes the call, message 15 (validation 2): asked whether the tool should say "respond now" once the own-pricing comparison can be made, she said that's our job to figure out, then: even with a comparison next to it, "I still have to trust that comparison is right. I've been burned by confident calls before. Give me the facts — before, after, link, our price next to theirs — and let me make the call. I just need it to work." For the tool: it never says "respond now"; it lays out the facts (before, after, link, the comparison) and leaves the call to her. Note "our price next to theirs": today the output never writes a Brightloop amount, it names the tier and says cheaper or not.
+- Promotion row, message 16 (validation 3): on a made-up week (Lovable's real pricing page with Pro from $25 to $20 and a "Limited time: 20% off" line), "Closer." The `watch 2 weeks` call and the promo detection are right, but the empty `before` and `after` are "a problem": they should say "$25/month" and "$20/month (promotional)", because "Empty fields mean I can't trust the history next week when I come back to check if the promo is still running." "Fill those in every time." For the tool: `before` and `after` always carry the prices the page showed, with the promotional one labelled, so the row is never read as a list-price cut and still works for next week's comparison.
 
 ## Transcript
 
@@ -212,3 +213,22 @@ Thanks, that's clear: no comparison means "I can't tell yet", and more credits f
 ### 15 · Maya
 
 That's a hypothetical — and honestly, that's your job to figure out. What I'll tell you is: if the tool puts a comparison next to it and says "respond now," I still have to trust that comparison is right. I've been burned by confident calls before. Give me the facts — before, after, link, our price next to theirs — and let me make the call. I just need it to work.
+
+### 16 · Itay
+
+Thanks, that's changed: the tool never says "respond now" anymore. It gives the facts and says "your call before 11:00", or "can't tell yet" when it can't compare with our pricing, and more credits for the same price is "watch 2 weeks".
+
+Another made-up week, the kind that burned you: Lovable's real pricing page with Pro dropping from $25 to $20 and a "Limited time: 20% off" line added. The row it wrote:
+
+what changed: Lovable Pro price changed from $25/month to $20/month. Lovable Pro now also shows "Limited time: 20% off".
+before: (empty) · after: (empty)
+link to the page: https://lovable.dev/pricing
+action: watch 2 weeks
+why: Lovable Pro shows $20/month as a promotional price; its list price is on the pricing page. Should we respond? Not yet: this is a promotion ("limited time" wording, discount wording), not a list-price change. What would change the answer: Lovable Pro still showing the promotional price after the promotion ends.
+confidence: confirmed: seen on Lovable's own pricing page
+
+Is that how you'd want a promo logged in your sheet?
+
+### 16 · Maya
+
+Closer. But the before and after fields are empty — that's a problem. If I'm logging this in the sheet, "before" should say $25/month and "after" should say $20/month (promotional). Empty fields mean I can't trust the history next week when I come back to check if the promo is still running. The "watch 2 weeks" call is right, the promo detection is right, but if the before/after isn't filled in, the row is useless to me on Monday when I'm comparing week-over-week. Fill those in every time.

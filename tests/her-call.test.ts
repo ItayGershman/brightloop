@@ -76,6 +76,30 @@ describe("#13: more for the same price is watched for two weeks, not urgent", ()
   });
 });
 
+describe("#13: before and after are filled in every time, a promotional price labelled", () => {
+  test("Lovable Pro from $25 to $20 with a \"Limited time: 20% off\" line (the made-up week shown to Maya)", () => {
+    const result = run(liveInput(derivedPairs("promotion-badge"), []), { startedAt: STARTED_AT });
+    const item = result.items.find((each) => each.competitor === "Lovable");
+    assert.ok(item);
+    assert.equal(item.before, "$25/month");
+    assert.equal(item.after, "$20/month (promotional)");
+    assert.equal(item.action, "watch 2 weeks");
+  });
+
+  test("a possible promo is labelled as one", () => {
+    const [item] = runWith(tab(), { ...lovablePro, text: "Pro plan now $20/month* (was $25)." }).items;
+    assert.equal(item.before, "$25");
+    assert.equal(item.after, "$20/month (possible promo, unconfirmed)");
+  });
+
+  test("prices for different periods are shown as stated, never compared", () => {
+    const [item] = runWith(tab(), { ...lovablePro, text: "Pro now $200 per year (was $25)." }).items;
+    assert.equal(item.before, "$25");
+    assert.equal(item.after, "$200 per year");
+    assert.equal(item.action, "watch 1 week");
+  });
+});
+
 describe("#13: \"respond now\" appears nowhere", () => {
   for (const name of readdirSync("cases")) {
     test(`cases/${name}/expected.json`, () => {

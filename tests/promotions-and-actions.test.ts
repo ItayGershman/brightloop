@@ -21,8 +21,9 @@ function wording(item: Item): string {
 }
 
 function assertNotAPriceCut(item: Item) {
-  assert.equal(item.before, null, "a promotion has no before price");
-  assert.equal(item.after, null, "a promotion has no after price");
+  // Before and after are filled in, the promotional price labelled (Maya, #13).
+  assert.notEqual(item.before, null, "a promotion keeps the price shown before");
+  assert.match(item.after ?? "", / \(promotional\)$/, "the promotional price is labelled");
   assert.ok(!isTheirCall(item.action), "a promotion is watched, never put to the audience as a list-price change");
   assert.doesNotMatch(wording(item), /(?<!not a list-)price cut|\bcut (?:its |their )?prices?|now cheaper/i);
   assert.match(item.notes, /not (?:reported as )?a list-price change/);
@@ -73,7 +74,7 @@ describe("AC2: an undecidable case yields \"unconfirmed, possible promo\" with t
       assert.match(item.cta, /^Check still needed/);
       assert.match(item.cta, check);
       assert.match(item.cta, /compare with last week's price/);
-      assert.equal(item.after, null);
+      if (item.after !== null) assert.match(item.after, / \(possible promo, unconfirmed\)$/);
       assert.match(item.action, /^watch \d+ weeks?$/);
     });
   }
@@ -130,8 +131,8 @@ describe("AC3: the lowest paid tier is the audience's call (here \"can't tell ye
   for (const text of otherPeriods) {
     test(`prices for different periods are never compared: "${text}"`, () => {
       const item = itemFor({ text });
-      assert.equal(item.before, null);
-      assert.equal(item.after, null);
+      assert.notEqual(item.before, null, "the prices are shown as stated");
+      assert.notEqual(item.after, null, "the prices are shown as stated");
       assert.equal(item.action, "watch 1 week");
       assert.match(item.why, /are for different periods, so they are not compared/);
       assert.match(item.brightloop_comparison, /not compared with the earlier .*, which is for a different period/);
@@ -208,7 +209,7 @@ describe("AC5: without own pricing, brightloop_comparison says it can't compare 
 
 describe("AC6: each rule has its own case in the case suite", () => {
   const ruleCases: [string, (items: Item[]) => boolean][] = [
-    ["promotion-badges", (items) => items.every((item) => item.before === null && item.after === null)],
+    ["promotion-badges", (items) => items.every((item) => item.before !== null && / \(promotional\)$/.test(item.after ?? ""))],
     ["possible-promo", (items) => items.every((item) => item.confidence_label.startsWith("unconfirmed, possible promo"))],
     ["tier-actions", (items) => items.some((item) => isTheirCall(item.action)) && items.some((item) => /^watch/.test(item.action))],
     ["no-own-pricing", (items) => items.every((item) => item.brightloop_comparison.startsWith("Can't compare"))],

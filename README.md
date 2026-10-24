@@ -127,7 +127,7 @@ The required wrapper (`built_for`, `items`, `skipped`, `run`) plus these fields 
 | `confidence_label` | The confidence in plain words, e.g. "confirmed: seen on Lovable's own pricing page", or "unconfirmed, possible promo: ..." when the rules cannot tell a promotion from a list-price change |
 | `cta` | What Maya should do next |
 | `competitor`, `page` | Which competitor and which of its pages |
-| `what_changed`, `before`, `after` | The change as stated; `before` and `after` only when the signal states both and it is not a promotion or a possible one |
+| `what_changed`, `before`, `after` | The change as stated; `before` and `after` are the values the page or signal showed, filled in whenever stated, with a promotional price labelled "(promotional)" and a possible one "(possible promo, unconfirmed)" |
 | `link` | The competitor's own pricing page |
 | `notes` | Where the signal came from, and any promotion markers found |
 | `brightloop_comparison` | Whether the competitor is still cheaper than Brightloop on that tier, from the own-pricing tab (the Brightloop tier is named, its price never written), or why that can't be said |

@@ -3,7 +3,7 @@ import type { Competitor } from "../config/competitors.ts";
 import type { Item, OwnPricing, PageDiff, Signal } from "../domain/types.ts";
 import { quotable } from "../text/quotable.ts";
 import { RESPOND_QUESTION } from "./advice.ts";
-import { listPriceChange, readChange } from "./change.ts";
+import { shownPrices, readChange } from "./change.ts";
 import { compareWithBrightloop } from "./comparison.ts";
 import type { Promotion } from "./promotion.ts";
 import type { Page, ReportableTrust } from "./source-trust.ts";
@@ -17,10 +17,10 @@ export function pricingItem(signal: Signal, competitor: Competitor, trust: Repor
   const page: Page = { name: competitor.name, link: competitor.pricingPage, source: quotable(signal.source) ?? "" };
   const whatChanged = quotable(signal.text) ?? "";
   const change = readChange(whatChanged, page.source, competitor, signal.diff?.price ?? null);
-  // A promotion, or a possible one, is never reported as a list-price change. A snapshot
-  // diff states its values in the page's words, limits and plan names included.
-  const fromDiff = signal.diff && change.promotion.kind === "none" ? signal.diff : undefined;
-  const { before, after } = fromDiff ?? listPriceChange(change);
+  // Before and after are always the values the page or signal showed, so next week's row can be
+  // compared with this one (Maya, #13); a promotional price is labelled as one, never left to
+  // read as a list-price cut. A snapshot diff states its values in the page's words.
+  const { before, after } = shownPrices(change, signal.diff);
   const { comparison, stillCheaper, compared } = compareWithBrightloop(change, own);
   const advice = trust.item.respond(page, change, compared);
   const possible = change.promotion.kind === "possible" ? change.promotion : undefined;

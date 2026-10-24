@@ -129,8 +129,8 @@ describe("each changed line is classified", () => {
   test("a badge added next to a price drop is a promotion, never a price cut", () => {
     const result = replay("promotion-badge");
     const item = only(result.items, "Lovable");
-    assert.equal(item.before, null);
-    assert.equal(item.after, null);
+    assert.equal(item.before, "$25/month");
+    assert.equal(item.after, "$20/month (promotional)");
     assert.equal(item.action, "watch 2 weeks");
     assert.match(item.notes, /Changed lines: price, promotion marker\./);
     assert.match(item.notes, /Promotion \("limited time" wording, discount wording\)/);
