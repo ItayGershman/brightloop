@@ -390,6 +390,7 @@ function slackCell(entry: RunLogEntry): string {
 /** What happened to the Slack line, in the audience's words: no setting names on the page. */
 const SLACK_WORDS: Record<SlackDelivery["status"], string> = {
   posted: `Posted to ${AUDIENCE.slackChannel}`,
+  "not posted: nothing moved": `Not posted to ${AUDIENCE.slackChannel}: nothing moved, so there was nothing to tell leadership`,
   "not posted: only a live run posts": `Not posted to ${AUDIENCE.slackChannel}: this was a test run, not a check of the live pages`,
   "not posted: no SLACK_WEBHOOK_URL": `Not posted to ${AUDIENCE.slackChannel}: this run had no Slack connection`,
   "not posted: the post failed": `Not posted to ${AUDIENCE.slackChannel}: Slack did not accept it`,

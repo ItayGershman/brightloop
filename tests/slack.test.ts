@@ -154,7 +154,9 @@ describe("the details link", () => {
 });
 
 describe("delivering the line", () => {
-  const LINE = `pricing watch for 11:00: nothing moved since the last check. details: ${SHEET_URL}`;
+  // A week with one change: a quiet week is never posted (see below).
+  const busy = () => result([item({ action: YOUR_CALL })]);
+  const LINE = `pricing watch for 11:00: one pricing change flagged (Lovable), your call before 11:00. details: ${SHEET_URL}`;
 
   function spyPoster(behaviour: () => Promise<void> = async () => {}) {
     const calls: { made: string[]; posted: string[] } = { made: [], posted: [] };
@@ -168,7 +170,7 @@ describe("delivering the line", () => {
   test("without SLACK_WEBHOOK_URL the poster is never made, and the line is still stored", async () => {
     for (const env of [{}, { SLACK_WEBHOOK_URL: "" }, { SLACK_WEBHOOK_URL: "   " }]) {
       const spy = spyPoster();
-      const delivered = await deliverSlackLine(result(), { env, post: true, makePoster: spy.makePoster });
+      const delivered = await deliverSlackLine(busy(), { env, post: true, makePoster: spy.makePoster });
       assert.deepEqual(spy.calls.made, []);
       assert.deepEqual(delivered.slack, { line: LINE, status: "not posted: no SLACK_WEBHOOK_URL" });
       assert.deepEqual(delivered.run.errors, []);
@@ -177,14 +179,14 @@ describe("delivering the line", () => {
 
   test("a cases file or a replay never posts, even with SLACK_WEBHOOK_URL set", async () => {
     const spy = spyPoster();
-    const delivered = await deliverSlackLine(result(), { env: { SLACK_WEBHOOK_URL: "https://hooks.example/abc" }, post: false, makePoster: spy.makePoster });
+    const delivered = await deliverSlackLine(busy(), { env: { SLACK_WEBHOOK_URL: "https://hooks.example/abc" }, post: false, makePoster: spy.makePoster });
     assert.deepEqual(spy.calls.made, []);
     assert.deepEqual(delivered.slack, { line: LINE, status: "not posted: only a live run posts" });
   });
 
   test("with SLACK_WEBHOOK_URL the line is posted once, as stored", async () => {
     const spy = spyPoster();
-    const delivered = await deliverSlackLine(result(), { env: { SLACK_WEBHOOK_URL: "https://hooks.example/abc" }, post: true, makePoster: spy.makePoster });
+    const delivered = await deliverSlackLine(busy(), { env: { SLACK_WEBHOOK_URL: "https://hooks.example/abc" }, post: true, makePoster: spy.makePoster });
     assert.deepEqual(spy.calls.made, ["https://hooks.example/abc"]);
     assert.deepEqual(spy.calls.posted, [LINE]);
     assert.deepEqual(delivered.slack, { line: LINE, status: "posted" });
@@ -195,14 +197,28 @@ describe("delivering the line", () => {
     const spy = spyPoster(async () => {
       throw new Error(`request to ${webhook} failed`);
     });
-    const delivered = await deliverSlackLine(result(), { env: { SLACK_WEBHOOK_URL: webhook }, post: true, makePoster: spy.makePoster });
+    const delivered = await deliverSlackLine(busy(), { env: { SLACK_WEBHOOK_URL: webhook }, post: true, makePoster: spy.makePoster });
     assert.deepEqual(delivered.slack, { line: LINE, status: "not posted: the post failed" });
     assert.deepEqual(delivered.run.errors, ["Slack post failed: no answer from Slack"]);
     assert.doesNotMatch(JSON.stringify(delivered), /secretpart/);
   });
 
+  test("a quiet week is never posted: no change, no problem (Maya, #13: \"That's noise\")", async () => {
+    const spy = spyPoster();
+    const delivered = await deliverSlackLine(result(), { env: { SLACK_WEBHOOK_URL: "https://hooks.example/abc" }, post: true, makePoster: spy.makePoster });
+    assert.deepEqual(spy.calls.made, []);
+    assert.deepEqual(delivered.slack, { line: `pricing watch for 11:00: nothing moved since the last check. details: ${SHEET_URL}`, status: "not posted: nothing moved" });
+    assert.deepEqual(delivered.run.errors, []);
+  });
+
+  test("a run with problems and no change is still posted: it is not the all-clear", async () => {
+    const spy = spyPoster();
+    await deliverSlackLine(result([], ["Replit pricing page: the site answered 403"]), { env: { SLACK_WEBHOOK_URL: "https://hooks.example/abc" }, post: true, makePoster: spy.makePoster });
+    assert.equal(spy.calls.posted.length, 1);
+  });
+
   test("the input result is not changed", async () => {
-    const original = result();
+    const original = busy();
     await deliverSlackLine(original, { env: {}, post: true });
     assert.equal("slack" in original, false);
   });
@@ -236,7 +252,7 @@ describe("the webhook poster", () => {
 
   test("a non-2xx answer becomes a run error naming the status, not the webhook", async () => {
     const stub = stubFetch(async () => new Response("no_service", { status: 404 }));
-    const delivered = await deliverSlackLine(result(), {
+    const delivered = await deliverSlackLine(result([item({ action: YOUR_CALL })]), {
       env: { SLACK_WEBHOOK_URL: WEBHOOK },
       post: true,
       makePoster: (webhook) => webhookPoster(webhook, stub.fetchImpl),
@@ -249,7 +265,7 @@ describe("the webhook poster", () => {
     const stub = stubFetch(async () => {
       throw new TypeError(`fetch failed: ${WEBHOOK}`);
     });
-    const delivered = await deliverSlackLine(result(), {
+    const delivered = await deliverSlackLine(result([item({ action: YOUR_CALL })]), {
       env: { SLACK_WEBHOOK_URL: WEBHOOK },
       post: true,
       makePoster: (webhook) => webhookPoster(webhook, stub.fetchImpl),

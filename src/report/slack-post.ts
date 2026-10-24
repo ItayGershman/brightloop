@@ -50,7 +50,9 @@ export function detailsUrl(env: Record<string, string | undefined>): string {
  * Renders the line and returns a copy of the result with the line and what happened to it in
  * `slack`. Only a live run (`post`) with SLACK_WEBHOOK_URL set posts; otherwise no poster is
  * made, so no network call can happen, and a cases file or a replay never reaches the channel.
- * A failed post is a run error, never a crash.
+ * A quiet week (no item, no run error) is stored but never posted: Maya, #13, "Leadership
+ * doesn't need a … ping saying 'nothing happened.'" A run with problems is still posted, since
+ * it is not the all-clear. A failed post is a run error, never a crash.
  */
 export async function deliverSlackLine(
   result: Result,
@@ -59,6 +61,7 @@ export async function deliverSlackLine(
   const line = slackLine(result, detailsUrl(options.env));
   const webhook = options.env.SLACK_WEBHOOK_URL?.trim();
   if (!options.post) return withSlack(result, { line, status: "not posted: only a live run posts" });
+  if (result.items.length === 0 && result.run.errors.length === 0) return withSlack(result, { line, status: "not posted: nothing moved" });
   if (!webhook) return withSlack(result, { line, status: "not posted: no SLACK_WEBHOOK_URL" });
   try {
     await (options.makePoster ?? webhookPoster)(webhook).post(line);

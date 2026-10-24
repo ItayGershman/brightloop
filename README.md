@@ -67,7 +67,7 @@ Every run, from any command, renders one line for leadership in Maya's own style
 
 | Run | Line |
 |---|---|
-| Nothing moved | `pricing watch for 11:00: nothing moved since the last check. details: <link>` |
+| Nothing moved | `pricing watch for 11:00: nothing moved since the last check. details: <link>`, stored but never posted (status `not posted: nothing moved`): Maya asked for no quiet-week ping |
 | One change for Maya's call | `pricing watch for 11:00: one pricing change flagged (Lovable), your call before 11:00. details: <link>` |
 | The same, with no own-pricing tab | `pricing watch for 11:00: one pricing change flagged (Lovable), can't tell yet without our own pricing, your call before 11:00. details: <link>` |
 | Several, none to respond to | `pricing watch for 11:00: 3 pricing changes flagged (Replit, Bolt and Lovable), 2 still unconfirmed, no response needed yet. details: <link>` |

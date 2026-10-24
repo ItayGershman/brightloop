@@ -1,6 +1,6 @@
 # Interview: Maya
 
-Messages used: 16 of 20 (triage done; Maya chosen; deep phase done; validation 3 of about 5). 4 left, about 2 more for validation and 2 in reserve (budget: about 4 for triage, about 10 deep if chosen, about 5 kept for validation)
+Messages used: 17 of 20 (triage done; Maya chosen; deep phase done; validation 4 of about 5). 3 left, about 1 more for validation and 2 in reserve (budget: about 4 for triage, about 10 deep if chosen, about 5 kept for validation)
 
 ## What we've learned
 
@@ -26,6 +26,7 @@ Messages used: 16 of 20 (triage done; Maya chosen; deep phase done; validation 3
 - Reaction to a real output, message 14 (validation 1): she rejected "respond now" on a made-up week (Lovable's real pricing page with Pro edited from 100 to 150 monthly credits). Two reasons. (1) Without the comparison against Brightloop's own pricing, the answer is "I can't tell yet," not "respond now": "That's exactly the kind of call that gets me burned." (2) A limits increase is "them giving more for the same price — it's competitive but it's not urgent": flag it, note it in the sheet, watch for two weeks "to see if it sticks or if it's a promo". Closing line: "The tool should not be making that call for me." For the tool: never say "respond now" when the own-pricing comparison can't be made; a limits increase is watch 2 weeks, not respond now. Open: whether the tool should ever suggest "respond now", even with the comparison in hand.
 - Who makes the call, message 15 (validation 2): asked whether the tool should say "respond now" once the own-pricing comparison can be made, she said that's our job to figure out, then: even with a comparison next to it, "I still have to trust that comparison is right. I've been burned by confident calls before. Give me the facts — before, after, link, our price next to theirs — and let me make the call. I just need it to work." For the tool: it never says "respond now"; it lays out the facts (before, after, link, the comparison) and leaves the call to her. Note "our price next to theirs": today the output never writes a Brightloop amount, it names the tier and says cheaper or not.
 - Promotion row, message 16 (validation 3): on a made-up week (Lovable's real pricing page with Pro from $25 to $20 and a "Limited time: 20% off" line), "Closer." The `watch 2 weeks` call and the promo detection are right, but the empty `before` and `after` are "a problem": they should say "$25/month" and "$20/month (promotional)", because "Empty fields mean I can't trust the history next week when I come back to check if the promo is still running." "Fill those in every time." For the tool: `before` and `after` always carry the prices the page showed, with the promotional one labelled, so the row is never read as a list-price cut and still works for next week's comparison.
+- Slack line and link, message 17 (validation 4): the change line ("one pricing change flagged (Lovable), your call before 11:00") "yes — that's useful, I'd post it. Short, clear, tells leadership to look before 11:00." The "nothing moved" line: "I wouldn't post that every week. That's noise … Just skip it. If nothing moved, I'll say so myself in the meeting on Monday if they ask." The no-login link "is good — that matters", but "a link to some app I don't control makes me nervous. If that link goes down Monday at 10:45 and I'm standing in front of leadership with a dead URL, that's on me. If it could just post the row straight into a Google Sheet I own, I'd feel a lot better." For the tool: a quiet week is never posted; the Slack line should link to her own Sheet, not the live page. (She called it "a Friday ping"; the run is on Monday morning.)
 
 ## Transcript
 
@@ -232,3 +233,23 @@ Is that how you'd want a promo logged in your sheet?
 ### 16 · Maya
 
 Closer. But the before and after fields are empty — that's a problem. If I'm logging this in the sheet, "before" should say $25/month and "after" should say $20/month (promotional). Empty fields mean I can't trust the history next week when I come back to check if the promo is still running. The "watch 2 weeks" call is right, the promo detection is right, but if the before/after isn't filled in, the row is useless to me on Monday when I'm comparing week-over-week. Fill those in every time.
+
+### 17 · Itay
+
+Done: before and after are filled in every time now, e.g. before $25/month, after $20/month (promotional).
+
+Now the real thing. Friday's run on the real pages found nothing, and this is the line it posted to #leadership:
+
+pricing watch for 11:00: nothing moved since the last check. details: https://brightloop-pricing-watch-11e53ec8.base44.app
+
+(The link opens with no login.) On a week like the Lovable one, the line would read:
+
+pricing watch for 11:00: one pricing change flagged (Lovable), your call before 11:00. details: …
+
+Would you post these to leadership as they are?
+
+### 17 · Maya
+
+The "one pricing change flagged" line, yes — that's useful, I'd post it. Short, clear, tells leadership to look before 11:00. The "nothing moved" line though — I wouldn't post that every week. That's noise. Leadership doesn't need a Friday ping saying "nothing happened." Just skip it. If nothing moved, I'll say so myself in the meeting on Monday if they ask.
+
+The no-login link is good — that matters. But I'll be honest, a link to some app I don't control makes me nervous. If that link goes down Monday at 10:45 and I'm standing in front of leadership with a dead URL, that's on me. If it could just post the row straight into a Google Sheet I own, I'd feel a lot better.
