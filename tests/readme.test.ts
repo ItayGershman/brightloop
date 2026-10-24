@@ -66,3 +66,8 @@ test("the README links Maya's Sheet and the live page, and explains every extra 
     .flatMap((line) => [...line.split("|")[1].matchAll(/`([^`]+)`/g)].map((match) => match[1]));
   for (const field of FIELDS) assert.ok(named.includes(field), field);
 });
+
+test("the README's command, run in the repo root, leaves no file the repo check would scan", () => {
+  const ignored = spawnSync("git", ["check-ignore", "cases.json", "result.json", "result.csv", "result.html"], { encoding: "utf8" });
+  assert.deepEqual(ignored.stdout.trim().split("\n"), ["cases.json", "result.json", "result.csv", "result.html"]);
+});

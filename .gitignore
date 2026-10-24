@@ -2,7 +2,12 @@
 node_modules/
 .env
 .env.*
+# The README's zero-key command, run in the repo root: its input and outputs, never committed.
+# The brief's example input holds a hidden marker, so the repo check would otherwise fail on it.
+/cases.json
 /result.json
+/result.csv
+/result.html
 
 # The one file of local keys that may be committed: names only, never values.
 !.env.example
