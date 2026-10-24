@@ -83,7 +83,7 @@ describe("the live page renderer", () => {
     assert.match(visible, /Still cheaper than us on Lovable Pro\? Can(&#39;|')t compare: the own-pricing tab is not connected\./);
     assert.match(visible, /Confirmed : seen on Lovable(&#39;|')s own pricing page/);
     assert.match(visible, /Next: Bring it to the 11:00 leadership meeting/);
-    assert.match(html, /<a class="btn primary" href="https:\/\/lovable\.dev\/pricing" rel="noopener noreferrer">Open Lovable(&#39;|')s pricing page/);
+    assert.match(html, /<a class="btn primary" href="https:\/\/lovable\.dev\/pricing" target="_blank" rel="noopener noreferrer">Open Lovable(&#39;|')s pricing page/);
   });
 
   test("never shows a bare score: the score sits after the words", () => {
@@ -167,6 +167,18 @@ describe("the live page renderer", () => {
     assert.doesNotMatch(visible, /Problems in this run/);
   });
 
+  test("every link to another site opens in a new tab; jumps within the page stay in it", () => {
+    const errors = ["Lovable homepage: the site answered 403, so it was not captured"];
+    const html = renderPage({ result: result({ items: [watch, respondNow], run: { started_at: STARTED_AT.toISOString(), cost_usd: 0, errors } }), timeZone: ZONE });
+    const links = [...html.matchAll(/<a [^>]*>/g)].map(([tag]) => tag);
+    const outside = links.filter((tag) => /href="https?:/.test(tag));
+    const within = links.filter((tag) => /href="#/.test(tag));
+    assert.ok(outside.length >= 5 && within.length >= 1, "the page has both kinds of link");
+    assert.equal(outside.length + within.length, links.length, "no other kind of link");
+    for (const tag of outside) assert.match(tag, / target="_blank" rel="noopener noreferrer"/);
+    for (const tag of within) assert.doesNotMatch(tag, /target=/);
+  });
+
   test("a run with errors lists them, says it is not the all-clear, and links the page that failed", () => {
     const errors = ["Lovable homepage: the site answered 403, so it was not captured"];
     const html = renderPage({ result: result({ run: { started_at: STARTED_AT.toISOString(), cost_usd: 0, errors } }), timeZone: ZONE });
@@ -175,7 +187,7 @@ describe("the live page renderer", () => {
     assert.match(visible, /Problems in this run \(1\)/);
     assert.match(visible, /answered 403/);
     assert.match(visible, /not the all-clear/);
-    assert.match(html, /href="https:\/\/lovable\.dev\/" rel="noopener noreferrer">Open Lovable(&#39;|')s homepage/);
+    assert.match(html, /href="https:\/\/lovable\.dev\/" target="_blank" rel="noopener noreferrer">Open Lovable(&#39;|')s homepage/);
     // Lovable's card says so too.
     assert.match(visible, /Lovable Couldn(&#39;|')t check everything/);
     assert.match(visible, /Homepage Couldn(&#39;|')t load it/);

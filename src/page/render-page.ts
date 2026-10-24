@@ -32,6 +32,8 @@ export interface PageView {
 const TITLE = "Competitor pricing watch";
 const POLICY = "default-src 'none'; style-src 'unsafe-inline'";
 const PAGES: PageKind[] = ["pricing", "homepage"];
+/** Every link to another site opens in a new tab, so the page stays open; jumps within the page do not. */
+const NEW_TAB = `target="_blank" rel="noopener noreferrer"`;
 
 export function renderPage({ result, history, timeZone }: PageView): string {
   const when = (iso: string) => moment(iso, timeZone);
@@ -186,7 +188,7 @@ function competitorsSection(result: Result, states: Map<string, PageState>, chan
       .map((page) => {
         const [words, tone] = PAGE_STATE_WORDS[states.get(`${slug}-${page}`) as PageState];
         const icon = tone === "ok" ? ICONS.check : tone === "red" ? ICONS.dot : ICONS.warn;
-        return `<li><a href="${esc(pageUrl(competitor, page))}" rel="noopener noreferrer">${esc(capitalized(PAGE_NAMES[page]))}</a><span class="state ${tone}">${icon}${esc(words)}</span></li>`;
+        return `<li><a href="${esc(pageUrl(competitor, page))}" ${NEW_TAB}>${esc(capitalized(PAGE_NAMES[page]))}</a><span class="state ${tone}">${icon}${esc(words)}</span></li>`;
       })
       .join("");
     return `<div class="comp">
@@ -223,7 +225,7 @@ function failedPageButton(error: string): string {
   for (const competitor of COMPETITORS) {
     for (const page of PAGES) {
       if (error.startsWith(`${competitor.name} ${PAGE_NAMES[page]}:`)) {
-        return `<a class="btn" href="${esc(pageUrl(competitor, page))}" rel="noopener noreferrer">Open ${esc(competitor.name)}'s ${esc(PAGE_NAMES[page])}${ICONS.out}</a>`;
+        return `<a class="btn" href="${esc(pageUrl(competitor, page))}" ${NEW_TAB}>Open ${esc(competitor.name)}'s ${esc(PAGE_NAMES[page])}${ICONS.out}</a>`;
       }
     }
   }
@@ -298,7 +300,7 @@ ${badge}
 function cardFoot(item: Item): string {
   const page = PAGE_NAMES[pageKind(item.page)];
   const button = isWebLink(item.link)
-    ? `<a class="btn primary" href="${esc(item.link)}" rel="noopener noreferrer">Open ${esc(item.competitor)}'s ${esc(page)}${ICONS.out}</a>`
+    ? `<a class="btn primary" href="${esc(item.link)}" ${NEW_TAB}>Open ${esc(item.competitor)}'s ${esc(page)}${ICONS.out}</a>`
     : "";
   return `<footer class="change-foot">
 ${button}
@@ -342,7 +344,7 @@ ${channelButton(`Open in Slack${ICONS.out}`)}
 /** A button to the channel the Slack line goes to. */
 function channelButton(content: string): string {
   if (!isWebLink(AUDIENCE.slackChannelUrl)) return "";
-  return `<a class="btn" href="${esc(AUDIENCE.slackChannelUrl)}" rel="noopener noreferrer">${content}</a>`;
+  return `<a class="btn" href="${esc(AUDIENCE.slackChannelUrl)}" ${NEW_TAB}>${content}</a>`;
 }
 
 function skippedSection(result: Result, short: (iso: string) => string): string {
@@ -422,7 +424,7 @@ function pageUrl(competitor: Competitor, page: PageKind): string {
 }
 
 function link(url: string): string {
-  return isWebLink(url) ? `<a href="${esc(url)}" rel="noopener noreferrer">${esc(url.replace(/^https?:\/\//, ""))}</a>` : esc(url);
+  return isWebLink(url) ? `<a href="${esc(url)}" ${NEW_TAB}>${esc(url.replace(/^https?:\/\//, ""))}</a>` : esc(url);
 }
 
 function isWebLink(url: string): boolean {
