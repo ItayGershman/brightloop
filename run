@@ -3,6 +3,10 @@
 # Installs the pinned dev dependencies on first use, so a fresh clone needs no other step.
 set -e
 DIR=$(cd "$(dirname "$0")" && pwd)
+if ! node -e 'process.exit(Number(process.versions.node.split(".")[0]) >= 20 ? 0 : 1)' 2>/dev/null; then
+  echo "run: needs Node 20 or later (found $(node -v 2>/dev/null || echo none)). See .nvmrc." >&2
+  exit 1
+fi
 if [ ! -x "$DIR/node_modules/.bin/tsx" ]; then
   if ! (cd "$DIR" && npm ci --ignore-scripts --silent --no-audit --no-fund >&2); then
     echo "run: could not install the dependencies from registry.npmjs.org (offline?)." >&2

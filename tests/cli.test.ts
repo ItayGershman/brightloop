@@ -1,8 +1,8 @@
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import { mkdtempSync, readFileSync } from "node:fs";
+import { chmodSync, existsSync, mkdirSync, mkdtempSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { join, resolve } from "node:path";
 import { test } from "node:test";
 
 // Every command here runs with no Slack key, whatever the shell running the tests has set.
@@ -56,4 +56,27 @@ test("a secret-like config value never reaches the printed lines or any file the
   ]) {
     assert.ok(!text.includes(secret), `${where} contains the secret`);
   }
+});
+
+test("--output may climb out of the working folder with ..", () => {
+  const root = mkdtempSync(join(tmpdir(), "brightloop-"));
+  const work = join(root, "work");
+  mkdirSync(work);
+  const run = spawnSync(resolve("run"), ["--input", resolve("cases/brief-example/input.json"), "--output", "../x/result.json"], {
+    cwd: work,
+    encoding: "utf8",
+    env: { ...process.env, SLACK_WEBHOOK_URL: "" },
+  });
+  assert.equal(run.status, 0, run.stderr);
+  for (const name of ["result.json", "result.csv", "result.html"]) assert.ok(existsSync(join(root, "x", name)), name);
+});
+
+test("an --output folder that cannot be written says so, not that the path is wrong", { skip: process.getuid?.() === 0 }, () => {
+  const locked = join(mkdtempSync(join(tmpdir(), "brightloop-")), "locked");
+  mkdirSync(locked, { mode: 0o555 });
+  const run = cli(["--input", "cases/brief-example/input.json", "--output", join(locked, "result.json")]);
+  chmodSync(locked, 0o755);
+  assert.equal(run.status, 2);
+  assert.match(run.stderr, /could not write .*result\.json: permission denied/);
+  assert.doesNotMatch(run.stderr, /must be a file path/);
 });

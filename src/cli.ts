@@ -79,10 +79,18 @@ function write(path: string, text: string): boolean {
     mkdirSync(dirname(path), { recursive: true });
     writeFileSync(path, text);
     return true;
-  } catch {
-    console.error(`could not write ${path}: --output must be a file path\n${USAGE}`);
+  } catch (error) {
+    console.error(`could not write ${path}: ${writeFailure(error)}\n${USAGE}`);
     return false;
   }
+}
+
+/** Why a write failed, in words: only a directory in the way means the path itself is wrong. */
+function writeFailure(error: unknown): string {
+  const code = (error as NodeJS.ErrnoException).code;
+  if (code === "EISDIR" || code === "ENOTDIR" || code === "EEXIST") return "--output must be a file path";
+  if (code === "EACCES" || code === "EPERM" || code === "EROFS") return "permission denied";
+  return code ? `the system answered ${code}` : "unknown error";
 }
 
 
