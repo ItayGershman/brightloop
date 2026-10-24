@@ -14,8 +14,8 @@ const PRICE_SOURCE = String.raw`\$\d+(?:\.\d{1,2})?(?:\s*\/\s*[a-z]+|\s+(?:per|a
 /** Every price in a text; global, for matchAll. */
 export const PRICE = new RegExp(PRICE_SOURCE, "gi");
 
-/** "was $20" and the like; group 1 is the earlier price. */
-export const WAS_PRICE = new RegExp(String.raw`\bwas\s+(${PRICE_SOURCE})`, "i");
+/** "was $20", "regular $20", "normally $20" and the like; group 1 is the earlier price. */
+export const WAS_PRICE = new RegExp(String.raw`\b(?:was|regular(?:ly)?|normally|usually)\s+(${PRICE_SOURCE})`, "i");
 
 /** "$25 → $20", "$25 -> $20", "$25 => $20"; group 1 is the earlier price, group 2 the later. */
 export const PRICE_ARROW = new RegExp(String.raw`(${PRICE_SOURCE})\s*(?:→|->|=>|⇒)\s*(${PRICE_SOURCE})`, "i");

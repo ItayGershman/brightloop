@@ -1,0 +1,11 @@
+{
+  "week": "2026-W44",
+  "timezone": "Asia/Jerusalem",
+  "brand": { "name": "Brightloop", "banned_words": ["revolutionary", "game-changing", "seamless"] },
+  "signals": [
+    { "id": "rp-1", "type": "pricing", "competitor": "Replit", "source": "replit.com/pricing", "ts": "2026-10-27T09:00:00Z",
+      "text": "Launch week offer: Core now $15/month for the first 3 months (regular $25). Ends Sunday." },
+    { "id": "rp-2", "type": "pricing", "competitor": "Bolt", "source": "bolt.new/pricing", "ts": "2026-10-27T09:00:00Z",
+      "text": "Pro $20/month, normally $25." }
+  ]
+}
