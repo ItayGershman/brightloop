@@ -1,6 +1,6 @@
 # Interview: Maya
 
-Messages used: 17 of 20 (triage done; Maya chosen; deep phase done; validation 4 of about 5). 3 left, about 1 more for validation and 2 in reserve (budget: about 4 for triage, about 10 deep if chosen, about 5 kept for validation)
+Messages used: 18 of 20 (triage done; Maya chosen; deep phase done; validation 5). 2 left: 1 to show her the finished output, 1 in reserve (budget: about 4 for triage, about 10 deep if chosen, about 5 kept for validation)
 
 ## What we've learned
 
@@ -27,6 +27,7 @@ Messages used: 17 of 20 (triage done; Maya chosen; deep phase done; validation 4
 - Who makes the call, message 15 (validation 2): asked whether the tool should say "respond now" once the own-pricing comparison can be made, she said that's our job to figure out, then: even with a comparison next to it, "I still have to trust that comparison is right. I've been burned by confident calls before. Give me the facts — before, after, link, our price next to theirs — and let me make the call. I just need it to work." For the tool: it never says "respond now"; it lays out the facts (before, after, link, the comparison) and leaves the call to her. Note "our price next to theirs": today the output never writes a Brightloop amount, it names the tier and says cheaper or not.
 - Promotion row, message 16 (validation 3): on a made-up week (Lovable's real pricing page with Pro from $25 to $20 and a "Limited time: 20% off" line), "Closer." The `watch 2 weeks` call and the promo detection are right, but the empty `before` and `after` are "a problem": they should say "$25/month" and "$20/month (promotional)", because "Empty fields mean I can't trust the history next week when I come back to check if the promo is still running." "Fill those in every time." For the tool: `before` and `after` always carry the prices the page showed, with the promotional one labelled, so the row is never read as a list-price cut and still works for next week's comparison.
 - Slack line and link, message 17 (validation 4): the change line ("one pricing change flagged (Lovable), your call before 11:00") "yes — that's useful, I'd post it. Short, clear, tells leadership to look before 11:00." The "nothing moved" line: "I wouldn't post that every week. That's noise … Just skip it. If nothing moved, I'll say so myself in the meeting on Monday if they ask." The no-login link "is good — that matters", but "a link to some app I don't control makes me nervous. If that link goes down Monday at 10:45 and I'm standing in front of leadership with a dead URL, that's on me. If it could just post the row straight into a Google Sheet I own, I'd feel a lot better." For the tool: a quiet week is never posted; the Slack line should link to her own Sheet, not the live page. (She called it "a Friday ping"; the run is on Monday morning.)
+- What she actually wants, message 18 (validation 5): asked what would still be missing to skip the two hours of screenshots, she pushed back: "I need more signups. Honestly, anything that moves trial starts — that's what I care about. The Monday deck is just a thing I have to do, not the thing I want to solve. You're deep in the weeds on the competitor tracking, which is fine, but don't lose the plot on what actually matters to me." For the tool: no new scope two days before the deadline (the one job stays the Monday pricing watch, criterion 4), but every output should say why a change matters for trial starts, which the `why` already does ("the tier most of our trials compare against"). The deck itself is not worth more building.
 
 ## Transcript
 
@@ -253,3 +254,13 @@ Would you post these to leadership as they are?
 The "one pricing change flagged" line, yes — that's useful, I'd post it. Short, clear, tells leadership to look before 11:00. The "nothing moved" line though — I wouldn't post that every week. That's noise. Leadership doesn't need a Friday ping saying "nothing happened." Just skip it. If nothing moved, I'll say so myself in the meeting on Monday if they ask.
 
 The no-login link is good — that matters. But I'll be honest, a link to some app I don't control makes me nervous. If that link goes down Monday at 10:45 and I'm standing in front of leadership with a dead URL, that's on me. If it could just post the row straight into a Google Sheet I own, I'd feel a lot better.
+
+### 18 · Itay
+
+Thanks, Maya. Done on my side: no more "respond now", before and after always filled in, no Slack post on a quiet week, and the link goes to your sheet.
+
+One question before I finish it: with a row in your sheet (before, after, link to the page) and the Slack line, what would still be missing for you to skip the two hours of screenshots on Monday?
+
+### 18 · Maya
+
+Look, I need more signups. Honestly, anything that moves trial starts — that's what I care about. The Monday deck is just a thing I have to do, not the thing I want to solve. You're deep in the weeds on the competitor tracking, which is fine, but don't lose the plot on what actually matters to me.
