@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { describe, test } from "node:test";
 import { AUDIENCE } from "../src/config/audience.ts";
 import type { Item, Result } from "../src/domain/types.ts";
+import { YOUR_CALL } from "../src/judging/advice.ts";
 import { eachSignal } from "../src/judging/run-rules.ts";
 import { deliverSlackLine, detailsUrl, slackLine, webhookPoster, type SlackPoster } from "../src/report/index.ts";
 import { briefExample, pricingSignal, runCases, STARTED_AT } from "./helpers.ts";
@@ -42,10 +43,10 @@ describe("the Slack line", () => {
     assert.equal(slackLine(result(), URL), `pricing watch for 11:00: nothing moved since the last check. details: ${URL}`);
   });
 
-  test("one change to respond to now", () => {
+  test("one change for Maya's call", () => {
     assert.equal(
-      slackLine(result([item({ action: "respond now" })]), URL),
-      `pricing watch for 11:00: one pricing change flagged (Lovable), it needs a response now. details: ${URL}`,
+      slackLine(result([item({ action: YOUR_CALL })]), URL),
+      `pricing watch for 11:00: one pricing change flagged (Lovable), your call before 11:00. details: ${URL}`,
     );
   });
 
@@ -56,15 +57,15 @@ describe("the Slack line", () => {
     );
   });
 
-  test("several changes across competitors, one to respond to now", () => {
+  test("several changes across competitors, one for Maya's call", () => {
     const items = [
-      item({ competitor: "Lovable", action: "respond now" }),
+      item({ competitor: "Lovable", action: YOUR_CALL }),
       item({ competitor: "Bolt", action: "watch 2 weeks" }),
       item({ competitor: "Lovable", action: "watch 1 week" }),
     ];
     assert.equal(
       slackLine(result(items), URL),
-      `pricing watch for 11:00: 3 pricing changes flagged (Lovable and Bolt), one needs a response now. details: ${URL}`,
+      `pricing watch for 11:00: 3 pricing changes flagged (Lovable and Bolt), one for your call before 11:00. details: ${URL}`,
     );
   });
 
@@ -112,16 +113,16 @@ describe("the Slack line", () => {
   test("changes plus problems: both are said", () => {
     const errors = ["Replit pricing page: the site answered 403", "Bolt homepage: the site answered 403"];
     assert.equal(
-      slackLine(result([item({ action: "respond now" })], errors), URL),
-      `pricing watch for 11:00: one pricing change flagged (Lovable), it needs a response now; 2 problems in the run, so it may not be everything. details: ${URL}`,
+      slackLine(result([item({ action: YOUR_CALL })], errors), URL),
+      `pricing watch for 11:00: one pricing change flagged (Lovable), your call before 11:00; 2 problems in the run, so it may not be everything. details: ${URL}`,
     );
   });
 
   test("a baseline next to a change: both are said", () => {
-    const items = [item({ competitor: "Bolt", action: "respond now" }), item({ competitor: "Replit", action: BASELINE })];
+    const items = [item({ competitor: "Bolt", action: YOUR_CALL }), item({ competitor: "Replit", action: BASELINE })];
     assert.equal(
       slackLine(result(items), URL),
-      `pricing watch for 11:00: one pricing change flagged (Bolt), it needs a response now; first look recorded for Replit. details: ${URL}`,
+      `pricing watch for 11:00: one pricing change flagged (Bolt), your call before 11:00; first look recorded for Replit. details: ${URL}`,
     );
   });
 
@@ -132,7 +133,8 @@ describe("the Slack line", () => {
 
   test("the brief's example through the real run: one line, no score, no Brightloop price", () => {
     const line = slackLine(runCases(briefExample()), URL);
-    assert.equal(line, `pricing watch for 11:00: one pricing change flagged (Lovable), it needs a response now. details: ${URL}`);
+    // No own-pricing tab in a cases run, so the call can't be made yet (#13).
+    assert.equal(line, `pricing watch for 11:00: one pricing change flagged (Lovable), can't tell yet without our own pricing, your call before 11:00. details: ${URL}`);
     assert.doesNotMatch(line, /\n/);
     assert.doesNotMatch(line, /0\.\d|\$/);
   });

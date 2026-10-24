@@ -8,6 +8,7 @@ import { storedSnapshots, writeSnapshot } from "../src/capture/index.ts";
 import { watchedPages } from "../src/config/competitors.ts";
 import type { Item, Result } from "../src/domain/types.ts";
 import { liveInput } from "../src/input/live-input.ts";
+import { CANT_TELL } from "../src/judging/advice.ts";
 import { run } from "../src/run.ts";
 import { landedIds, pricingSignal, runCases, STARTED_AT } from "./helpers.ts";
 import { derivedPairs } from "./snapshot-pairs.ts";
@@ -105,17 +106,18 @@ describe("only the lines that changed are judged", () => {
     assert.deepEqual(result.items.map((item) => item.competitor).sort(), ["Bolt", "Lovable", "Replit"]);
   });
 
-  const expected: Record<string, { before: string; after: string; kind: string }> = {
-    Lovable: { before: "$25/month", after: "$20/month", kind: "price" },
-    Replit: { before: "$18/month, billed annually (struck-out $20)", after: "$20/month, billed annually (struck-out $22)", kind: "price" },
-    Bolt: { before: "1M tokens/month to try Bolt", after: "2M tokens/month to try Bolt", kind: "free plan" },
+  // Without own pricing a price change there can't be called yet; more on the free plan is watched (#13).
+  const expected: Record<string, { before: string; after: string; kind: string; action: string }> = {
+    Lovable: { before: "$25/month", after: "$20/month", kind: "price", action: CANT_TELL },
+    Replit: { before: "$18/month, billed annually (struck-out $20)", after: "$20/month, billed annually (struck-out $22)", kind: "price", action: CANT_TELL },
+    Bolt: { before: "1M tokens/month to try Bolt", after: "2M tokens/month to try Bolt", kind: "free plan", action: "watch 2 weeks" },
   };
-  for (const [competitor, { before, after, kind }] of Object.entries(expected)) {
-    test(`${competitor}: a ${kind} change on the lowest tier or free plan is "respond now", not a possible promo`, () => {
+  for (const [competitor, { before, after, kind, action }] of Object.entries(expected)) {
+    test(`${competitor}: a ${kind} change on the lowest tier or free plan is "${action}", not a possible promo`, () => {
       const item = only(result.items, competitor);
       assert.equal(item.before, before);
       assert.equal(item.after, after);
-      assert.equal(item.action, "respond now");
+      assert.equal(item.action, action);
       assert.equal(item.confidence_label, `confirmed: seen on ${competitor}'s own pricing page`);
       assert.doesNotMatch(item.notes, /promo/i);
       assert.match(item.notes, new RegExp(`Changed lines: ${kind}\\.`));

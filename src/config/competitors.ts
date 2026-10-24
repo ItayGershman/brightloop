@@ -26,7 +26,7 @@ export interface Competitor {
 export interface Tiers {
   /** The free plan's name, when the page gives it one ("Free"). */
   free: string[];
-  /** The cheapest paid plan: where most trials start, so a change here leans to "respond now". */
+  /** The cheapest paid plan: where most trials start, so a change here is put to the audience as their call. */
   lowestPaid: string[];
   /** Every paid plan above it. */
   higher: string[];

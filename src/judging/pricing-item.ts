@@ -21,8 +21,8 @@ export function pricingItem(signal: Signal, competitor: Competitor, trust: Repor
   // diff states its values in the page's words, limits and plan names included.
   const fromDiff = signal.diff && change.promotion.kind === "none" ? signal.diff : undefined;
   const { before, after } = fromDiff ?? listPriceChange(change);
-  const { comparison, stillCheaper } = compareWithBrightloop(change, own);
-  const advice = trust.item.respond(page, change);
+  const { comparison, stillCheaper, compared } = compareWithBrightloop(change, own);
+  const advice = trust.item.respond(page, change, compared);
   const possible = change.promotion.kind === "possible" ? change.promotion : undefined;
 
   return {

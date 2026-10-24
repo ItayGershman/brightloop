@@ -37,7 +37,7 @@ Brightloop's own tiers and monthly prices, kept by the marketer in the own-prici
 _Avoid_: our prices, sample prices
 
 **Lowest paid tier**:
-A competitor's cheapest paid plan, where most Brightloop trials compare; a list-price change to it, or to what the free plan includes, leans to "respond now".
+A competitor's cheapest paid plan, where most Brightloop trials compare; a list-price change to it, or less included on the free plan, is put to the marketer as "your call before 11:00" with the facts ("can't tell yet" without the own-pricing comparison); the tool never makes that call. More for the same price there is watched for two weeks.
 _Avoid_: entry tier, starter tier
 
 **Snapshot**:

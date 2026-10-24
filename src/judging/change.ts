@@ -1,4 +1,5 @@
 import type { Competitor } from "../config/competitors.ts";
+import { limitMove, type LimitMove } from "../text/limit-change.ts";
 import { priceChange, priceRose, type PriceChange } from "../text/price-change.ts";
 import { whichPlan, type ChangedPlan } from "./plan.ts";
 import { findPromotion, type Promotion } from "./promotion.ts";
@@ -19,6 +20,8 @@ export interface PricingChange {
   listed: string | null;
   promotion: Promotion;
   plan: ChangedPlan;
+  /** Which way a limit moved, when the signal states no price: "more" is more for the same price. */
+  limits: LimitMove;
 }
 
 /** The change a signal's quoted text and source describe. */
@@ -32,6 +35,7 @@ export function readChange(text: string, source: string, competitor: Competitor,
     listed,
     promotion: findPromotion(text, source, competitor.pricingPage, priceRose(reading)),
     plan: whichPlan(text, competitor),
+    limits: reading.before === null && reading.after === null && !reading.differentPeriods ? limitMove(text) : null,
   };
 }
 

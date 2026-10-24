@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { describe, test } from "node:test";
 import type { Item } from "../src/domain/types.ts";
+import { CANT_TELL, isTheirCall } from "../src/judging/advice.ts";
 import { PRICE } from "../src/text/patterns.ts";
 import { briefExample, pricingSignal, runCases } from "./helpers.ts";
 
@@ -22,7 +23,7 @@ function wording(item: Item): string {
 function assertNotAPriceCut(item: Item) {
   assert.equal(item.before, null, "a promotion has no before price");
   assert.equal(item.after, null, "a promotion has no after price");
-  assert.notEqual(item.action, "respond now");
+  assert.ok(!isTheirCall(item.action), "a promotion is watched, never put to the audience as a list-price change");
   assert.doesNotMatch(wording(item), /(?<!not a list-)price cut|\bcut (?:its |their )?prices?|now cheaper/i);
   assert.match(item.notes, /not (?:reported as )?a list-price change/);
 }
@@ -82,7 +83,7 @@ describe("AC2: an undecidable case yields \"unconfirmed, possible promo\" with t
   });
 });
 
-describe("AC3: the lowest paid tier yields respond now; a higher tier yields watch N weeks with what would change the answer", () => {
+describe("AC3: the lowest paid tier is the audience's call (here \"can't tell yet\": no own pricing, #13); a higher tier yields watch N weeks with what would change the answer", () => {
   const lowest: [string, Record<string, unknown>][] = [
     ["Lovable Pro, its lowest paid tier", { text: "Pro plan shown at $30/month (was $25 last week)." }],
     ["Replit Core, its lowest paid tier", { competitor: "Replit", source: "replit.com/pricing", text: "Core plan now $30/month (was $25)." }],
@@ -93,10 +94,10 @@ describe("AC3: the lowest paid tier yields respond now; a higher tier yields wat
     ["what Replit's free plan includes", { competitor: "Replit", source: "replit.com/pricing", text: "Free plan now includes 3 apps, down from 10." }],
   ];
   for (const [what, fields] of lowest) {
-    test(`a change to ${what} yields respond now`, () => {
+    test(`a change to ${what} is the audience's call, and without own pricing it can't tell yet`, () => {
       const item = itemFor(fields);
-      assert.equal(item.action, "respond now");
-      assert.match(item.why, /Should we respond\? Yes, respond now/);
+      assert.equal(item.action, CANT_TELL);
+      assert.match(item.why, /Should we respond\? Can't tell yet: there is no comparison with our own pricing\./);
     });
   }
 
@@ -113,13 +114,13 @@ describe("AC3: the lowest paid tier yields respond now; a higher tier yields wat
     });
   }
 
-  test("a change that names no plan is watched until the plan is known, never respond now", () => {
+  test("a change that names no plan is watched until the plan is known, never put to the audience", () => {
     const item = itemFor({ text: "New monthly price shown at $30/month (was $25)." });
     assert.match(item.action, /^watch \d+ weeks?$/);
     assert.match(item.why, /What would change the answer/);
   });
 
-  test("a change naming two plans is watched until the plan is known, never respond now", () => {
+  test("a change naming two plans is watched until the plan is known, never put to the audience", () => {
     const item = itemFor({ competitor: "Bolt", source: "bolt.new/pricing", text: "Pro Teams bundle now $40/month (was $35)." });
     assert.equal(item.action, "watch 1 week");
     assert.match(item.why, /^Still cheaper than us on the Bolt plan that changed\?/);
@@ -137,7 +138,7 @@ describe("AC3: the lowest paid tier yields respond now; a higher tier yields wat
     });
   }
 
-  test("a known-press report about the lowest paid tier is watched, not respond now, until the official page shows it", () => {
+  test("a known-press report about the lowest paid tier is watched, not put to the audience, until the official page shows it", () => {
     const item = itemFor({ source: "https://techcrunch.com/2026/10/23/lovable-pricing" });
     assert.equal(item.action, "watch 1 week");
     assert.match(item.why, /Should we respond\? Not yet/);
@@ -149,7 +150,7 @@ describe("AC4: why answers both leadership questions", () => {
   for (const item of items) {
     test(`${item.id}: still cheaper on that tier? and should we respond?`, () => {
       assert.match(item.why, /^Still cheaper than us on [^?]+\? Can't compare/);
-      assert.match(item.why, /Should we respond\? (Yes|No|Not yet)\b/);
+      assert.match(item.why, /Should we respond\? (Your call|Can't tell yet|No|Not yet)\b/);
     });
   }
 
@@ -209,7 +210,7 @@ describe("AC6: each rule has its own case in the case suite", () => {
   const ruleCases: [string, (items: Item[]) => boolean][] = [
     ["promotion-badges", (items) => items.every((item) => item.before === null && item.after === null)],
     ["possible-promo", (items) => items.every((item) => item.confidence_label.startsWith("unconfirmed, possible promo"))],
-    ["tier-actions", (items) => items.some((item) => item.action === "respond now") && items.some((item) => /^watch/.test(item.action))],
+    ["tier-actions", (items) => items.some((item) => isTheirCall(item.action)) && items.some((item) => /^watch/.test(item.action))],
     ["no-own-pricing", (items) => items.every((item) => item.brightloop_comparison.startsWith("Can't compare"))],
     ["price-readings", (items) => items.some((item) => item.before !== null) && items.some((item) => /different periods/.test(item.why))],
   ];
