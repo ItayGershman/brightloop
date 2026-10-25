@@ -3,32 +3,32 @@
   "items": [],
   "skipped": [
     {
-      "id": "copy-lovable-pricing",
-      "reason": "pricing page copy, no action: 5 changed lines since the snapshot of 2026-10-25T12:21:29.144Z"
+      "id": "unchanged-lovable-pricing",
+      "reason": "nothing moved: Lovable's pricing page is the same as in the snapshot of 2026-10-25T14:17:33.808Z"
     },
     {
       "id": "copy-lovable-homepage",
-      "reason": "homepage copy, no action: 51 changed lines since the snapshot of 2026-10-25T12:21:32.381Z"
+      "reason": "homepage copy, no action: 2 changed lines since the snapshot of 2026-10-25T14:17:45.124Z"
     },
     {
       "id": "unchanged-replit-pricing",
-      "reason": "nothing moved: Replit's pricing page is the same as in the snapshot of 2026-10-25T12:21:38.715Z"
+      "reason": "nothing moved: Replit's pricing page is the same as in the snapshot of 2026-10-25T14:17:49.280Z"
     },
     {
       "id": "copy-replit-homepage",
-      "reason": "homepage copy, no action: 4 changed lines since the snapshot of 2026-10-25T12:21:44.637Z"
+      "reason": "homepage copy, no action: 4 changed lines since the snapshot of 2026-10-25T14:17:54.480Z"
     },
     {
       "id": "unchanged-bolt-pricing",
-      "reason": "nothing moved: Bolt's pricing page is the same as in the snapshot of 2026-10-25T12:21:56.161Z"
+      "reason": "nothing moved: Bolt's pricing page is the same as in the snapshot of 2026-10-25T14:18:05.941Z"
     },
     {
-      "id": "copy-bolt-homepage",
-      "reason": "homepage copy, no action: 4 changed lines since the snapshot of 2026-10-25T12:22:08.398Z"
+      "id": "unchanged-bolt-homepage",
+      "reason": "nothing moved: Bolt's homepage is the same as in the snapshot of 2026-10-25T14:18:18.612Z"
     }
   ],
   "run": {
-    "started_at": "2026-10-25T14:18:19.609Z",
+    "started_at": "2026-10-25T15:51:53.322Z",
     "cost_usd": 0,
     "errors": []
   },
