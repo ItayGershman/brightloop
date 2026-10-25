@@ -1,12 +1,52 @@
 # Architecture: one run, from the Monday cron to Maya's Sheet
 
-Three sequence diagrams, traced from the code (`src/cli.ts`, `src/run.ts`, `.github/workflows/scheduled-run.yml`), not from the spec. The first two are the Monday run, split where `./run` hands its result to the rest of the workflow. The third shows that a grader's cases file and a replay reach the same `run()`.
+Four sequence diagrams, traced from the code (`src/cli.ts`, `src/run.ts`, `.github/workflows/scheduled-run.yml`), not from the spec. Diagram 0 is the whole Monday run on one screen: start there. Diagrams 1 and 2 are the same run in detail, split where `./run` hands its result to the rest of the workflow. Diagram 3 shows that a grader's cases file and a replay reach the same `run()`.
 
 Names follow `CONTEXT.md`: a **snapshot** is one page's visible text from one run, a **signal** is one observed change, an **item** is a recommendation to Maya, a **skipped signal** is one that became no item, with the reason.
 
-Rendered copies for slides and the recording: [part A](architecture-monday-capture.svg), [part B](architecture-monday-deliver.svg), [one pipeline](architecture-one-pipeline.svg). Regenerate them when a diagram changes.
+Rendered copies for slides and the recording: [overview](architecture-overview.svg), [part A](architecture-monday-capture.svg), [part B](architecture-monday-deliver.svg), [one pipeline](architecture-one-pipeline.svg). Regenerate them when a diagram changes.
 
-How to read them: `opt` is a step that happens only when its keys are set; `alt` is a branch, and a red note is a failure that goes to `run.errors` instead of crashing. Without any key, every `opt` box is skipped and the run still writes its files.
+How to read them: `opt` is a step that happens only when its keys are set; `alt` is a branch, and a note is a failure that goes to `run.errors` instead of crashing. Without any key, every `opt` box is skipped and the run still writes its files.
+
+---
+
+## 0. Overview: the Monday run on one screen
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant GH as GitHub Actions
+    participant Tool as ./run --live
+    participant Web as Competitor pages
+    participant Sheet as Maya's Sheet
+    participant Slack as Slack leadership
+    participant App as Base44 app
+    participant Repo as Repo
+
+    GH->>Tool: start, Monday 08:30 Jerusalem
+    Tool->>Web: open 6 pages in Chrome
+    Web-->>Tool: visible text only
+    Note over Tool,Web: Diff: compare each page with<br/>last week's snapshot.<br/>Changed lines become signals.
+    Tool->>Sheet: read Brightloop's own prices
+    Note over Tool,Web: Judge: rules turn each signal into<br/>an item (action, why, confidence)<br/>or a skipped signal with a reason.<br/>Check: code checks every output.
+    Tool->>Sheet: append one row per item
+    Tool->>Slack: post one line, if something moved
+    Tool-->>GH: result.json, CSV, page
+    GH->>App: publish the page
+    GH->>Repo: commit snapshots, result, run log
+```
+
+**Read aloud:**
+
+1. Every Monday at 08:30 Jerusalem time, GitHub Actions starts the tool.
+2. The tool opens six competitor pages in Chrome and keeps only the text a person can see.
+3. It compares each page with last week's copy. Only what changed goes on, as signals.
+4. It reads Brightloop's own prices from Maya's Sheet, so it can say whether a competitor is still cheaper.
+5. Then it judges: plain rules turn each change into a recommendation for Maya, or skip it with a reason, and code checks every output before anything leaves the tool.
+6. Only judged output goes out: one row per change in Maya's Sheet, one line to leadership in Slack, and the page to the Base44 app.
+7. Last, the run commits this week's snapshots, so next Monday has something to compare against.
+
+Each outside step (Sheet, Slack, Base44) runs only when its key is set; without keys the run still writes `result.json`, the CSV and the page. Diagrams 1 and 2 show those branches.
 
 ---
 
