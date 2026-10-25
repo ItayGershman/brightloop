@@ -115,6 +115,10 @@ jobs:
       # A forbidden marker in a page fails the job and nothing is committed, the run log line included.
       - name: No forbidden marker in anything about to be committed
         run: npm run repo-check
+      # A bot push starts no CI, so this run is the only check its commit gets: if the new
+      # snapshots or run log line would leave the branch failing `npm test`, nothing is committed.
+      - name: npm test passes with what is about to be committed
+        run: npm test
       - name: Commit the snapshots, the result, its CSV, the page and the run log
         env:
           MESSAGE: "${{ github.event_name }} run at ${{ steps.start.outputs.at }}: ${{ steps.log.outputs.summary }}"
