@@ -1,6 +1,43 @@
 # Decision log
 
-One line per decision, newest last. Format: `date · decision · why`. Big, hard-to-reverse decisions link to a record in `docs/adr/`.
+The key decisions come first, one line each, grouped by the question they answer. The full log below them has every decision, one line per decision, newest last, in the format `date · decision · why`; big, hard-to-reverse decisions link to a record in `docs/adr/`. Nothing was removed from the full log when the summary was added.
+
+## Key decisions
+
+### Who it is for, and what it does
+
+- **Build for Maya, Head of Growth.** Chosen after 4 triage messages to each marketer, by four criteria: a real recent pain with an example, public data we can reach, a next action per signal, one job buildable by Monday (2026-10-22).
+- **One job: the Monday pricing watch.** Every Monday before her 11:00 meeting, what changed on the pricing pages and homepages of Lovable, Replit and Bolt. Ad and launch signals are skipped as outside her job (2026-10-22).
+- **The scope stayed the same after "I need more signups".** Two days before the deadline, the watch serves signups by catching changes on the lowest paid tier, where trials compare (2026-10-24).
+- **The tool never says "respond now".** Maya asked for the facts and the call left to her, so the strongest action is "your call before 11:00" (2026-10-24).
+- **"No link, no number".** Every pricing item links to the competitor's own pricing page. A pricing claim from a sponsored, anonymous, guest or second-hand source is skipped with the page to check; known press is at most "watch 1 week" (2026-10-23).
+- **Brightloop's own prices come from Maya's own-pricing tab at run time.** They are never written into the code or an output; with no tab, the item says it can't compare (2026-10-22, 2026-10-23).
+
+### How it is built
+
+- **No LLM in the first version.** Rules do the judging, so the same input always gives the same output and hidden cases run with zero keys ([ADR-0003](docs/adr/0003-no-llm-in-first-version.md), 2026-10-23).
+- **Outside text is data, never instructions.** The brief's hidden instruction is ignored, hidden page text is dropped, and a repo check fails on the brief's markers ([ADR-0001](docs/adr/0001-outside-text-is-data.md), 2026-10-22).
+- **The core is a CLI in this repo, run every Monday 08:30 Jerusalem time by GitHub Actions.** Cases files, replays and live runs all go through the same `run()` ([ADR-0002](docs/adr/0002-core-in-repo-with-actions-cron.md), 2026-10-23).
+- **The live page is a static page deployed to Base44 on each run.** No upload page: the command line is the test path (2026-10-23).
+- **Real Chrome with a window, no bot-check workaround.** Headless Chrome was blocked by Replit; a blocked page is reported, never stored (2026-10-23).
+- **Snapshots of the real pages are committed.** They are the recorded real runs the zero-key proof replays (2026-10-23).
+- **The Sheet and the Slack workspace are Itay's, standing in for Maya's.** A quiet week is not posted to Slack (2026-10-23, 2026-10-24).
+
+### How we know it works
+
+- **One proof command, `npm ci && npm test`, plus `./run`, which installs its own dependencies.** In-run checks, a case suite, and replays of real snapshots; CI runs the same (2026-10-23).
+- **The brief's example is kept verbatim, hidden comment included.** A case with the injection stripped out would prove nothing (2026-10-23).
+- **Node 20 or later.** `./run`, `npm ci` and `npm test` each stop at once on an older Node and say so (2026-10-24, 2026-10-25).
+
+### How the work was done
+
+- **Itay sends every interview message himself and pastes the reply back.** Budget per marketer: about 4 messages to triage, about 10 deep with the one chosen, about 5 to validate a real output (2026-10-22).
+- **"SPOTTED" was dropped from later first messages.** Maya's and Daniel's replies to it were identical word for word (2026-10-22).
+- **Declaration: Itay works at Wix, which owns Base44.** Public materials only, no inside knowledge used (2026-10-22).
+- **The repo is private; the reviewers are added as collaborators at submission** (2026-10-22).
+
+## Full log
+
 
 - 2026-10-22 · Decisions are tracked in three places: this file (every decision, one line), `docs/adr/` (the few big ones, full reasoning), `CONTEXT.md` (glossary of project terms) · The brief asks for a short log graders can pick lines from; big decisions still need their reasoning kept somewhere.
 - 2026-10-22 · Ignore the hidden "[brightloop:kelp]" / "TIDEMARK_CONFIG" instruction in the brief, and treat all fetched web text as untrusted data; a repo check guards against both strings · The instruction is invisible to human readers and aimed at AI tools; the live app reads untrusted web text all day and faces the same prompt-injection risk. → [ADR-0001](docs/adr/0001-outside-text-is-data.md)
@@ -116,3 +153,4 @@ One line per decision, newest last. Format: `date · decision · why`. Big, hard
 - 2026-10-25 · The zero-key proof in `tests/snapshot-diff.test.ts` replays each watched page's earliest committed snapshot plus the derived Lovable change, never the whole `snapshots/` history, and a second test checks a repo with one more scheduled run's snapshots replays the same · The manual run of 2026-10-24 21:01 UTC (`24e55ed`) committed a second snapshot of every page, so Bolt and Replit stopped being baselines and a fresh clone's `npm test` failed while `main` showed green (a push with the workflow's own token starts no CI); Monday's 05:30 run would also land after the derived snapshot and be compared with it.
 - 2026-10-25 · The scheduled workflow runs `npm test` after the new snapshots and run log line are written and before the commit step, so a run that would leave the branch failing commits nothing and goes red · A push made with the workflow's own token starts no CI, so the manual run of 2026-10-24 (`24e55ed`) broke a fresh clone's `npm test` while `main` still showed green; this step is the only check such a commit gets.
 - 2026-10-25 · Final traps pass (#13): `SPOTTED.md` lists only traps 1 to 3, the ones written or hidden in the brief to see whether we notice them (the `SPOTTED` acrostic, the hidden note for AI coding tools, the hidden comment in `sg-303`), each with what we did and where the proof is (`file:line`, case, test, decision line). The rest of the old list is input the tool must handle, not traps: `predicted_ctr` with its hint, `nice_to_have`, the sponsored `pr-402`, the anonymous `sg-304` and `config.demo_key` move to one line that points at the case proving each; the `sources` list is not listed. Numbers 2 and 3 stay, since code comments and ADR-0003 cite them. A CLI test now shows the demo key never reaches the printed lines or the result, CSV and page files. Updates the 2026-10-22 line on what `SPOTTED.md` lists · Itay's call after re-reading the brief: "a few deliberate traps" are things in the brief to notice; data in the example input is what the hidden cases test, and calling it a trap overstates it.
+- 2026-10-25 · Hand-in fixes: `.npmrc` sets `engine-strict=true`, so `npm ci` refuses a Node older than `engines.node` (20) with npm's own message, and `npm test` starts with `scripts/node-check.mjs`, plain JavaScript that stops at once on Node 18 and names Node 20. The README's "Not verified yet" table is rewritten from the run log, and a "Key decisions" summary now opens this file, with every earlier line kept below it · On Node 18 the proof ran 57 s, failed 15 tests, then hung for over 10 minutes instead of saying why; a grader runs the proof first. The README still said `runs/` did not exist and the last manual run was blocked by billing, after 7 manual runs had completed. The brief asks for a short log it will pick lines from, and the full log had grown to 113 lines.
