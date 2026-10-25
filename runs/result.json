@@ -4,36 +4,34 @@
   "skipped": [
     {
       "id": "unchanged-lovable-pricing",
-      "reason": "nothing moved: Lovable's pricing page is the same as in the snapshot of 2026-10-25T15:51:06.714Z"
-    },
-    {
-      "id": "copy-lovable-homepage",
-      "reason": "homepage copy, no action: 4 changed lines since the snapshot of 2026-10-25T15:51:18.067Z"
+      "reason": "nothing moved: Lovable's pricing page is the same as in the snapshot of 2026-10-25T16:43:04.117Z"
     },
     {
       "id": "unchanged-replit-pricing",
-      "reason": "nothing moved: Replit's pricing page is the same as in the snapshot of 2026-10-25T15:51:22.723Z"
+      "reason": "nothing moved: Replit's pricing page is the same as in the snapshot of 2026-10-25T16:43:19.781Z"
     },
     {
       "id": "copy-replit-homepage",
-      "reason": "homepage copy, no action: 2 changed lines since the snapshot of 2026-10-25T15:51:28.111Z"
+      "reason": "homepage copy, no action: 6 changed lines since the snapshot of 2026-10-25T16:43:24.814Z"
     },
     {
       "id": "unchanged-bolt-pricing",
-      "reason": "nothing moved: Bolt's pricing page is the same as in the snapshot of 2026-10-25T15:51:39.674Z"
+      "reason": "nothing moved: Bolt's pricing page is the same as in the snapshot of 2026-10-25T16:43:36.488Z"
     },
     {
       "id": "copy-bolt-homepage",
-      "reason": "homepage copy, no action: 4 changed lines since the snapshot of 2026-10-25T15:51:52.243Z"
+      "reason": "homepage copy, no action: 4 changed lines since the snapshot of 2026-10-25T16:43:49.760Z"
     }
   ],
   "run": {
-    "started_at": "2026-10-25T16:43:50.840Z",
+    "started_at": "2026-10-25T17:04:46.224Z",
     "cost_usd": 0,
-    "errors": []
+    "errors": [
+      "Lovable homepage: the site answered 403, so it was not captured"
+    ]
   },
   "slack": {
-    "line": "pricing watch for 11:00: nothing moved since the last check. details: https://docs.google.com/spreadsheets/d/1HXgiG-YdpvyPeCEomQ_hPWTGilRTM9jP4e01DB9M5Os/edit",
-    "status": "not posted: nothing moved"
+    "line": "pricing watch for 11:00: nothing to report, but the run hit one problem, so this is not the all-clear. details: https://docs.google.com/spreadsheets/d/1HXgiG-YdpvyPeCEomQ_hPWTGilRTM9jP4e01DB9M5Os/edit",
+    "status": "posted"
   }
 }
