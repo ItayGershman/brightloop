@@ -12,7 +12,8 @@
     "typecheck": "tsc --noEmit",
     "repo-check": "tsx scripts/repo-check.ts",
     "suite": "SLACK_WEBHOOK_URL= tsx --test --test-reporter=spec tests/*.test.ts",
-    "test": "npm run typecheck && npm run repo-check && npm run suite"
+    "node-check": "node scripts/node-check.mjs",
+    "test": "npm run node-check && npm run typecheck && npm run repo-check && npm run suite"
   },
   "devDependencies": {
     "@types/lodash": "4.17.26",

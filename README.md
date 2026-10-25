@@ -64,7 +64,7 @@ Bad input never crashes the run: an unreadable, empty or malformed file still gi
 npm ci && npm test
 ```
 
-Typechecks, runs the repo check (no hidden marker from the brief in the code or the outputs), then every test. CI (`.github/workflows/proof.yml`) runs it on every push, then runs the brief's command on the brief's example. Four layers, each catching what the one before cannot:
+Stops at once on a Node older than 20, then typechecks, runs the repo check (no hidden marker from the brief in the code or the outputs), then every test. CI (`.github/workflows/proof.yml`) runs it on every push, then runs the brief's command on the brief's example. Four layers, each catching what the one before cannot:
 
 | Layer | What it does | Where |
 |---|---|---|
@@ -105,8 +105,9 @@ Maya owns trial signups, and the Monday deck is not the thing she wants solved (
 
 | What | Where it stands |
 |---|---|
-| The first scheduled Monday run | Its first run is Monday 26 October, 08:30 Jerusalem time. Until then `main` has no `runs/` folder, and the page's run history is one local run. The last manual workflow run (23 October) was not started by GitHub because of the account's Actions billing |
-| GitHub's runners keep getting the pages | 23 October: 6 of 6 pages in 4 of 5 runs; Lovable's homepage answered 403 in the other. A blocked page goes to `run.errors`, never stored |
+| The first scheduled Monday run | Its first run is Monday 26 October, 08:30 Jerusalem time, after the hand-in. Every run so far was started by hand: 7 manual workflow runs on GitHub's runners on 24 and 25 October, all completed and logged in `runs/run-log.jsonl` |
+| GitHub's runners keep getting the pages | 24 and 25 October: 40 of 42 page loads went through; Lovable's homepage answered 403 in 2 of the 7 runs. A blocked page goes to `run.errors`, never stored |
+| A real change, found live | Not yet: since the baseline, every live run found the three pricing pages unchanged and only wording changes on the homepages. How the rules judge a real change is shown by the case suite and the edited snapshot pairs |
 | The Slack line before the repo check | The line is posted in the live step, before the repo check, so a forbidden marker would fail the job after the line went out |
 
 ## Declaration
