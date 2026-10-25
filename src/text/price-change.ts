@@ -11,7 +11,7 @@ const NO_CHANGE: PriceChange = { before: null, after: null, differentPeriods: nu
 
 /**
  * Before and after prices, only when the text states both: "$25/month (was $20 last week)",
- * "$25 → $20", "from $25 to $20", "$20, down from $25". With "was", the after price is the first price that is not
+ * "$25 → $20", "from $25 to $20", "$20, down from $25", "$15/month (regular $25)". With "was" or "regular", the after price is the first price that is not
  * the "was" one. Two prices for different periods are not a change: see differentPeriods.
  */
 export function priceChange(text: string): PriceChange {

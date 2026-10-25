@@ -52,7 +52,7 @@ Four layers, each catching what the one before cannot.
 | Layer | What it does | Where |
 |---|---|---|
 | In-run checks | Every run checks its own output before writing it: every input id lands exactly once (in an item's `source_ids` or in `skipped`), confidence is between 0 and 1, every item has a link and a call to action, no banned brand word, no secret-like value from the input, the wrapper shape. A failure goes to `run.errors`; the item is held back, never written | `src/checks/` |
-| Case suite | 20 hand-written cases files, each with the expected result: the brief's example, one case per rule and one per trap in the brief (sponsored claim, promo badge, possible promo, lowest vs higher tier, duplicates across time zones, the week boundary at the 25 October clock change, rumour, ad and launch skipped, the hidden comment in `sg-303`, a secret in a signal, a spoofed official page, an ignored model score, no own pricing, empty and malformed input) | `cases/<name>/input.json` must give `cases/<name>/expected.json` |
+| Case suite | 23 hand-written cases files, each with the expected result: the brief's example, one case per rule and one per trap in the brief (sponsored claim, promo badge, possible promo, lowest vs higher tier, duplicates across time zones, the week boundary at the 25 October clock change, rumour, ad and launch skipped, the hidden comment in `sg-303`, a secret in a signal, a spoofed official page, an ignored model score, no own pricing, a competitor outside the watch, a banned word in a quote, a "regular" price, empty and malformed input) | `cases/<name>/input.json` must give `cases/<name>/expected.json` |
 | Replay of real snapshots | The 6 committed snapshots of the real pages (23 October) replay as baselines with no browser and no network; 12 pairs of a real snapshot and an edited copy of it (a renamed or replaced plan, a limit change, a promotion badge, plan cards moved, a restructured page, a homepage headline, nothing moved, ...) go through the same diff and rules as a live run | `snapshots/`, `tests/fixtures/derived-snapshot-pairs/` |
 | Real runs | Manual runs of the Monday workflow on GitHub's runners (23 October, from feature branches) and full local runs with every key: real pages read, rows appended to the Sheet, the line posted to Slack, the page published and read back with no sign-in. Maya checked the rows and the line from one of those runs (`interviews/maya.md`, message 19) | `DECISIONS.md`, entries of 2026-10-23 and 2026-10-24 |
 
@@ -65,7 +65,7 @@ The brief's fields (`id`, `source_ids`, `confidence`, `action`, `why`) plus thes
 | Field | Meaning |
 |---|---|
 | `competitor`, `page` | Which competitor, and which of its pages (`pricing` or `homepage`) |
-| `what_changed` | The change as stated by the signal, or as the snapshot diff found it |
+| `what_changed` | The change as stated by the signal, or as the snapshot diff found it. A word from the input's `brand.banned_words` in the competitor's text is shown as `[word removed]` |
 | `before`, `after` | The values the page or the signal showed, filled in whenever stated. A promotional price ends "(promotional)", a possible one "(possible promo, unconfirmed)", so a badge never reads as a list-price cut |
 | `link` | The competitor's own pricing page: "no link, no number" |
 | `notes` | Where the signal came from, the snapshot it was compared with, and any promotion markers found |

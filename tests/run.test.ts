@@ -152,10 +152,10 @@ describe("signals the run cannot use as they are", () => {
     });
   }
 
-  test("a pricing signal for a competitor with no known official page is skipped", () => {
+  test("a pricing signal about a competitor outside the watch is skipped, naming the ones it covers", () => {
     const result = runCases({ signals: [pricingSignal({ competitor: "Acme", source: "acme.example/pricing" })] });
     assert.deepEqual(result.items, []);
-    assert.deepEqual(result.skipped, [{ id: "pr-1", reason: "pricing signal, but there is no official page for this competitor" }]);
+    assert.deepEqual(result.skipped, [{ id: "pr-1", reason: "pricing signal about a competitor outside the watch: it covers Lovable, Replit and Bolt" }]);
   });
 
   test("a signal of unknown type is skipped with the reason", () => {

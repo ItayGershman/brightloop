@@ -1,0 +1,31 @@
+{
+  "built_for": "maya",
+  "items": [
+    {
+      "id": "pricing-bw-1",
+      "source_ids": [
+        "bw-1"
+      ],
+      "confidence": 0.9,
+      "confidence_label": "confirmed: seen on Lovable's own pricing page",
+      "action": "can't tell yet: compare with our own pricing before 11:00",
+      "why": "Still cheaper than us on Lovable Pro? Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Lovable Pro now shows $22/month. Should we respond? Can't tell yet: there is no comparison with our own pricing. Pro is Lovable's lowest paid tier, the one most of our trials compare against. Before 11:00, compare it with the own-pricing tab, then decide.",
+      "cta": "Open https://lovable.dev/pricing and check the Lovable price before the 11:00 leadership meeting.",
+      "competitor": "Lovable",
+      "page": "pricing",
+      "what_changed": "Pro is [word removed] and [word removed] at $22/month (was $25).",
+      "before": "$25",
+      "after": "$22/month",
+      "link": "https://lovable.dev/pricing",
+      "notes": "Source: lovable.dev/pricing.",
+      "brightloop_comparison": "Can't compare: Brightloop's own-pricing tab is not connected, so no Brightloop price is used. Lovable Pro now shows $22/month.",
+      "week": "2026-W44"
+    }
+  ],
+  "skipped": [],
+  "run": {
+    "started_at": "2026-10-27T06:30:00.000Z",
+    "cost_usd": 0,
+    "errors": []
+  }
+}

@@ -4,6 +4,10 @@ import type { Item, Result, RunInput, SkippedSignal } from "./domain/types.ts";
 import { judgingRules } from "./judging/rules.ts";
 import { runRules, type Rule } from "./judging/run-rules.ts";
 import { itemWeeks } from "./judging/week.ts";
+import { maskBannedWords } from "./text/quotable.ts";
+
+/** The item fields that quote outside text; the rest is written by the watch itself. */
+const QUOTED_FIELDS = ["what_changed", "before", "after", "notes"] as const;
 
 /**
  * One run: judges every signal in the input, puts each input id in exactly one place,
@@ -26,6 +30,12 @@ export function run(input: RunInput, options: { startedAt?: Date; rules?: Rule[]
     // An item that fails a check never reaches the audience: its signals are skipped with the reason.
     judgedItems += 1;
     judgement.item.week = weekOf(judgement.item);
+    // A banned word in a competitor's own words is masked, not a reason to drop the change;
+    // the check below still holds every field the watch writes to the banned words.
+    for (const field of QUOTED_FIELDS) {
+      const value = judgement.item[field];
+      if (typeof value === "string") judgement.item[field] = maskBannedWords(value, input.bannedWords);
+    }
     const problems = checkItem(judgement.item, context);
     if (problems.length > 0) {
       errors.push(`item ${judgedItems} held back: ${problems.join("; ")}`);

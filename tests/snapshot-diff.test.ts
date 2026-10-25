@@ -69,31 +69,51 @@ describe("acceptance criteria of #8", () => {
   });
 
   test("the proof replays recorded pairs with zero keys", () => {
-    // A snapshots folder holding the real history plus one derived later snapshot, replayed
-    // by the CLI in a process that has no environment beyond PATH: no keys, no tokens.
-    const dir = mkdtempSync(join(tmpdir(), "brightloop-replay-"));
-    for (const page of watchedPages()) {
-      for (const snapshot of storedSnapshots("snapshots", page)) writeSnapshot(dir, snapshot);
-    }
-    for (const { current } of derivedPairs("plan-limit-change")) writeSnapshot(dir, current);
-    const output = join(dir, "result.json");
-    const cli = spawnSync("./run", ["--replay", "--snapshots", dir, "--output", output], {
-      encoding: "utf8",
-      env: { PATH: process.env.PATH },
-    });
-    assert.equal(cli.status, 0, cli.stderr);
-    const result: Result = JSON.parse(readFileSync(output, "utf8"));
+    const result = replayProof("snapshots");
     assert.deepEqual(result.run.errors, []);
     assert.equal(result.run.cost_usd, 0);
     const lovable = result.items.find((item) => item.id === "pricing-change-lovable-pricing-pro");
     assert.equal(lovable?.after, "150 monthly credits");
-    // The other pages have one snapshot each, so they replay as baselines.
+    // The other pages have one snapshot each in the replay, so they replay as baselines.
     assert.deepEqual(
       result.items.map((item) => item.id).sort(),
       ["baseline-bolt", "baseline-replit", "pricing-change-lovable-pricing-pro"],
     );
   });
+
+  test("the proof gives the same result however many snapshots the scheduled runs have committed", () => {
+    // Every scheduled run commits a new snapshot of each page. A repo with one more run on
+    // top of the real history, captured just after the derived snapshot, replays the same.
+    const grown = mkdtempSync(join(tmpdir(), "brightloop-grown-"));
+    for (const page of watchedPages()) {
+      const history = storedSnapshots("snapshots", page);
+      for (const snapshot of history) writeSnapshot(grown, snapshot);
+      writeSnapshot(grown, { ...history.at(-1)!, captured_at: "2026-10-26T05:31:00.000Z" });
+    }
+    const ids = (result: Result) => [...result.items.map((item) => item.id), ...result.skipped.map((entry) => entry.id)].sort();
+    assert.deepEqual(ids(replayProof(grown)), ids(replayProof("snapshots")));
+  });
 });
+
+/**
+ * The CLI's replay over each watched page's earliest snapshot in `root` plus one derived later
+ * snapshot, in a process with no environment beyond PATH: no keys, no tokens. Only the earliest
+ * snapshot is taken, so the snapshots the scheduled runs keep committing never change the proof.
+ */
+function replayProof(root: string): Result {
+  const dir = mkdtempSync(join(tmpdir(), "brightloop-replay-"));
+  for (const page of watchedPages()) {
+    for (const snapshot of storedSnapshots(root, page).slice(0, 1)) writeSnapshot(dir, snapshot);
+  }
+  for (const { current } of derivedPairs("plan-limit-change")) writeSnapshot(dir, current);
+  const output = join(dir, "result.json");
+  const cli = spawnSync("./run", ["--replay", "--snapshots", dir, "--output", output], {
+    encoding: "utf8",
+    env: { PATH: process.env.PATH },
+  });
+  assert.equal(cli.status, 0, cli.stderr);
+  return JSON.parse(readFileSync(output, "utf8"));
+}
 
 describe("only the lines that changed are judged", () => {
   // The live pages already carry promotion wording (Lovable's student "up to 50% off",
