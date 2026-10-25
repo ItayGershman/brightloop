@@ -85,6 +85,15 @@ describe("the time gate", () => {
   });
 });
 
+describe("the commit step", () => {
+  test("runs only after npm test passes on the new snapshots and run log line", () => {
+    const log = WORKFLOW.indexOf("scripts/append-run-log.ts");
+    const npmTest = WORKFLOW.search(/^\s*run: npm test\s*$/m);
+    const commit = WORKFLOW.indexOf("git commit");
+    assert.ok(log >= 0 && npmTest > log && commit > npmTest);
+  });
+});
+
 describe("the run log", () => {
   const PAGES: WatchedPage[] = [
     { competitor: "Lovable", page: "pricing", url: "https://lovable.dev/pricing" },

@@ -1,5 +1,5 @@
 import { AUDIENCE } from "../config/audience.ts";
-import { findCompetitor } from "../config/competitors.ts";
+import { COMPETITORS, findCompetitor } from "../config/competitors.ts";
 import { PAGE_COPY, PAGE_NAMES, UNCHANGED, type OwnPricing } from "../domain/types.ts";
 import { baselineRule } from "./baseline.ts";
 import { mergeDuplicates } from "./duplicates.ts";
@@ -43,15 +43,22 @@ export const pageWithoutAction: Rule = eachSignal((signal) => {
   return skip(signal, `${page} copy, no action${lines}`);
 });
 
+/** The watched competitors' names, "Lovable, Replit and Bolt", for the reason a signal about anyone else is skipped. */
+const WATCHED = namesList(COMPETITORS.map((competitor) => competitor.name));
+
+function namesList(names: string[]): string {
+  return names.length < 2 ? names.join("") : `${names.slice(0, -1).join(", ")} and ${names[names.length - 1]}`;
+}
+
 /**
- * A pricing signal becomes an item only for a competitor whose own page we know, and only
+ * A pricing signal becomes an item only for a watched competitor (its own page is known), and only
  * from a source trusted enough to report; a third-party claim is skipped with the reason.
  */
 export function pricingRule(own?: OwnPricing): Rule {
   return eachSignal((signal) => {
     if (signal.type !== "pricing") return undefined;
     const competitor = findCompetitor(signal.competitor);
-    if (!competitor) return skip(signal, "pricing signal, but there is no official page for this competitor");
+    if (!competitor) return skip(signal, `pricing signal about a competitor outside the watch: it covers ${WATCHED}`);
     const trust = sourceTrust(signal.source, competitor);
     if (!isReportable(trust)) return skip(signal, unreportedClaim(trust, competitor));
     return { kind: "item", item: pricingItem(signal, competitor, trust, own) };
