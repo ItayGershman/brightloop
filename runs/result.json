@@ -4,34 +4,36 @@
   "skipped": [
     {
       "id": "unchanged-lovable-pricing",
-      "reason": "nothing moved: Lovable's pricing page is the same as in the snapshot of 2026-10-25T16:43:04.117Z"
+      "reason": "nothing moved: Lovable's pricing page is the same as in the snapshot of 2026-10-25T17:04:14.743Z"
+    },
+    {
+      "id": "copy-lovable-homepage",
+      "reason": "homepage copy, no action: 4 changed lines since the snapshot of 2026-10-25T16:43:15.551Z"
     },
     {
       "id": "unchanged-replit-pricing",
-      "reason": "nothing moved: Replit's pricing page is the same as in the snapshot of 2026-10-25T16:43:19.781Z"
+      "reason": "nothing moved: Replit's pricing page is the same as in the snapshot of 2026-10-25T17:04:18.434Z"
     },
     {
       "id": "copy-replit-homepage",
-      "reason": "homepage copy, no action: 6 changed lines since the snapshot of 2026-10-25T16:43:24.814Z"
+      "reason": "homepage copy, no action: 4 changed lines since the snapshot of 2026-10-25T17:04:22.407Z"
     },
     {
       "id": "unchanged-bolt-pricing",
-      "reason": "nothing moved: Bolt's pricing page is the same as in the snapshot of 2026-10-25T16:43:36.488Z"
+      "reason": "nothing moved: Bolt's pricing page is the same as in the snapshot of 2026-10-25T17:04:33.627Z"
     },
     {
       "id": "copy-bolt-homepage",
-      "reason": "homepage copy, no action: 4 changed lines since the snapshot of 2026-10-25T16:43:49.760Z"
+      "reason": "homepage copy, no action: 4 changed lines since the snapshot of 2026-10-25T17:04:45.494Z"
     }
   ],
   "run": {
-    "started_at": "2026-10-25T17:04:46.224Z",
+    "started_at": "2026-10-26T13:40:58.759Z",
     "cost_usd": 0,
-    "errors": [
-      "Lovable homepage: the site answered 403, so it was not captured"
-    ]
+    "errors": []
   },
   "slack": {
-    "line": "pricing watch for 11:00: nothing to report, but the run hit one problem, so this is not the all-clear. details: https://docs.google.com/spreadsheets/d/1HXgiG-YdpvyPeCEomQ_hPWTGilRTM9jP4e01DB9M5Os/edit",
-    "status": "posted"
+    "line": "pricing watch for 11:00: nothing moved since the last check. details: https://docs.google.com/spreadsheets/d/1HXgiG-YdpvyPeCEomQ_hPWTGilRTM9jP4e01DB9M5Os/edit",
+    "status": "not posted: nothing moved"
   }
 }
