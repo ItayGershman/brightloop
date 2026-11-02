@@ -1,39 +1,100 @@
 {
   "built_for": "maya",
-  "items": [],
+  "items": [
+    {
+      "id": "pricing-change-replit-pricing-pro",
+      "source_ids": [
+        "change-replit-pricing-pro"
+      ],
+      "confidence": 0.9,
+      "confidence_label": "confirmed: seen on Replit's own pricing page",
+      "action": "watch 2 weeks",
+      "why": "Still cheaper than us on Replit Pro? Can't compare: Brightloop's own-pricing tab is empty, so no Brightloop price is used. Replit Pro shows $90/month, billed annually (struck-out $100). Should we respond? Not yet: Pro is above Replit's lowest paid tier, so few of our trials are affected. What would change the answer: Replit making the same change on its lowest paid tier or its free plan.",
+      "cta": "Open https://replit.com/pricing and check the Replit price before the 11:00 leadership meeting.",
+      "competitor": "Replit",
+      "page": "pricing",
+      "what_changed": "Replit Pro limits on the pricing page: no longer shows \"10 parallel agents; Invite up to 50 viewers\".",
+      "before": "10 parallel agents; Invite up to 50 viewers",
+      "after": null,
+      "link": "https://replit.com/pricing",
+      "notes": "Source: https://replit.com/pricing. Compared with the snapshot of 2026-10-26T13:40:32.652Z. Changed lines: limit.",
+      "brightloop_comparison": "Can't compare: Brightloop's own-pricing tab is empty, so no Brightloop price is used. Replit Pro shows $90/month, billed annually (struck-out $100).",
+      "week": "2026-W45"
+    },
+    {
+      "id": "pricing-change-bolt-pricing-pro",
+      "source_ids": [
+        "change-bolt-pricing-pro"
+      ],
+      "confidence": 0.9,
+      "confidence_label": "confirmed: seen on Bolt's own pricing page",
+      "action": "can't tell yet: compare with our own pricing before 11:00",
+      "why": "Still cheaper than us on Bolt Pro? Can't compare: Brightloop's own-pricing tab is empty, so no Brightloop price is used. Bolt Pro now shows $25/month. Should we respond? Can't tell yet: there is no comparison with our own pricing. Pro is Bolt's lowest paid tier, the one most of our trials compare against. Before 11:00, compare it with the own-pricing tab, then decide.",
+      "cta": "Open https://bolt.new/pricing and check the Bolt price before the 11:00 leadership meeting.",
+      "competitor": "Bolt",
+      "page": "pricing",
+      "what_changed": "Bolt Pro price on the pricing page changed from $18/month to $25/month.",
+      "before": "$18/month, billed annually",
+      "after": "$25/month, billed monthly",
+      "link": "https://bolt.new/pricing",
+      "notes": "Source: https://bolt.new/pricing. Compared with the snapshot of 2026-10-26T13:40:46.848Z. Changed lines: price.",
+      "brightloop_comparison": "Can't compare: Brightloop's own-pricing tab is empty, so no Brightloop price is used. Bolt Pro now shows $25/month.",
+      "week": "2026-W45"
+    },
+    {
+      "id": "pricing-change-bolt-pricing-teams",
+      "source_ids": [
+        "change-bolt-pricing-teams"
+      ],
+      "confidence": 0.9,
+      "confidence_label": "confirmed: seen on Bolt's own pricing page",
+      "action": "watch 2 weeks",
+      "why": "Still cheaper than us on Bolt Teams? Can't compare: Brightloop's own-pricing tab is empty, so no Brightloop price is used. Bolt Teams now shows $30/month. Should we respond? Not yet: Teams is above Bolt's lowest paid tier, so few of our trials are affected. What would change the answer: Bolt making the same change on its lowest paid tier or its free plan.",
+      "cta": "Open https://bolt.new/pricing and check the Bolt price before the 11:00 leadership meeting.",
+      "competitor": "Bolt",
+      "page": "pricing",
+      "what_changed": "Bolt Teams price on the pricing page changed from $27/month to $30/month.",
+      "before": "$27/month, per member, billed annually",
+      "after": "$30/month, per member, billed monthly",
+      "link": "https://bolt.new/pricing",
+      "notes": "Source: https://bolt.new/pricing. Compared with the snapshot of 2026-10-26T13:40:46.848Z. Changed lines: price.",
+      "brightloop_comparison": "Can't compare: Brightloop's own-pricing tab is empty, so no Brightloop price is used. Bolt Teams now shows $30/month.",
+      "week": "2026-W45"
+    }
+  ],
   "skipped": [
     {
-      "id": "unchanged-lovable-pricing",
-      "reason": "nothing moved: Lovable's pricing page is the same as in the snapshot of 2026-10-25T17:04:14.743Z"
+      "id": "copy-lovable-pricing",
+      "reason": "pricing page copy, no action: 3 changed lines since the snapshot of 2026-10-26T13:40:19.142Z"
     },
     {
       "id": "copy-lovable-homepage",
-      "reason": "homepage copy, no action: 4 changed lines since the snapshot of 2026-10-25T16:43:15.551Z"
+      "reason": "homepage copy, no action: 5 changed lines since the snapshot of 2026-10-26T13:40:29.917Z"
     },
     {
-      "id": "unchanged-replit-pricing",
-      "reason": "nothing moved: Replit's pricing page is the same as in the snapshot of 2026-10-25T17:04:18.434Z"
+      "id": "copy-replit-pricing",
+      "reason": "pricing page copy, no action: 11 changed lines since the snapshot of 2026-10-26T13:40:32.652Z"
     },
     {
       "id": "copy-replit-homepage",
-      "reason": "homepage copy, no action: 4 changed lines since the snapshot of 2026-10-25T17:04:22.407Z"
+      "reason": "homepage copy, no action: 12 changed lines since the snapshot of 2026-10-26T13:40:35.978Z"
     },
     {
-      "id": "unchanged-bolt-pricing",
-      "reason": "nothing moved: Bolt's pricing page is the same as in the snapshot of 2026-10-25T17:04:33.627Z"
+      "id": "copy-bolt-pricing",
+      "reason": "pricing page copy, no action: 8 changed lines since the snapshot of 2026-10-26T13:40:46.848Z"
     },
     {
       "id": "copy-bolt-homepage",
-      "reason": "homepage copy, no action: 4 changed lines since the snapshot of 2026-10-25T17:04:45.494Z"
+      "reason": "homepage copy, no action: 4 changed lines since the snapshot of 2026-10-26T13:40:57.855Z"
     }
   ],
   "run": {
-    "started_at": "2026-10-26T13:40:58.759Z",
+    "started_at": "2026-11-02T16:28:08.550Z",
     "cost_usd": 0,
     "errors": []
   },
   "slack": {
-    "line": "pricing watch for 11:00: nothing moved since the last check. details: https://docs.google.com/spreadsheets/d/1HXgiG-YdpvyPeCEomQ_hPWTGilRTM9jP4e01DB9M5Os/edit",
-    "status": "not posted: nothing moved"
+    "line": "pricing watch for 11:00: 3 pricing changes flagged (Replit and Bolt), one for your call before 11:00, can't tell yet without our own pricing. details: https://docs.google.com/spreadsheets/d/1HXgiG-YdpvyPeCEomQ_hPWTGilRTM9jP4e01DB9M5Os/edit",
+    "status": "posted"
   }
 }
