@@ -2,24 +2,24 @@
   "built_for": "maya",
   "items": [
     {
-      "id": "pricing-change-replit-pricing-pro",
+      "id": "pricing-change-bolt-pricing-free",
       "source_ids": [
-        "change-replit-pricing-pro"
+        "change-bolt-pricing-free"
       ],
       "confidence": 0.9,
-      "confidence_label": "confirmed: seen on Replit's own pricing page",
-      "action": "watch 2 weeks",
-      "why": "Still cheaper than us on Replit Pro? Can't compare: Brightloop's own-pricing tab is empty, so no Brightloop price is used. Replit Pro shows $90/month, billed annually (struck-out $100). Should we respond? Not yet: Pro is above Replit's lowest paid tier, so few of our trials are affected. What would change the answer: Replit making the same change on its lowest paid tier or its free plan.",
-      "cta": "Open https://replit.com/pricing and check the Replit price before the 11:00 leadership meeting.",
-      "competitor": "Replit",
+      "confidence_label": "confirmed: seen on Bolt's own pricing page",
+      "action": "can't tell yet: compare with our own pricing before 11:00",
+      "why": "Still cheaper than us on Bolt's free plan? Can't compare: Brightloop's own-pricing tab is empty, so no Brightloop price is used. Bolt's free plan shows $0/month. Should we respond? Can't tell yet: there is no comparison with our own pricing. It changes what Bolt's free plan includes, and trials upgrade from the free plan. Before 11:00, compare it with the own-pricing tab, then decide.",
+      "cta": "Open https://bolt.new/pricing and check the Bolt price before the 11:00 leadership meeting.",
+      "competitor": "Bolt",
       "page": "pricing",
-      "what_changed": "Replit Pro limits on the pricing page: no longer shows \"10 parallel agents; Invite up to 50 viewers\".",
-      "before": "10 parallel agents; Invite up to 50 viewers",
-      "after": null,
-      "link": "https://replit.com/pricing",
-      "notes": "Source: https://replit.com/pricing. Compared with the snapshot of 2026-10-26T13:40:32.652Z. Changed lines: limit.",
-      "brightloop_comparison": "Can't compare: Brightloop's own-pricing tab is empty, so no Brightloop price is used. Replit Pro shows $90/month, billed annually (struck-out $100).",
-      "week": "2026-W45"
+      "what_changed": "Bolt's free plan limits on the pricing page: \"1M tokens/month to try Bolt; Unlimited databases\" is now \"300K tokens daily limit; 1M tokens per month; Unlimited databases\".",
+      "before": "1M tokens/month to try Bolt; Unlimited databases",
+      "after": "300K tokens daily limit; 1M tokens per month; Unlimited databases",
+      "link": "https://bolt.new/pricing",
+      "notes": "Source: https://bolt.new/pricing. Compared with the snapshot of 2026-11-02T16:27:55.631Z. Changed lines: free plan.",
+      "brightloop_comparison": "Can't compare: Brightloop's own-pricing tab is empty, so no Brightloop price is used. Bolt's free plan shows $0/month.",
+      "week": "2026-W46"
     },
     {
       "id": "pricing-change-bolt-pricing-pro",
@@ -27,19 +27,19 @@
         "change-bolt-pricing-pro"
       ],
       "confidence": 0.9,
-      "confidence_label": "confirmed: seen on Bolt's own pricing page",
-      "action": "can't tell yet: compare with our own pricing before 11:00",
-      "why": "Still cheaper than us on Bolt Pro? Can't compare: Brightloop's own-pricing tab is empty, so no Brightloop price is used. Bolt Pro now shows $25/month. Should we respond? Can't tell yet: there is no comparison with our own pricing. Pro is Bolt's lowest paid tier, the one most of our trials compare against. Before 11:00, compare it with the own-pricing tab, then decide.",
-      "cta": "Open https://bolt.new/pricing and check the Bolt price before the 11:00 leadership meeting.",
+      "confidence_label": "unconfirmed, possible promo: the source is the competitor's own pricing page",
+      "action": "watch 1 week",
+      "why": "Still cheaper than us on Bolt Pro? Can't compare: Brightloop's own-pricing tab is empty, so no Brightloop price is used. Bolt Pro's current price is on https://bolt.new/pricing. Should we respond? Not yet: this may be a promotion (fine print) and the rules cannot tell. What would change the answer: the check showing a real list-price change on Bolt Pro.",
+      "cta": "Check still needed before the 11:00 leadership meeting: read the fine print next to the price on https://bolt.new/pricing; compare with last week's price (the Wayback Machine, or next Monday's run). Until then, tell leadership \"I'm checking\".",
       "competitor": "Bolt",
       "page": "pricing",
-      "what_changed": "Bolt Pro price on the pricing page changed from $18/month to $25/month.",
-      "before": "$18/month, billed annually",
-      "after": "$25/month, billed monthly",
+      "what_changed": "Bolt Pro on the pricing page: no longer shows \"*\". Bolt Pro limits on the pricing page: \"10M tokens/month, rollover included\" is now \"Unlimited databases\".",
+      "before": "*; 10M tokens/month, rollover included",
+      "after": "Unlimited databases (possible promo, unconfirmed)",
       "link": "https://bolt.new/pricing",
-      "notes": "Source: https://bolt.new/pricing. Compared with the snapshot of 2026-10-26T13:40:46.848Z. Changed lines: price.",
-      "brightloop_comparison": "Can't compare: Brightloop's own-pricing tab is empty, so no Brightloop price is used. Bolt Pro now shows $25/month.",
-      "week": "2026-W45"
+      "notes": "Source: https://bolt.new/pricing. Compared with the snapshot of 2026-11-02T16:27:55.631Z. Changed lines: limit, promotion marker. Unconfirmed, possible promo (fine print): not reported as a list-price change until checked.",
+      "brightloop_comparison": "Can't compare: Brightloop's own-pricing tab is empty, so no Brightloop price is used. Bolt Pro's current price is on https://bolt.new/pricing.",
+      "week": "2026-W46"
     },
     {
       "id": "pricing-change-bolt-pricing-teams",
@@ -47,54 +47,94 @@
         "change-bolt-pricing-teams"
       ],
       "confidence": 0.9,
+      "confidence_label": "unconfirmed, possible promo: the source is the competitor's own pricing page",
+      "action": "watch 1 week",
+      "why": "Still cheaper than us on Bolt Teams? Can't compare: Brightloop's own-pricing tab is empty, so no Brightloop price is used. Bolt Teams's current price is on https://bolt.new/pricing. Should we respond? Not yet: this may be a promotion (fine print) and the rules cannot tell. What would change the answer: the check showing a real list-price change on Bolt Teams.",
+      "cta": "Check still needed before the 11:00 leadership meeting: read the fine print next to the price on https://bolt.new/pricing; compare with last week's price (the Wayback Machine, or next Monday's run). Until then, tell leadership \"I'm checking\".",
+      "competitor": "Bolt",
+      "page": "pricing",
+      "what_changed": "Bolt Teams on the pricing page: no longer shows \"*\".",
+      "before": "*",
+      "after": null,
+      "link": "https://bolt.new/pricing",
+      "notes": "Source: https://bolt.new/pricing. Compared with the snapshot of 2026-11-02T16:27:55.631Z. Changed lines: promotion marker. Unconfirmed, possible promo (fine print): not reported as a list-price change until checked.",
+      "brightloop_comparison": "Can't compare: Brightloop's own-pricing tab is empty, so no Brightloop price is used. Bolt Teams's current price is on https://bolt.new/pricing.",
+      "week": "2026-W46"
+    },
+    {
+      "id": "pricing-change-bolt-pricing-enterprise",
+      "source_ids": [
+        "change-bolt-pricing-enterprise"
+      ],
+      "confidence": 0.9,
       "confidence_label": "confirmed: seen on Bolt's own pricing page",
       "action": "watch 2 weeks",
-      "why": "Still cheaper than us on Bolt Teams? Can't compare: Brightloop's own-pricing tab is empty, so no Brightloop price is used. Bolt Teams now shows $30/month. Should we respond? Not yet: Teams is above Bolt's lowest paid tier, so few of our trials are affected. What would change the answer: Bolt making the same change on its lowest paid tier or its free plan.",
+      "why": "Still cheaper than us on Bolt Enterprise? Can't compare: Brightloop's own-pricing tab is empty, so no Brightloop price is used. Bolt Enterprise shows Custom. Should we respond? Not yet: Enterprise is above Bolt's lowest paid tier, so few of our trials are affected. What would change the answer: Bolt making the same change on its lowest paid tier or its free plan.",
       "cta": "Open https://bolt.new/pricing and check the Bolt price before the 11:00 leadership meeting.",
       "competitor": "Bolt",
       "page": "pricing",
-      "what_changed": "Bolt Teams price on the pricing page changed from $27/month to $30/month.",
-      "before": "$27/month, per member, billed annually",
-      "after": "$30/month, per member, billed monthly",
+      "what_changed": "Bolt Enterprise limits on the pricing page: no longer shows \"Unlimited tokens, priced by consumption\".",
+      "before": "Unlimited tokens, priced by consumption",
+      "after": null,
       "link": "https://bolt.new/pricing",
-      "notes": "Source: https://bolt.new/pricing. Compared with the snapshot of 2026-10-26T13:40:46.848Z. Changed lines: price.",
-      "brightloop_comparison": "Can't compare: Brightloop's own-pricing tab is empty, so no Brightloop price is used. Bolt Teams now shows $30/month.",
-      "week": "2026-W45"
+      "notes": "Source: https://bolt.new/pricing. Compared with the snapshot of 2026-11-02T16:27:55.631Z. Changed lines: limit.",
+      "brightloop_comparison": "Can't compare: Brightloop's own-pricing tab is empty, so no Brightloop price is used. Bolt Enterprise shows Custom.",
+      "week": "2026-W46"
+    },
+    {
+      "id": "pricing-change-bolt-pricing",
+      "source_ids": [
+        "change-bolt-pricing"
+      ],
+      "confidence": 0.9,
+      "confidence_label": "unconfirmed, possible promo: the source is the competitor's own pricing page",
+      "action": "watch 1 week",
+      "why": "Still cheaper than us on the Bolt plan that changed? Can't compare: Brightloop's own-pricing tab is empty, so no Brightloop price is used. Bolt's current price is on https://bolt.new/pricing. Should we respond? Not yet: this may be a promotion (fine print, a percentage) and the rules cannot tell. What would change the answer: the check showing a real list-price change on Bolt.",
+      "cta": "Check still needed before the 11:00 leadership meeting: read the fine print next to the price on https://bolt.new/pricing; check on https://bolt.new/pricing whether the percentage is a discount on the list price or a new list price; compare with last week's price (the Wayback Machine, or next Monday's run). Until then, tell leadership \"I'm checking\".",
+      "competitor": "Bolt",
+      "page": "pricing",
+      "what_changed": "Bolt's pricing page: \"SAVE UP TO 28%; *Plus applicable taxes\" is now \"Save up to 28%\".",
+      "before": "SAVE UP TO 28%; *Plus applicable taxes",
+      "after": "Save up to 28% (possible promo, unconfirmed)",
+      "link": "https://bolt.new/pricing",
+      "notes": "Source: https://bolt.new/pricing. Compared with the snapshot of 2026-11-02T16:27:55.631Z. Changed lines: promotion marker. Unconfirmed, possible promo (fine print, a percentage): not reported as a list-price change until checked.",
+      "brightloop_comparison": "Can't compare: Brightloop's own-pricing tab is empty, so no Brightloop price is used. Bolt's current price is on https://bolt.new/pricing.",
+      "week": "2026-W46"
     }
   ],
   "skipped": [
     {
-      "id": "copy-lovable-pricing",
-      "reason": "pricing page copy, no action: 3 changed lines since the snapshot of 2026-10-26T13:40:19.142Z"
+      "id": "unchanged-lovable-pricing",
+      "reason": "nothing moved: Lovable's pricing page is the same as in the snapshot of 2026-11-02T16:27:26.397Z"
     },
     {
       "id": "copy-lovable-homepage",
-      "reason": "homepage copy, no action: 5 changed lines since the snapshot of 2026-10-26T13:40:29.917Z"
+      "reason": "homepage copy, no action: 2 changed lines since the snapshot of 2026-11-02T16:27:37.577Z"
     },
     {
-      "id": "copy-replit-pricing",
-      "reason": "pricing page copy, no action: 11 changed lines since the snapshot of 2026-10-26T13:40:32.652Z"
+      "id": "unchanged-replit-pricing",
+      "reason": "nothing moved: Replit's pricing page is the same as in the snapshot of 2026-11-02T16:27:40.918Z"
     },
     {
       "id": "copy-replit-homepage",
-      "reason": "homepage copy, no action: 12 changed lines since the snapshot of 2026-10-26T13:40:35.978Z"
+      "reason": "homepage copy, no action: 4 changed lines since the snapshot of 2026-11-02T16:27:44.383Z"
     },
     {
       "id": "copy-bolt-pricing",
-      "reason": "pricing page copy, no action: 8 changed lines since the snapshot of 2026-10-26T13:40:46.848Z"
+      "reason": "pricing page copy, no action: 87 changed lines since the snapshot of 2026-11-02T16:27:55.631Z"
     },
     {
       "id": "copy-bolt-homepage",
-      "reason": "homepage copy, no action: 4 changed lines since the snapshot of 2026-10-26T13:40:57.855Z"
+      "reason": "homepage copy, no action: 4 changed lines since the snapshot of 2026-11-02T16:28:07.761Z"
     }
   ],
   "run": {
-    "started_at": "2026-11-02T16:28:08.550Z",
+    "started_at": "2026-11-09T16:45:44.352Z",
     "cost_usd": 0,
     "errors": []
   },
   "slack": {
-    "line": "pricing watch for 11:00: 3 pricing changes flagged (Replit and Bolt), one for your call before 11:00, can't tell yet without our own pricing. details: https://docs.google.com/spreadsheets/d/1HXgiG-YdpvyPeCEomQ_hPWTGilRTM9jP4e01DB9M5Os/edit",
+    "line": "pricing watch for 11:00: 5 pricing changes flagged (Bolt), 3 still unconfirmed, one for your call before 11:00, can't tell yet without our own pricing. details: https://docs.google.com/spreadsheets/d/1HXgiG-YdpvyPeCEomQ_hPWTGilRTM9jP4e01DB9M5Os/edit",
     "status": "posted"
   }
 }
